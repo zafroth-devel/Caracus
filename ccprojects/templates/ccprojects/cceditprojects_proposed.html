@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% load staticfiles %} 
+
+{% block title %}Hinyango Base Template{% endblock %} 
+
+{% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} 
+
+{% block main_content%} 
+
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Manage </h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+<div class="panel-body">
+                    <legend class="text-bold">Edit Project</legend>
+
+</div>
+
+
+
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block chartcode%}
+
+<!--script type="text/javascript" src="{% static '<<PATH TO ASSET>>' %}"></script>
+<script  type="text/javascript"></script-->
+
+{% endblock %}

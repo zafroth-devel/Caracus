@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Reporting{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">{{ report_title }} </h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <button type="button" class="btn btn-danger" onclick="printelement()">PDF</button>
+        </div>
+        <div id="printsquare">
+            <div id="togglechart">
+                <div class="row">
+                    <!--div class="col-md-12"-->
+                    <div id="chartdisplay" name="chartdisplaynme"></div>
+                    <!--/div-->
+                </div>
+            </div>
+            <div id="toggletable">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="tabledisplay" name="tabledisplaynme"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %} {% block chartcode%}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="{% static 'assets/js/pdf/html2pdf.bundle.js' %}"></script>
+    <script>
+    (function() {
+        var d3 = Plotly.d3;
+
+        var WIDTH_IN_PERCENT_OF_PARENT = 100,
+            HEIGHT_IN_PERCENT_OF_PARENT = 100;
+
+        var gd3 = d3.select("div[id='chartdisplay']")
+            //.append('div')
+            .style({
+                width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+                'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+
+                height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+                'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+            });
+
+        var gd = gd3.node();
+
+        Plotly.plot(gd, [{
+            type: 'bar',
+            orientation: 'h',
+            y: [
+
+                {% autoescape off %} {% for items in reporting_data %}
+                '{{ items.question_type }}',
+                {% endfor %} {% endautoescape %}
+
+            ],
+            x: [
+
+                {% autoescape off %} {% for items in reporting_data %}
+                '{{ items.count }}',
+                {% endfor %} {% endautoescape %}
+
+            ],
+            marker: {
+                color: '#C8A2C8',
+                line: {
+                    width: 2.5
+                }
+            }
+        }], {
+            //title: 'Auto-Resize',
+            font: {
+                size: 16
+            },
+            margin:{
+                l:200,
+                r:10
+            }
+        }, { displayModeBar: false });
+
+        window.onresize = function() {
+            Plotly.Plots.resize(gd);
+        };
+
+    })();
+    </script>
+    <script>
+    var printelement = function() {
+
+        var element = $('#printsquare').html();
+
+        //var pdfout = element.html();
+
+        //console.log(pdfout);
+
+        html2pdf(element, {
+            margin: 1,
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { dpi: 192, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'l' }
+        });
+    };
+    </script>
+    {% endblock %}

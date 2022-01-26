@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+    {% block custcss %}
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/dc.css' %}"/>
+    <style>
+      .heat-box {
+        stroke: #E6E6E6;
+        stroke-width: 2px;
+      }
+    </style>
+
+
+    {% endblock %}
+
+
+
+					{% block main_content%}
+
+
+		       
+		<div class="row">
+
+				<!--div class="col-md-7"--> 
+
+
+					<!-- Simple interaction -->
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h5 class="panel-title">Change Heatmap</h5>
+							<div class="heading-elements">
+								<ul class="icons-list">
+			                		<li><a data-action="collapse"></a></li>
+			                		<li><a data-action="reload"></a></li>
+			                		<li><a data-action="close"></a></li>
+			                	</ul>
+		                	</div>
+						</div>
+
+						<div class="panel-body" id="chart_container">
+
+                            <!-- CHART PLACEHOLDER -->
+                            <div id="chart"></div>
+                            <div id="legend"></div>
+
+						</div>
+					</div>
+
+
+
+
+
+		</div>
+
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+
+	{% block chartcode%}
+
+<script type="text/javascript" src="{% static 'assets/js/core/d3_v2.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/core/crossfilter.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/core/dc.js' %}"></script>
+
+
+
+<script>
+
+
+
+var data = [{'Expt':1,'Run':1,'Speed':850},
+{'Expt':1,'Run':2,'Speed':740},
+{'Expt':1,'Run':3,'Speed':900},
+{'Expt':1,'Run':4,'Speed':1070},
+{'Expt':1,'Run':5,'Speed':930},
+{'Expt':1,'Run':6,'Speed':850},
+{'Expt':1,'Run':7,'Speed':950},
+{'Expt':1,'Run':8,'Speed':980},
+{'Expt':1,'Run':9,'Speed':980},
+{'Expt':1,'Run':10,'Speed':880},
+{'Expt':1,'Run':11,'Speed':1000},
+{'Expt':1,'Run':12,'Speed':980},
+{'Expt':1,'Run':13,'Speed':930},
+{'Expt':1,'Run':14,'Speed':650},
+{'Expt':1,'Run':15,'Speed':760},
+{'Expt':1,'Run':16,'Speed':810},
+{'Expt':1,'Run':17,'Speed':1000},
+{'Expt':1,'Run':18,'Speed':1000},
+{'Expt':1,'Run':19,'Speed':960},
+{'Expt':1,'Run':20,'Speed':960},
+{'Expt':2,'Run':1,'Speed':960},
+{'Expt':2,'Run':2,'Speed':940},
+{'Expt':2,'Run':3,'Speed':960},
+{'Expt':2,'Run':4,'Speed':940},
+{'Expt':2,'Run':5,'Speed':880},
+{'Expt':2,'Run':6,'Speed':800},
+{'Expt':2,'Run':7,'Speed':850},
+{'Expt':2,'Run':8,'Speed':880},
+{'Expt':2,'Run':9,'Speed':900},
+{'Expt':2,'Run':10,'Speed':840},
+{'Expt':2,'Run':11,'Speed':830},
+{'Expt':2,'Run':12,'Speed':790},
+{'Expt':2,'Run':13,'Speed':810},
+{'Expt':2,'Run':14,'Speed':880},
+{'Expt':2,'Run':15,'Speed':880},
+{'Expt':2,'Run':16,'Speed':830},
+{'Expt':2,'Run':17,'Speed':800},
+{'Expt':2,'Run':18,'Speed':790},
+{'Expt':2,'Run':19,'Speed':760},
+{'Expt':2,'Run':20,'Speed':800},
+{'Expt':3,'Run':1,'Speed':880},
+{'Expt':3,'Run':2,'Speed':880},
+{'Expt':3,'Run':3,'Speed':880},
+{'Expt':3,'Run':4,'Speed':860},
+{'Expt':3,'Run':5,'Speed':720},
+{'Expt':3,'Run':6,'Speed':720},
+{'Expt':3,'Run':7,'Speed':620},
+{'Expt':3,'Run':8,'Speed':860},
+{'Expt':3,'Run':9,'Speed':970},
+{'Expt':3,'Run':10,'Speed':950},
+{'Expt':3,'Run':11,'Speed':880},
+{'Expt':3,'Run':12,'Speed':910},
+{'Expt':3,'Run':13,'Speed':850},
+{'Expt':3,'Run':14,'Speed':870},
+{'Expt':3,'Run':15,'Speed':840},
+{'Expt':3,'Run':16,'Speed':840},
+{'Expt':3,'Run':17,'Speed':850},
+{'Expt':3,'Run':18,'Speed':840},
+{'Expt':3,'Run':19,'Speed':840},
+{'Expt':3,'Run':20,'Speed':840},
+{'Expt':4,'Run':1,'Speed':890},
+{'Expt':4,'Run':2,'Speed':810},
+{'Expt':4,'Run':3,'Speed':810},
+{'Expt':4,'Run':4,'Speed':820},
+{'Expt':4,'Run':5,'Speed':800},
+{'Expt':4,'Run':6,'Speed':770},
+{'Expt':4,'Run':7,'Speed':760},
+{'Expt':4,'Run':8,'Speed':740},
+{'Expt':4,'Run':9,'Speed':750},
+{'Expt':4,'Run':10,'Speed':760},
+{'Expt':4,'Run':11,'Speed':910},
+{'Expt':4,'Run':12,'Speed':920},
+{'Expt':4,'Run':13,'Speed':890},
+{'Expt':4,'Run':14,'Speed':860},
+{'Expt':4,'Run':15,'Speed':880},
+{'Expt':4,'Run':16,'Speed':720},
+{'Expt':4,'Run':17,'Speed':840},
+{'Expt':4,'Run':18,'Speed':850},
+{'Expt':4,'Run':19,'Speed':850},
+{'Expt':4,'Run':20,'Speed':780},
+{'Expt':5,'Run':1,'Speed':890},
+{'Expt':5,'Run':2,'Speed':840},
+{'Expt':5,'Run':3,'Speed':780},
+{'Expt':5,'Run':4,'Speed':810},
+{'Expt':5,'Run':5,'Speed':760},
+{'Expt':5,'Run':6,'Speed':810},
+{'Expt':5,'Run':7,'Speed':790},
+{'Expt':5,'Run':8,'Speed':810},
+{'Expt':5,'Run':9,'Speed':820},
+{'Expt':5,'Run':10,'Speed':850},
+{'Expt':5,'Run':11,'Speed':870},
+{'Expt':5,'Run':12,'Speed':870},
+{'Expt':5,'Run':13,'Speed':810},
+{'Expt':5,'Run':14,'Speed':740},
+{'Expt':5,'Run':15,'Speed':810},
+{'Expt':5,'Run':16,'Speed':940},
+{'Expt':5,'Run':17,'Speed':950},
+{'Expt':5,'Run':18,'Speed':800},
+{'Expt':5,'Run':19,'Speed':810},
+{'Expt':5,'Run':20,'Speed':870}
+];
+
+var ylab = ["Group1",
+"Sustenance",
+"Mary",
+"Bob",
+"James"];
+
+
+
+      var chartDiv = document.getElementById("chart_container");
+      var pwidth = chartDiv.clientWidth;
+      var pheight = (pwidth/20)*5;
+
+
+
+var chartGroup = "chartGroup";
+var chart = dc.heatMap("#chart",chartGroup);
+var legend = dc.heatMap("#legend",chartGroup);
+
+  var fudge = 40;
+
+  var ndx   = crossfilter(data);
+  //var ndx = ndx_raw.quicksort.by(function(d) { return +; });
+  var runDim = ndx.dimension(function(d) { return [+d.Run, +d.Expt]; });
+  var runGroup = runDim.group().reduceSum(function(d) { return +d.Speed; });
+   
+
+minValue = 700;
+
+maxValue = 900;
+var rangeValue = maxValue - minValue;
+
+
+
+var heatArr = [];
+for (var i = 0; i < 10; i++) {
+  heatArr.push({
+    val: minValue + i / 9 * rangeValue,
+    index: i
+  });
+}
+console.log(heatArr)
+var ndx = crossfilter(heatArr);
+
+var keyHeatmap = ndx.dimension(function(d) {
+  return [d.index, 1];
+});
+
+var keyHeatmapGroup = keyHeatmap.group().reduceSum(function(d) {
+  return d.val;
+});
+
+// var heatColorMapping = function(d) {
+//   return d3.scale.linear().domain([minValue, maxValue]).range(["#ffffd9","#081d58"])(d);
+// };
+
+// heatColorMapping.domain = function() {
+//   return [minValue, maxValue];
+// };
+
+
+
+
+
+
+  chart
+    //.width(60 * 20 + 80)
+    //.height(60 * 5 + 40)
+    .width(chartDiv.clientWidth)
+    .height((chartDiv.clientWidth/20)*5)
+    .dimension(runDim)
+    .group(runGroup)
+    .keyAccessor(function(d) { return +d.key[0]; })
+    .valueAccessor(function(d) { return +d.key[1]; })
+    .colorAccessor(function(d) { return +d.value; })
+    // .rowsLabel(function(d) {
+    //       return "hello" ;
+    //  })
+    .title(function(d) {
+        return "Run:   " + d.key[0] + "\n" +
+               "Expt:  " + d.key[1] + "\n" +
+               "Speed: " + (299000 + d.value) + " km/s";})
+    .colors(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
+    .calculateColorDomain();
+
+  chart.render();
+
+legend  .width(chartDiv.clientWidth/3)
+        .height((chartDiv.clientWidth/20)*1)
+        .dimension(keyHeatmap)
+        .group(keyHeatmapGroup)
+        .colorAccessor(function(d) {
+          return d.value;
+        })
+        .keyAccessor(function(d) { return d.key[0]; })
+        .valueAccessor(function(d) { return d.key[1]; })
+        // .colsLabel(function(d){
+        //   return heatArr[d].val.toFixed(0);
+        // })
+        .rowsLabel(function(d) {
+          return "" ;
+        })
+        //.transitionDuration(0)
+        .colors(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
+        .calculateColorDomain();
+
+// legend.xBorderRadius(0);
+// legend.yBorderRadius(0);
+
+legend.render();
+
+window.onresize = function() {
+            chart
+    .width(chartDiv.clientWidth)
+    .height((chartDiv.clientWidth/20)*5);
+
+legend  //.width(window.innerWidth-20)
+        //.height((window.innerHeight/2-fudge)/4);
+        .width(chartDiv.clientWidth/3)
+        .height((chartDiv.clientWidth/20)*1);
+
+
+            dc.redrawAll(chartGroup);
+        };
+
+
+$("#chart_container").resize(function(){
+    console.log("Working")
+});
+
+</script>
+
+
+The function is obviously fucked and is doing weird things re-order based on the example resize code
+
+
+	{% endblock %}
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

@@ -1,0 +1,352 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+
+    <title>Add Projects</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <!--external css-->
+    <link href="{% static 'node_modules/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+        
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/table-responsive.css' %}" rel="stylesheet" type="text/css">
+    
+
+  </head>
+
+  <body>
+
+  <section id="container" >
+      <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+      <!--header start-->
+      <header class="header black-bg">
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
+            <!--logo start-->
+            <a href="{% url 'logout' %}" class="logo"><b>Change Compass</b></a>
+            <!--logo end-->
+            <div class="nav notify-row" id="top_menu">
+              
+            </div>
+            <div class="top-menu">
+            	<ul class="nav pull-right top-menu"> <!--ISSUE This will need to change when I move dashboard-->
+                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
+            	</ul>
+            </div>
+        </header>
+      <!--header end-->
+      
+      <!-- **********************************************************************************************************************************************************
+      MAIN SIDEBAR MENU
+      *********************************************************************************************************************************************************** -->
+      <!--sidebar start-->
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  <p class="centered"><a href="{% url 'logout' %}"><img src="{% static 'img/ccompassico5.svg' %}" class="img-circle" width="60"></a></p>
+              	  <h5 class="centered">{{ user.username|capfirst}}</h5> 
+
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-book"></i>
+                          <span>Manage Projects</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">Update</a></li> <!-- This will point to ccprojects app -->
+                          <li><a  href="#">Delete</a></li>
+                      </ul>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-bar-chart-o"></i>
+                          <span>Reports</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+                  
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-tasks"></i>
+                          <span>Tasks</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+                  
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-cogs"></i>
+                          <span>Settings</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+
+
+
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+      <!--sidebar end-->
+      
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper">
+              
+ 
+        <div class="row mt">
+          		<div class="col-lg-12">
+                  <div class="form-panel">
+                  	  <h4 class="mb"><i class="fa fa-angle-right"></i> Project Details</h4>
+                      <form class="form-horizontal style-form" method="get">
+                          <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Project Name</label>
+                              <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="projectname" name="projectname" placeholder="Project Name">
+                              </div>
+                          </div>
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Description</label>
+                              <div class="col-sm-10">
+                                  <textarea class="form-control" rows="6" id="projectdesc" name="projectdesc" placeholder="Project Description" required>More information is better...</textarea>
+                              </div>
+                          </div>
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Customer Impact</label>
+                              <div class="col-sm-10">
+                            <textarea class="form-control" rows="6" id="customerimpact" name="customerimpact" placeholder="Customer Impact" required>Group</textarea>
+                              </div>
+                          </div> 
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Driver</label>
+                              <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="driver" name="driver" placeholder="driver">
+                              </div>
+                          </div> 
+                          
+                          <form class="form-inline" role="form">
+                          <div class="form-group">
+                              <label class="sr-only">Benefit</label>
+                                <select class="form-control" id="benefit" name="benefit">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                              <label class="sr-only">Health</label>
+                                <select class="form-control" id="health" name="health">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                          </form>
+                          
+                         <form class="form-inline" role="form">
+                          <div class="form-group">
+                              <label class="sr-only">Level</label>
+                                <select class="form-control" id="level" name="level">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                              <label class="sr-only">Change Size</label>
+                                <select class="form-control" id="changesize" name="changesize">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                          </form>
+                          
+                         <form class="form-inline" role="form">
+                          <div class="form-group">
+                              <label class="sr-only">Customer Volume</label>
+                                <select class="form-control" id="customervolume" name="customervolume">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                              <label class="sr-only">Customer Care</label>
+                                <select class="form-control" id="customercare" name="customercare">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                          </form>                          
+
+                         <form class="form-inline" role="form">
+                          <div class="form-group">
+                              <label class="sr-only">Change Type</label>
+                                <select class="form-control" id="changetype" name="changetype">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                              <label class="sr-only">Status</label>
+                                <select class="form-control" id="projectstatus" name="projectstatus">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                          </form> 
+                    
+                         <form class="form-inline" role="form">
+                          <div class="form-group">
+                              <label class="sr-only">Group Category</label>
+                                <select class="form-control" id="groupcategory" name="groupcategory">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                              <label class="sr-only">Confirmed</label>
+                                <select class="form-control" id="confirmed" name="confirmed">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                          </div>
+                          </form>                       
+          			</div><!-- /form-panel -->
+          		</div><!-- /col-lg-12 -->
+          	</div><!-- /row -->
+
+                      </form>
+                  </div>
+          		</div><!-- col-lg-12-->      	
+          	</div><!-- /row -->
+ 
+
+
+		</section><! --/wrapper -->
+      </section><!-- /MAIN CONTENT -->
+
+      <!--main content end-->
+      <!--footer start-->
+      <footer class="site-footer">
+          <div class="text-center">
+              Change Compass - 2016
+              <a href="#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+      <!--footer end-->
+  </section>
+
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap3/dist/js/bootstrap.min.js' %}"></script>
+    <script class="include" type="text/javascript" src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+    <script src="{% static 'js/jquery.nicescroll.js' %}" type="text/javascript"></script>
+
+
+    <!--common script for all pages-->
+    <script src="{% static 'js/common-scripts.js' %}"></script>
+
+        <!--script for this page-->
+    <script src="{% static 'js/chart-master/Chart.js' %}"></script>
+    <!--<script src="{% static 'js/ccompass_reports.js' %}"></script>-->
+    
+    <!-- Chart Scripts -->
+    <script type="text/javascript">
+    var script = function() {
+
+    var pieData = [
+        {
+            value: {{ pie1 }},
+            color:"#1abc9c"
+        },
+        {
+            value : {{ pie2 }},
+            color : "#16a085"
+        },
+        {
+            value : {{ pie3 }},
+            color : "#27ae60"
+        }
+
+    ];
+
+var barChartData = {
+    labels : ["January","February","March","April","May","June","July"],
+    datasets : [
+        {
+           fillColor : "rgba(220,220,220,0.5)",
+           strokeColor : "rgba(220,220,220,1)",
+           data : {{ chart2 }}
+        },
+        {
+           fillColor : "rgba(151,187,205,0.5)",
+           strokeColor : "rgba(151,187,205,1)",
+           data : {{ chart1 }}
+           }]
+};
+
+
+var ctx = document.getElementById('ccpie').getContext('2d');
+var piechart = new Chart(ctx).Pie(pieData);
+var ctx = document.getElementById('ccbar').getContext('2d');
+var barchart = new Chart(ctx).Bar(barChartData);
+
+}();
+</script>   
+
+    
+
+  </body>
+</html>

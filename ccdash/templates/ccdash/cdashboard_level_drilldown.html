@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Dashboard{% endblock %} 
+{% block custcss %} 
+
+
+{% endblock %} {% block main_content %}
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <h2 class="panel-title"><button type="button" class="btn btn-link" id="id-download-image">Score Drill Down - Level:{{ view.kwargs.level }}<i class="icon-folder-download3 position-right"></i></button></h2>
+                </div>
+                <div id="chart_1_responsive">
+                    <div id="chart_1" class="text-center position-relative" name="chart_1_nme_drill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+    <script src="{% static '/assets/js/base/vega/vega.min.js' %}"></script>
+    <script src="{% static '/assets/js/base/vega/vega_tooltip.min.js' %}"></script>
+    <script src="{% static '/assets/js/base/vegadash.js' %}"></script>
+    <script type="text/javascript">
+
+    var handler = new vegaTooltip.Handler();
+
+    vegadash.adduris({ "element": "#chart_1", "name":"chart_1_nme_drill","uri": "{% url 'vconfig' req_id='config' data_id='level_drilldown' para=param.param %}", "inp_type": "width", "height_mod": 0, "width_mod": .80});
+    
+    vegadash.vegarefresh();
+
+
+$('#id-download-image').on('click',function(evt){
+
+        vegainstance = chart_instances['chart_1_nme_drill'];
+
+vegainstance.toImageURL('png',5).then(function(url) {
+  var link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('target', '_blank');
+  link.setAttribute('download', 'chart-export.png');
+  link.dispatchEvent(new MouseEvent('click'));
+}).catch(function(error) { /* error handling */ });
+    });
+
+    </script>
+    {% endblock %}

@@ -1,0 +1,318 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Heatmap{% endblock %} 
+{% block custcss %} 
+<style>
+ .panel--dash--correction {
+  padding-bottom: 0cm;
+}  
+
+.content--group--correction {
+    margin-bottom:  0;
+} 
+
+.irs-bar {
+  background: #5C6BC0;
+}
+
+</style>
+
+
+
+{% endblock %} 
+{% block main_content %}
+<div class="row">
+
+    <!--div class="col-md-7"-->
+    <!-- Simple interaction -->
+    <div class="panel panel-white" id="heatmap_panel_all">
+        <div class="panel-heading">
+            <h5 class="panel-title">Heatmap</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+        <form class="form-horizontal" name="addnewquestion">
+            <div class="panel-body panel--dash--correction" id="chart_container">
+                <fieldset class="content-group">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <select name="interval_select_name" class="form-control" id="interval_select_id" disabled>
+                                <option value="1">Days</option>
+                                <option value="2">Weeks</option>
+                                <option value="3" selected>Months</option>
+                                <option value="4">Quarters</option>
+                            </select>
+                        </div>
+                        <div class="col-md-10">
+                            <div id="heatmap-date_slider"></div>
+                        </div>
+                    </div>
+                    <div class="form-group content--group--correction">
+                        <button type="button" class="btn bg-purple-400 btn-labeled" data-toggle="modal" data-target="#treemodal" id="select_nodes_id" disabled><b><i class="icon-tree7"></i></b> Select Nodes</button>
+                        <button type="button" class="btn bg-purple-400" id="render_chart_btn" disabled>Create Chart</button>
+                        <!--button type="button" class="btn btn-primary" id="test_ajax">Testing</button-->
+                    </div>
+                </fieldset>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+<div class="panel panel-white" id="heatmap_group" style="display: none;">
+
+                    <div id="chart_hm_responsive" >
+                        <div id="render_heatmap" class="text-center position-relative" name="heatmap_chart"></div>
+                    </div>
+ 
+</div>
+</div>
+
+<div id="treemodal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Choose Business Units from the Hierarchy</h5>
+            </div>
+            <!--form action="POST"-->
+            <div class="modal-body">
+                <h6 class="text-semibold">Tree view</h6>
+                <p>Select business unit to display in heatmap</p>
+                <hr>
+                <!-- Diagram view output -->
+                <div class="panel-body">
+                    <div id="treemodalid" class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+                        <!-- Add hierarchy code here -->
+                        {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                        <!--*********************** -->
+                        <!--input type="hidden" id="hierarchyid" name="hierarchy" value="" /-->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <!-- Below is not yet implemented -->
+                <button type="submit" class="btn bg-purple-400" data-dismiss="modal">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/sliders/ion_rangeslider.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+
+<script src="{% static '/assets/js/base/vega2/vega.min.js' %}"></script>
+<script src="{% static '/assets/js/base/vega/vega_tooltip.min.js' %}"></script>
+
+<script type="text/javascript">
+
+{% if condition.condition == "success" %}
+
+
+
+
+vcc = {
+    element:'#render_heatmap',
+    width_mod:.80,
+    height_mod:1,
+    inp_type:'both'
+}
+
+
+
+
+$("#interval_select_id").prop('disabled',false);
+$("#select_nodes_id").prop('disabled',false);
+
+    $("#heatmap-date_slider").ionRangeSlider({
+        grid: true,
+        type: "double",
+        min: +moment("{{ srange.begin_range }}", "YYYYMMDD").format("X"),
+        max: +moment("{{ srange.end_range }}", "YYYYMMDD").format("X"),
+        from: +moment("{{ srange.from_range }}", "YYYYMMDD").format("X"),
+        to: +moment("{{ srange.to_range }}", "YYYYMMDD").format("X"),
+        force_edges: true,
+        prettify: function(num) {
+            return moment(num, "X").format("ll");
+        },
+        drag_interval: true,
+    });
+    
+        $("#treemodalid").fancytree(
+        {
+        checkbox: true,
+        selectMode: 3,
+        });
+    
+
+    $('#treemodal').on('hidden.bs.modal', function () {
+    
+        var ftree = $('#treemodalid').fancytree('getTree').getSelectedNodes();
+        var org_nodes = $.map(ftree, function(node) {
+            return node.tooltip;
+    
+        });
+    
+        var test_str = JSON.stringify(org_nodes);
+    
+        if(test_str.length>2){
+            $('#render_chart_btn').prop('disabled',false);
+        }
+        else{
+            $('#render_chart_btn').prop('disabled',true);
+        }
+    
+    })
+    
+    
+    
+    $("#render_chart_btn").on("click", function() {
+    
+        var ftree = $('#treemodalid').fancytree('getTree').getSelectedNodes();
+    
+        var org_nodes = $.map(ftree, function(node) {
+            return node.tooltip;
+        });
+    
+        var model_units = $("#interval_select_id option:selected").text();
+        var sliderdates = {}
+        var slider = $("#heatmap-date_slider").data("ionRangeSlider");
+    
+
+        sliderdates.date_from = moment(slider.result.from, "X").format("ll");
+        sliderdates.date_to = moment(slider.result.to, "X").format("ll");
+    
+        var block_panel = $('#heatmap_panel_all');
+        $(block_panel).block(
+        {
+            message: '<i class="icon-spinner9 spinner"></i>',
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.8,
+                cursor: 'wait'
+            },
+            css: {
+                border: 0,
+                padding: 0,
+                backgroundColor: 'none'
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'vegaheatmap' %}",
+            data: {
+                'org_nodes': JSON.stringify(org_nodes),
+                'slider_dates': JSON.stringify(sliderdates),
+                'model_units': JSON.stringify(model_units)
+            },
+    
+            success: function(data) {
+
+                if(data['response']=='success'){
+
+                    $('#heatmap_group').show();
+                    heatmap_plot(data['vegaconfig'],vcc.element,vcc.width_mod,vcc.height_mod,vcc.inp_type);
+                }else{  
+    
+                        var htmlstr = `<div class="panel-body panel--dash--correction" id="chart_display"><div class="row" id="render_heatmap">
+                       <div id="Response Message" ><h1>Query Returned No Data</h1></div>
+                       </div></div>`;
+                $('#heatmap_group').show();
+                 $('#render_heatmap').replaceWith(htmlstr);
+                }
+    
+                $(block_panel).unblock();
+                
+            }
+    
+        });
+    
+        
+    
+    });
+
+
+        var view;
+
+        var render = function(spec,element) {
+            var handler = new vegaTooltip.Handler();
+            view = new vega.View(vega.parse(spec))
+                           .renderer('canvas')
+                           .tooltip(handler.call)  
+                           .initialize(element) 
+                           .hover()             
+                           .run();
+
+        }
+
+        var setvegasize = function($element,width_mod,height_mod,inp_type){
+            console.log($element.parent());
+            var width = $element.parent().width();
+            var height = $element.parent().height();
+
+            console.log(width);
+
+            var width = $('#heatmap_group').width();
+            var height = $('#heatmap_group').height();
+
+            console.log(width);
+
+
+            if(inp_type=='width'){
+                view.signal('width', width*width_mod).run('enter');
+            }else if(inp_type=='height'){
+                view.signal('height', height*height_mod).run('enter');
+            }else {
+                view.signal('width', width*width_mod).signal('height', height*height_mod).run('enter');
+            }
+        }
+
+
+        var vegarefresh = function(spec,element,width,height,type){
+            render(JSON.parse(spec),element);
+            setvegasize($(element),width,height,type);
+        }
+
+
+
+        function heatmap_plot(data,element,width,height,type) {
+
+            vegarefresh(data,element,width,height,type);
+
+            $(window).on('resize', function() {
+                    setvegasize($(element),width,height,type);
+
+
+            });
+
+        }
+
+    
+   {% else %}
+
+
+        $(window).unbind('resize');
+
+        var htmlstr = `<div class="panel-body panel--dash--correction" id="chart_display"><div class="row" id="render_heatmap">
+                       <div id="Response Message" ><h1>There is not enough data to create a heatmap.</h1></div>
+                    </div></div>`;
+    
+        $('#render_heatmap').replaceWith(htmlstr);
+
+        $('select_nodes_id').prop('disabled',true);
+
+
+{% endif %}
+</script>
+
+
+
+
+{% endblock %}

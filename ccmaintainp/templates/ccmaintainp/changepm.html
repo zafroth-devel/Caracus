@@ -1,0 +1,189 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Permission Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Manage Permissions</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <legend class="text-bold">Permissions Settings</legend>
+        <div class='row'>
+            <div class="form-group">
+                <select name="select" class="form-control" id="id_name_select">
+                    {% autoescape off %} {% for user in users %} {{ user.opcode }} {% endfor %} {% endautoescape %}
+                </select>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="form-group">
+                <select multiple="multiple" class="form-control listbox-no-selection" id="id_permission_select">
+                    {% autoescape off %} {% for perm in perms %} {{ perm.opcode }} {% endfor %} {% endautoescape %}
+                </select>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="form-group">
+                <div class="text-right">
+                    <a class="btn btn-link" name="cancelbtn" href="{% url 'login_redirect' %}">Cancel</a>
+                    <button type="button" class="btn bg-purple-400" id="id_submit_permissions">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+<!--script type="text/javascript" src="{% static '<<PATH TO ASSET>>' %}"></script>
+<script  type="text/javascript"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/inputs/duallistbox.min.js' %}"></script>
+<!--script type="text/javascript" src="{% static 'assets/js/pages/form_dual_listboxes.js' %}"></script-->
+<script type="text/javascript">
+var perm_list = $('.listbox-no-selection').bootstrapDualListbox({
+    preserveSelectionOnMove: 'moved',
+    moveOnSelect: false,
+    showFilterInputs: false
+});
+
+
+$("#id_name_select").on("change", function() {
+
+    var selected = $("#id_name_select").val();
+
+    var data = { 'action': 'get_permissions', user_id: selected };
+
+    post_details(data);
+
+});
+
+$("#id_submit_permissions").on("click", function() {
+
+    var selected = $("#id_name_select").val();
+
+    var perms_selected = $('#id_permission_select').val();
+    if(perms_selected==null){
+
+        new PNotify({
+                                    title: 'Error',
+                                    text: 'At least one permission must be selected',
+                                    type: 'error',
+                                    icon: 'glyphicon glyphicon-exclamation-sign'
+                                    });
+
+    }else{
+
+    var data = { 'action': 'post_information','user_id':selected, 'selected': JSON.stringify(perms_selected) };
+
+    post_details(data);
+
+    }
+
+    });
+
+
+function post_details(post_data) {
+
+
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'pmview' %}",
+        data: post_data,
+
+        success: function(data) {
+
+
+
+            if (post_data['action'] == 'get_permissions') {
+
+
+                change_selected(data['permission_ids']);
+
+                // $('#id_permission_select option').each(function() {
+
+                //     var opt = $(this);
+                //     opt.prop('selected', false);
+
+                // });
+
+                // perm_list.bootstrapDualListbox('refresh', true);
+
+
+                // if (data['permission_ids'] > 0) {
+                //     data['permission_ids'].forEach(function(id) {
+                //         $('#id_permission_select option[value="' + id + '"]').prop("selected", true);
+                //     });
+
+                // }
+
+                // perm_list.bootstrapDualListbox('refresh', true);
+
+            } else {
+
+                $("#id_name_select").val(data['user']);
+                change_selected(data['permission_ids']);
+
+                        new PNotify({
+                                    title: 'Success',
+                                    text: 'Permissions updated',
+                                    type: 'success',
+                                    icon: 'glyphicon glyphicon-thumbs-up'
+                                    });
+
+            }
+
+        }
+    });
+
+        function change_selected(id_array){
+            $('#id_permission_select option').each(function() {
+
+                    var opt = $(this);
+                    opt.prop('selected', false);
+
+                });
+
+                perm_list.bootstrapDualListbox('refresh', true);
+
+                if (id_array.length > 0) {
+                    id_array.forEach(function(id) {
+                        $('#id_permission_select option[value="' + id + '"]').prop("selected", true);
+                    });
+
+                }
+
+                perm_list.bootstrapDualListbox('refresh', true);
+
+
+}
+
+}
+</script>
+ {% endblock %}

@@ -1,0 +1,486 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Change{% endblock %} {% block main_content%} {% block custcss %} {% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Add Impact Details</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form method="POST" name="hierarchyform">
+                {% csrf_token %}
+                <!--GROUP 1 -->
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for field in form %} {% if field.id_for_label|slice:"3:8" == "chan_" %}
+                        <div class="form-group">
+                            {% autoescape off %}
+                            {{ field.label }} 
+                            {% endautoescape %}
+                            {{ field }}
+                        </div>
+                        {% endif %} {% endfor %}
+                    </div>
+                </div>
+                <!--GROUP 1 -->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label><span id="touchspin-label-id"></span></label>
+                        <input type="text" value="5" class="touchspin-vertical" name="id_amppest"> 
+                        <input type="hidden" name="ammp-estimate" id="ammp-estimate-id">        
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label><span>Initiative Sponsor</span></label>
+                    <div class="multi-select-full">
+                        <select class="multiselect-select-all-filtering" name="sponsorname" id="id_sponsorname">
+                            {% autoescape off %} {% for sponsor in sponsors %} {{ sponsor.select_option }} {% endfor %} {% endautoescape %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label><span>Impact Type</span></label>
+                    <div class="multi-select-full">
+                        <select class="multiselect-select-all-filtering" name="impacttype" id="id_impacttype">
+                            {% autoescape off %} {% for type in impacttype %} {{ type.select_option }} {% endfor %} {% endautoescape %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-2">
+                    <div class="row">
+                        <label for="nodeselect">Business Hierarchy:</label>
+                    </div>
+                    <button type="button" class="btn bg-purple-400 btn-labeled" data-toggle="modal" data-target="#treemodal" id="nodeselect">
+                        <b><i class="icon-table"></i></b> Select Nodes
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    {{ form.impactnname.label_tag }} {{ form.impactnname }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.impactstart.label_tag }} {{ form.impactstart }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.impactend.label_tag }} {{ form.impactend }}
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="form-group">
+                <label>Notes:</label>
+                <div class="col-md-12">
+                    {{ form.impactnote }}
+                </div>
+            </div>
+
+            <!-- ******************************** END OF CHANGES **************************** -->
+        </div>
+
+        <div class="row">
+            <div class="text-right">
+                <div class="form-group">
+                    <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewproject' %}'">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400" name="editprojectbtn"> Add Change <i class="icon-arrow-right14 position-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div id="treemodal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Assign change or impact using treeview</h5>
+            </div>
+            <!--form action="POST"-->
+            <div class="modal-body">
+                <h6 class="text-semibold">Tree view</h6>
+                <p>Select business unit to attach change or impact</p>
+                <hr>
+                <!-- Diagram view output -->
+                <div class="panel-body">
+                    <div id="treemodalid" class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+                        <!-- Add hierarchy code here -->
+                        {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                        <!--*********************** -->
+                        <input type="hidden" id="hierarchyid" name="hierarchy" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn bg-purple-400" data-dismiss="modal">Confirm Change</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<div id="last_five_impact_table">
+</div>
+
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs %}
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.time.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/form_inputs.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/form_layouts.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/row_reorder.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
+<link href="{% static 'assets/js/base/editor/dist/summernote.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/editor/dist/summernote.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/inputs/touchspin.min.js' %}"></script>
+
+<script type="text/javascript">
+var tsid = $("input[name='id_amppest']");
+
+$('#touchspin-label-id').html('AMPP');
+
+tsid.TouchSpin({
+    min:1,
+    max:1000000000,
+        verticalbuttons: true,
+        verticalupclass: 'icon-arrow-up22',
+        verticaldownclass: 'icon-arrow-down22'
+    })
+
+
+
+tsid.on("touchspin.on.stopspin",function(){
+
+        var estvl = $("input[name='id_amppest']").val();
+
+        $("#ammp-estimate-id").val(estvl);
+
+    });
+
+tsid.on("change",function(){
+
+        var estval = $("input[name='id_amppest']").val();
+
+        $("#ammp-estimate-id").val(estval);
+
+    });
+
+
+$('#id_sponsorname').multiselect({
+    includeSelectAllOption: true,
+    enableFiltering: true,
+    templates: {
+        filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+    },
+    onSelectAll: function() {
+        $.uniform.update();
+    }
+});
+
+$('#id_impacttype').multiselect({
+    includeSelectAllOption: true,
+    enableFiltering: true,
+    templates: {
+        filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+    },
+    onSelectAll: function() {
+        $.uniform.update();
+    }
+});
+
+
+var check_impacts = '{{ check_impacts }}';
+
+if (check_impacts) {
+    var innerhtml = `<div class="panel-group accordion-sortable content-group-lg" id="accordion-controls">
+                        <div class="panel panel-white">
+                            <div class="panel-heading">
+                                <h6 class="panel-title">
+                                            <a data-toggle="collapse" id="accordian_change_impacts_id" data-parent="#accordion-controls" href="#accordion-controls-group1">Last 5 Entered Impacts</a>
+                                        </h6>
+                                <div class="heading-elements">
+                                    <ul class="icons-list">
+                                        <li><a data-action="close"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="accordion-controls-group1" class="panel-collapse collapse">
+                                <div class="panel-body">
+
+                         
+                                    <div class='row'>
+                                        <div class="table-responsive">
+                                            <table class="table datatable-row-basic" id="impacttable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Project Name</th>
+                                                        <th>Impact Nickname</th>
+                                                        <th>Start Date</th>
+                                                        <th>End Date</th>
+                                                        <th>Change Confirmed</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <!--
+                                
+                                
+                                                    Add new table rows here
+                                
+                                
+                                                 -->
+ 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+    $('#last_five_impact_table').html(innerhtml);
+
+    var itable = $('#impacttable').DataTable({
+
+        rowReorder: false,
+        paging: false,
+        info: false,
+        searching: false
+
+    });
+
+    $('#accordian_change_impacts_id').on('click', function() {
+        itable.clear().draw();
+        // Add questions to accordian
+        {% autoescape off %} 
+        {% for items in l5_impact_code %} 
+            {{ items.l5_impact_code }} 
+        {% endfor %} 
+        {% endautoescape %}
+
+
+
+    });
+
+}
+
+{% autoescape off %}
+
+var selectedarray = {{ tree_selected }};
+
+{% endautoescape %}
+
+
+var hrtree = $("#treemodalid").fancytree({
+    checkbox: true,
+    selectMode: 3,
+    //activate: function(event, data) {
+    //  $("#echoActive1").text(data.node.title);
+    //},
+    init: function(event, data) {
+        $('.has-tooltip .fancytree-title').tooltip();
+    },
+    select: function(event, data) {
+        // Display list of selected nodes
+        var s = data.tree.getSelectedNodes();
+
+        //console.log(s[0]['key']);
+
+        var t = $.map(s, function(node) {
+            return node.key;
+
+        });
+
+        $('#hierarchyid').val(JSON.stringify(t));
+        //console.log(t);
+
+    },
+
+});
+
+var selecttree = hrtree.fancytree("getTree");
+
+selecttree.visit(function(node) {
+    node.setSelected(false);
+});
+
+var arrayLength = selectedarray.length;
+for (var i = 0; i < arrayLength; i++) {
+    var node = selecttree.getNodeByKey(selectedarray[i]);
+    node.setSelected(true);
+}
+
+
+
+// $('#treemodal').on('show.bs.modal', function(event) {
+
+
+
+
+//     selecttree.visit(function(node){
+//     node.setSelected(false);
+//     });
+
+//         var arrayLength = selectedarray.length;
+//         for (var i = 0; i < arrayLength; i++) {
+
+//             var node = selecttree.getNodeByKey(selectedarray[i]);
+//             node.setSelected(true);
+
+//         }
+
+//        //var node = selecttree.getNodeByKey('60416227');
+//        //node.setSelected(true);
+
+
+// });
+
+
+var impact_date_start = '{{ impactstart }}';
+var impact_date_end = '{{ impactend }}';
+
+var impact_nick_name = '{{ impactnname }}';
+
+var impact_change_note = '{{ impactnote }}';
+
+
+if (impact_nick_name) {
+
+    $('#nickname').val(impact_nick_name);
+
+}
+
+if (impact_change_note) {
+
+    $('#id_impactnote').append(impact_change_note);
+
+}
+
+$('#datestart').pickadate({
+    // Escape any “rule” characters with an exclamation mark (!). --Comment
+    format: 'mmmm d, yyyy',
+    selectMonths: true,
+    onStart: function() {
+
+
+        if (impact_date_start) {
+
+            var date = new Date(impact_date_start);
+            this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+
+        } else {
+
+            this.set('clear');
+        }
+    },
+    onSet: function() {
+
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+        // Parse dates and compare
+        if (datestart > dateend) {
+            this.set('select', [dateend.getFullYear(), dateend.getMonth(), dateend.getDate()])
+        }
+        //var dte_start = Date.parse(datestart)
+        //var dte_end = Date.parse(dateend)
+
+
+
+
+    },
+
+
+});
+
+$('#dateend').pickadate({
+    // Escape any “rule” characters with an exclamation mark (!). --Comment
+    format: 'mmmm d, yyyy',
+    selectMonths: true,
+    onStart: function() {
+        if (impact_date_end) {
+
+            var date = new Date(impact_date_end);
+            this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+
+        } else {
+
+            this.set('clear');
+        }
+
+    },
+    onSet: function() {
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+        if (datestart > dateend) {
+            this.set('select', [datestart.getFullYear(), datestart.getMonth(), datestart.getDate()])
+        }
+
+        console.log("From dateend pickadate : datestart = " + datestart + " dateend = " + dateend)
+
+    },
+
+});
+</script>
+<script>
+$(function() {
+
+    $('.add_hsnote').summernote({
+        airMode: true,
+        placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+        disableDragAndDrop: true,
+        popover: {
+            air: [
+                ['Font', ['fontname', 'fontsize', 'color', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['Para', ['style', 'ol', 'ul', 'paragraph', 'height']],
+                ['Insert', ['link', 'table', 'hr']],
+                ['Misc', ['fullscreen', 'undo', 'redo', 'help']]
+            ]
+        }
+    });
+
+
+  
+
+
+});
+</script>
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

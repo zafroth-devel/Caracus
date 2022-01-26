@@ -1,0 +1,590 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}All Impacts{% endblock %} {% block custcss %}
+<link href="{% static 'assets/js/base/VIZ/vis.css' %}" rel="stylesheet" type="text/css">
+<style>
+body,
+html {
+    font-family: arial, sans-serif;
+    font-size: 11pt;
+}
+
+.vis-item .vis-item-overflow {
+    overflow: visible;
+}
+
+.vis-item {
+    font-size: 7pt;
+    box-shadow: 5px 5px 20px rgba(128, 128, 128, 0.5);
+}
+
+.panel-heading-timeline-mod {
+  padding: 0px 5px;
+  border-bottom: 1px solid transparent;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.panel-heading-timeline-mod > .dropdown .dropdown-toggle {
+  color: inherit;
+}
+/*.content {
+  padding: 10px 20px;
+}*/
+/*.panel {
+    margin: 0 !important;
+    padding: 0 !important;
+
+}*/
+
+</style>
+{% endblock %} {% block main_content %}
+<div class="row">
+    <div class="panel-group content-group-xs" id="accordion" role="tablist">
+        <div class="panel panel-white" id="panel_1">
+            <!--div class="panel-heading container-fluid"-->
+            <div class="panel-heading-timeline-mod">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            <h2 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#accordion-group-1">Options</a></h2>
+                        </div>
+                        <div class="col-sm-4">
+                            <!--div class='btn-toolbar pull-right'>
+                                <div class='btn-group'-->
+                            <button type="button" class="btn btn-link" name="gototop_btn" id="gototop"><i class="icon-square-up"></i></button>
+                            <button type="button" class="btn btn-link" name="fit_btn" id="fit"><i class="icon-calendar52"></i></button>
+                            <button type="button" class="btn btn-link" name="zoomin_btn" id="zoom-in"><i class="icon-zoomin3"></i></button>
+                            <button type="button" class="btn btn-link" name="zoomout_btn" id="zoom-out"><i class="icon-zoomout3"></i></button>
+                        </div>
+                        <div class="col-sm-4">
+                            <!--div class='btn-toolbar pull-right'>
+                                <div class='btn-group'-->
+                            <div class='btn-toolbars'>
+                                <button type="button" class="btn btn-link" name="goleft_btn" id="go-left"><i class="icon-arrow-left8"></i></button>
+                                <button type="button" class="btn btn-link" name="goright_btn" id="go-right"><i class="icon-arrow-right8"></i></button>
+                                <button type="button" class="btn btn-link" name="goup_btn" id="go-up"><i class="icon-arrow-up8"></i></button>
+                                <button type="button" class="btn btn-link" name="godown_btn" id="go-down"><i class="icon-arrow-down8"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="accordion-group-1" class="panel-collapse collapse ">
+                <div class="panel-body">
+                    <legend class="text-bold">Filter</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Impact Name</label>
+                                <div class="multi-select-full">
+                                    <select class="multiselect-select-all-filtering" multiple="multiple" id="impactname-select">
+                                        {% for item in impactname %}
+                                        <option value="{{ item.nickname }}">{{ item.nickname }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Sponsor</label>
+                                <div class="multi-select-full">
+                                    <select class="multiselect-select-all-filtering" multiple="multiple" id="sponsor-select">
+                                        {% for item in sponsor %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Impact Type</label>
+                                <div class="multi-select-full">
+                                    <select class="multiselect-select-all-filtering" multiple="multiple" id="impacttype-select">
+                                        {% for item in impacttype %}
+                                        <option value="{{ item.id }}">{{ item.impact_type }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Hierarchy Level</label>
+                                <div class="multi-select-full">
+                                    <select class="multiselect-select-all-filtering" multiple="multiple" id="hierarchylevel-select">
+                                        {% for item in levels %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Business Unit</label>
+                                <div class="multi-select-full">
+                                    <select class="multiselect-select-all-filtering" multiple="multiple" id="hierarchy-select">
+                                        {% for item in hierarchy %}
+                                        <option value="{{ item.name }}">{{ item.bu }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <legend class="text-bold">Sort</legend>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>First</label>
+                                <select class="bootstrap-select" id="sortorder-1-select" data-width="100%">
+                                    <option style="display:none;">First sort item</option>
+                                    <option value=1>Business Unit</option>
+                                    <option value=2>Sponsor</option>
+                                    <option value=3>Impact Type</option>
+                                    <option value=4>Impact Level</option>
+                                    <option value=5>Hierarchy</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Second</label>
+                                <select class="bootstrap-select" id="sortorder-2-select" data-width="100%">
+                                    <option style="display:none;">Second sort item</option>
+                                    <option value=1>Business Unit</option>
+                                    <option value=2>Sponsor</option>
+                                    <option value=3>Impact Type</option>
+                                    <option value=4>Impact Level</option>
+                                    <option value=5>Hierarchy</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Third</label>
+                                <select class="bootstrap-select" id="sortorder-3-select" data-width="100%">
+                                    <option style="display:none;">Third sort item</option>
+                                    <option value=1>Business Unit</option>
+                                    <option value=2>Sponsor</option>
+                                    <option value=3>Impact Type</option>
+                                    <option value=4>Impact Level</option>
+                                    <option value=5>Hierarchy</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="text-right">
+                                    <button type="button" class="btn bg-purple-400" id="applybtnid" name="applybtnname">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-white">
+        <div class="panel-body" id="impact_timeline"></div>
+    </div>
+</div>
+<!--/div>
+</div-->
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<!--script src="{% static '/assets/js/base/datatables/datatables.js' %}"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/base/VIZ/vis.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_select.min.js' %}"></script>
+
+
+<script>
+
+var maglevel = 100;
+
+
+var msgcontents = {};
+
+var bmsg = null;
+
+var groups = null;
+
+var items = null;
+
+
+var timeline;
+var items;
+var groups;
+  
+$('.multiselect-select-all').multiselect({
+        includeSelectAllOption: true,
+        onSelectAll: function() {
+            $.uniform.update();
+        }
+    });
+
+
+
+$('.multiselect-select-all-filtering').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        templates: {
+            filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+        },
+        onSelectAll: function() {
+            $.uniform.update();
+        }
+    });
+
+$('.bootstrap-select').selectpicker();
+
+
+$('#sortorder-1-select').on('change', function(e){
+
+sort1_selected = $('#sortorder-1-select').val();
+selectobject = document.getElementById("sortorder-2-select").getElementsByTagName("option");
+selectobject[0].disabled = false;
+selectobject[1].disabled = false;
+selectobject[2].disabled = false;
+selectobject[3].disabled = false;
+selectobject[4].disabled = false;
+selectobject[sort1_selected].disabled = true;
+$('#sortorder-2-select').selectpicker('render');
+
+selectobject = document.getElementById("sortorder-3-select").getElementsByTagName("option");
+selectobject[0].disabled = false;
+selectobject[1].disabled = false;
+selectobject[2].disabled = false;
+selectobject[3].disabled = false;
+selectobject[4].disabled = false;
+selectobject[sort1_selected].disabled = true;
+$('#sortorder-3-select').selectpicker('render');
+
+});
+
+$('#sortorder-2-select').on('change', function(e){
+sort2_selected = $('#sortorder-2-select').val();
+sort1_selected = $('#sortorder-1-select').val();
+selectobject = document.getElementById("sortorder-3-select").getElementsByTagName("option");
+selectobject[0].disabled = false;
+selectobject[1].disabled = false;
+selectobject[2].disabled = false;
+selectobject[3].disabled = false;
+selectobject[4].disabled = false;
+selectobject[sort2_selected].disabled = true;
+selectobject[sort1_selected].disabled = true;
+$('#sortorder-3-select').selectpicker('render');
+
+});
+
+
+
+$("#applybtnid").on('click', function(e){
+
+    impactname = $("#impactname-select").val();
+
+    sponsor = $("#sponsor-select").val();
+    impacttype = $("#impacttype-select").val();
+    hierarchylevel = $("#hierarchylevel-select").val();
+    hierarchy = $("#hierarchy-select").val();
+    sort1 = $("#sortorder-1-select").val();
+    sort2 = $("#sortorder-2-select").val();
+    sort3 = $("#sortorder-3-select").val();
+
+
+var send_data = {
+'impactname':impactname,
+'sponsor':sponsor,
+'impacttype':impacttype,
+'hierarchylevel':hierarchylevel,
+'hierarchy':hierarchy,
+'sort1':sort1,
+'sort2':sort2,
+'sort3':sort3}
+
+
+//console.log(send_data);
+
+timeline_data(send_data,1);
+
+});
+
+
+
+var block_panel = $('#impact_timeline');
+$(block_panel).block(
+{
+    message: '<i class="icon-spinner9 spinner"></i>',
+    overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.8,
+        cursor: 'wait'
+    },
+    css: {
+        border: 0,
+        padding: 0,
+        backgroundColor: 'none'
+    }
+});
+
+
+
+var timeline_data = function(send_data,initstate){
+
+    var csrftoken = Cookies.get('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+$.ajax({
+    type: "POST",
+    url: "{% url 'consolidated' %}",
+    data: {'output':JSON.stringify({output:send_data})},
+
+
+    success: function (data) {
+
+
+    function range(start, end) {
+    return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+}
+
+
+      // DOM element where the Timeline will be attached
+      var container = document.getElementById('impact_timeline');
+
+      // Create a DataSet (allows two way data-binding)
+      items = new vis.DataSet();
+      groups = new vis.DataSet();
+
+      var sh = $(window).height()*.75;
+
+      var options = {
+            stack: true,
+            //verticalScroll: true,
+            zoomKey: 'ctrlKey',
+            height: sh,
+            horizontalScroll: true,
+            groupOrder: 'id', //function (a, b) { return a.id - b.id;},
+
+        };
+
+items.clear();
+groups.clear();
+
+items.add(data['items']);
+groups.add(data['groups']);
+
+
+
+      timeline = new vis.Timeline(container, items, groups, options);
+
+
+
+//       if (typeof timeline !== "object") {
+//         var timeline = new vis.Timeline(container, items,groups, options);
+
+        
+//             } else {
+//       new PNotify({
+//                                     title: 'Success',
+//                                     text: 'Updating timeline',
+//                                     type: 'success',
+//                                     icon: 'glyphicon glyphicon-thumbs-up'
+//                                     });
+// }
+
+      
+
+      //scrollTo('0',timeline);
+
+      
+      //timeline.focus('0',{duration:500});
+      $(block_panel).unblock();
+
+
+
+function moveleftright (percentage) {
+        var range = timeline.getWindow();
+        var interval = range.end - range.start;
+
+        timeline.setWindow({
+            start: range.start.valueOf() - interval * percentage,
+            end:   range.end.valueOf()   - interval * percentage
+        });
+    }
+
+function moveupdown (percentage) {
+
+    var idsall_min = 0;
+    var idsall_max = groups.length;
+    var groupsshowing = timeline.getVisibleItems();
+
+    var idsviz_min = Math.min(...groupsshowing);
+    var idsviz_max = Math.max(...groupsshowing);
+    var idsvis_total = groupsshowing.length;
+
+
+    //timeline.focus([0,1,2,3,4,5,6,7,8,9,10,11,12,13]);
+
+    if(percentage<0){
+        //UP
+        var new_min = idsviz_min - idsvis_total + 3;
+
+        if(new_min<idsall_min){
+            new_min = idsall_min;
+        }
+
+        var range_items = new_min;
+        timeline.focus(range_items);
+
+    }else{
+        //DOWN
+
+     var new_min = idsviz_max + idsvis_total - 3;
+
+
+     if(new_min > idsall_max){
+        new_min = idsall_max-1;
+     }
+
+        //var range_items = range(new_min,new_min+idsvis_total);
+        var range_items = new_min;
+        timeline.focus(range_items);
+
+    }
+
+
+
+    }
+
+// Setup controls   
+  $("#gototop").click(function() {
+    timeline.focus(0);
+});
+
+    $("#fit").click(function() {
+    timeline.fit();
+});
+
+    $("#zoom-in").click(function() {
+    timeline.zoomIn(0.2);
+
+    maglevel = maglevel + 20;
+
+    msgcontents = {text: 'Zoom '+maglevel+'%',
+                       type: 'success',
+                   width: "180px"};
+
+
+    if(bmsg==null){
+        bmsg = new PNotify(msgcontents);
+    };
+
+    bmsg.update(msgcontents);
+    if(bmsg.state=='closed'){
+        bmsg.open();
+    };
+
+    //console.log(groups.length);
+
+});
+    $("#zoom-out").click(function() {
+    timeline.zoomOut(0.2);
+
+    maglevel = maglevel - 20;
+
+    msgcontents = {text: 'Zoom '+maglevel+'%',
+                       type: 'success',
+                    width: "180px"};
+
+    if(bmsg==null){
+        bmsg = new PNotify(msgcontents);
+    };
+
+    bmsg.update(msgcontents);
+    if(bmsg.state=='closed'){
+        bmsg.open();
+    };
+
+});
+
+    $("#go-left").click(function() {
+        moveleftright(1);
+});
+
+        $("#go-right").click(function() {
+        moveleftright(-1);
+});
+
+    $("#go-up").click(function() {
+        moveupdown(-1);
+});
+
+        $("#go-down").click(function() {
+        moveupdown(1);
+});
+
+
+
+    },
+    error: function (err) {
+      console.log('Error', err);
+      if (err.status === 0) {
+        new PNotify({
+                                    title: 'Error',
+                                    text: 'Server Error - contact administrator',
+                                    type: 'error',
+                                    icon: 'glyphicon glyphicon-exclamation-sign',
+                                    delay: 20000
+                                    });
+      }
+      else {
+        new PNotify({
+                                    title: 'Warning',
+                                    text: 'Query returned no data',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-warning-sign'
+                                    });
+      }
+    }
+  });} 
+
+timeline_data({
+'impactname':[],
+'sponsor':[],
+'impacttype':[],
+'hierarchylevel':[],
+'hierarchy':[],
+'sort1':[],
+'sort2':[],
+'sort3':[]},0);
+
+</script>
+
+
+{% endblock %}

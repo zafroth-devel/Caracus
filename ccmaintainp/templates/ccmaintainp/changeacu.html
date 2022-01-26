@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Schedule Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Scheduling Parameters </h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="hot-container">
+            <div id="schedule_parameters"></div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+<!--script type="text/javascript" src="{% static '<<PATH TO ASSET>>' %}"></script>
+<script  type="text/javascript"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/handsontable/handsontable.min.js' %}"></script>
+<script type="text/javascript">
+// Define element
+var schedule_parameters = document.getElementById('schedule_parameters');
+
+
+var sched_param = [
+    { parameter: 'Reminder email (days)', desc: 'How many days before change is due should reminders be sent ', value: 5 },
+    { parameter: 'Continuing reminders 1', desc: 'How many emails per day after first warning', value: 1 },
+    { parameter: 'Continuing reminders 2', desc: 'How many emails on the day before change due', value: 3 }
+
+
+];
+// Initialize with options
+schedule_parameters = new Handsontable(schedule_parameters, {
+    data: sched_param,
+    stretchH: 'all',
+    fillHandle: false,
+    rowHeaders: true,
+    colHeaders: ['Parameter Name', 'Description', 'Value'],
+    columns: [{
+            data: 'parameter',
+            editor: false
+        },
+        {
+            data: 'desc',
+            editor: false
+        },
+        {
+            data: 'value',
+            editor: 'numeric'
+        }
+    ]
+});
+</script>
+{% endblock %}

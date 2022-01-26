@@ -1,0 +1,646 @@
+{% extends "base.html" %}
+
+
+{% block title %}Project Change Update{% endblock %}
+
+
+{% block main_content%}
+
+<!-- 2 columns form -->
+		<div class="row">
+			<!--<div class="col-md-12">-->
+
+						<div class="panel panel-flat">
+							<div class="panel-heading">
+								<h5 class="panel-title">Update Project</h5>
+								<div class="heading-elements">
+									<ul class="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                		<li><a data-action="reload"></a></li>
+				                		<li><a data-action="close"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6">
+
+											<legend class="text-semibold"><i class="icon-reading position-left"></i>Project Details</legend>
+
+
+											<div class="text-semibold">
+												<label>Project Name:</label>
+											</div>
+
+											<div class="well well-sm">
+												{{ project.project_name }}
+											</div>
+								
+
+											<div class="text-semibold">
+												<label>Description:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.description }}
+											</div>
+											
+
+											<div class="text-semibold">
+												<label>Project Benefit:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.benefit_desc }}
+											</div>
+										
+
+											<div class="text-semibold">
+												<label>Customer Impact:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.customer_impact }}
+											</div>
+										
+											<div class="text-semibold">
+												<label>Driver:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.driver }}
+											</div>
+																					
+
+											<div class="text-semibold">
+												<label>Created On:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.created_on }}
+											</div>
+										
+										<form method="POST">
+										{% csrf_token %}
+
+
+									<fieldset>
+
+
+									<legend class="text-semibold"><i class="icon-tree7 position-left"></i>Business Hierarchy</legend>
+
+							<!--button type="button" class="btn bg-teal-400 btn-labeled"><b><i class="icon-reading"></i></b> Labeled</button-->
+							
+									<div class="row">
+										<div class="col-md-3">									
+											<button type="button" 
+											         class="btn bg-teal-400 btn-labeled"  
+											         data-toggle="modal" 
+											         data-target="#diagrammodal">
+											         <b><i class="icon-tree7"></i></b> 
+											         Diagram
+											</button>
+										</div>
+
+										<div class="col-md-3">
+											<button type="button" 
+											        class="btn bg-teal-400 btn-labeled"
+											        data-toggle="modal" 
+											        data-target="#treemodal">
+											        <b><i class="icon-table"></i></b> 
+											        Tree
+											</button>
+										</div>
+									</div>
+						
+
+
+
+
+
+
+									<!--<button type="button" class="btn btn-primary"><i class="icon-cog3 position-left"></i> With icon</button>-->
+
+
+									<legend class="text-semibold"><i class="icon-calendar3 position-left"></i>Schedule Change Update or Impact</legend>
+
+
+									<!--<div class="content-group-lg">-->
+									<div class="row">
+										<div class="col-md-6">
+											<label>Start Date:</label>
+											<div class="input-group">
+												<span class="input-group-addon"><i class="icon-calendar5"></i></span>
+												{{ form.datestart }}
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<label>End Date:</label>
+											<div class="input-group">
+												<span class="input-group-addon"><i class="icon-calendar5"></i></span>
+												{{ form.dateend }}
+
+											</div>
+										</div>
+									</div>
+									<!--</div>-->
+
+							
+					               </div>
+
+
+
+
+
+									<div class="col-md-6">
+							
+						                	<legend class="text-semibold"><i class="icon-truck position-left"></i>Change Update Details</legend>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Benefit:</label>
+														{{ form.benefitoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Health:</label>
+														{{ form.healthoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Size:</label>
+														{{ form.changeoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Volume:</label>
+														{{ form.voloptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Care:</label>
+														{{ form.careoptions }}
+													</div>
+												</div>
+									
+
+											
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Type</label>
+														{{ form.changetypeoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Status:</label>
+														{{ form.statusoptions }}
+													</div>
+												</div>
+
+
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Group Category:</label>
+														{{ form.categoryoptions }}
+													</div>
+												</div>
+
+											</div>
+
+		
+
+											<div class="row">
+												
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Confirmed:</label>
+														{{ form.confirmedoptions }}
+													</div>
+												</div>
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>Project Level:</label>
+															{{ form.leveloptions }}
+														</div>
+													</div>
+
+
+											</div>
+                                       
+                                       <legend class="text-semibold"><i class="icon-unlink2 position-left"></i>Impacts</legend>
+											
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Impact Level:</label>
+														{{ form.ileveloptions }}
+													</div>
+												</div>
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>Impact Type:</label>
+															{{ form.itypeoptions }}
+														</div>
+													</div>
+									
+                                            </div> 
+
+
+										<legend class="text-semibold"><i class="icon-clipboard3 position-left"></i>Notes</legend>
+											<div class="row">
+
+
+												<div class="col-md-12">
+													<div class="form-group">
+														{{ form.changenote }}
+													</div>
+												</div>
+
+		
+									
+                                            </div> 
+
+										</fieldset>
+									</div>
+								</div>
+
+								<div class="text-right row">
+								    <button type="submit" class="btn btn-danger" name="canceleditbtn">Cancel</button>
+									<button type="submit" class="btn btn-primary" name="editprojectbtn">Add Change <i class="icon-arrow-right14 position-right"></i></button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- /2 columns form -->	
+				</div>
+
+
+				<div class="col-md-12">
+
+					<div class="panel panel-white">
+							<div class="panel-heading">
+								<h5 class="panel-title">Previous changes</h5>
+								<div class="heading-elements">
+									<ul class="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                		<li><a data-action="reload"></a></li>
+				                		<li><a data-action="close"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+
+				<!-- Last five updates here in this table -->
+
+
+						<div class="table-responsive">
+							<table class="table table-xxs table-bordered">
+								<thead>
+									<tr> 
+									    <th class="bg-slate-800">Category</th>
+									    <th class="bg-slate-800">Change -5</th>
+										<th class="bg-slate-800">Change -4</th>
+										<th class="bg-slate-800">Change -3</th>
+										<th class="bg-slate-800">Change -2</th>
+										<th class="bg-slate-800">Last Change</th>
+									</tr>
+								</thead>
+								<tbody>
+
+
+
+									{% for pchange in pchanges %}
+
+									<tr>
+                                        <td class="bg-slate-800">{{ pchange.category }}</td>
+										<td class="bg-slate-600">{{ pchange.key4 }}</td>
+										<td class="bg-slate-600">{{ pchange.key3 }}</td>
+										<td class="bg-slate-600">{{ pchange.key2 }}</td>
+										<td class="bg-slate-600">{{ pchange.key1 }}</td>
+										<td class="bg-slate-600">{{ pchange.key0 }}</td>
+
+									</tr>
+
+									{% endfor %}
+
+
+
+
+
+								</tbody>
+							</table>
+						</div>
+
+
+
+
+
+					</div>
+				</div>
+
+
+
+				    <!-- Add Diagram Modal -->
+					<div id="diagrammodal" class="modal fade">
+						<div class="modal-dialog modal-full">
+							<div class="modal-content">
+								<div class="modal-header bg-danger">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h5 class="modal-title">Assign change using diagram view</h5>
+								</div>
+
+								<form action="#">
+									<div class="modal-body">
+
+										<h6 class="text-semibold">Diagram View</h6>
+										<p>Select business unit to attch change or impact</p>
+										<hr>
+
+
+										<div class="panel-body">
+
+											<div class="chart-container">
+												<div class="chart flex-container"><svg id="d3-bu-hierarchy" width="1200" height="500"></svg></div>
+											</div>
+
+										</div>
+
+
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+										<!-- Below is not yet implemented -->
+										<button type="submit" class="btn btn-primary" data-dismiss="modal">Confim Change</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<!-- /vertical form modal -->
+
+					<!-- Add TreeView Modal -->
+					<div id="treemodal" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header bg-danger">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h5 class="modal-title">Assign change or impact using treeview</h5>
+								</div>
+
+								<form action="POST">
+									<div class="modal-body">
+
+										<h6 class="text-semibold">Tree view</h6>
+										<p>Select business unit to attach change or impact</p>
+										<hr>
+
+										<!-- Diagram view output -->
+								    <div class="panel-body">
+									<div class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+
+									<!-- Add hierarchy code here -->
+
+
+									{% autoescape off %}
+									{% for items in treeview %}
+										{{ items }}
+									{% endfor %}
+									{% endautoescape %}
+
+
+									 <!--*********************** -->
+										
+
+
+
+
+
+									</div>
+
+									</div>
+
+
+
+
+
+
+
+
+
+
+
+
+									</div>
+
+
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+										<!-- Below is not yet implemented -->
+										<button type="submit" class="btn btn-primary" data-dismiss="modal">Confirm Change</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<!-- /vertical form modal -->
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+    				{% block customjs%}
+
+    			<script>
+
+
+
+    			$('#datestart').pickadate({
+                // Escape any “rule” characters with an exclamation mark (!). --Comment
+  					format: 'mmmm d, yyyy',
+  					selectMonths: true,
+  					onStart: function ()
+                	{
+                		var date = new Date();
+                		this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+                	},
+                	onSet: function()
+                	{
+					
+						var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+						var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+						// Parse dates and compare
+						if (datestart>dateend){
+							this.set('select', [dateend.getFullYear(), dateend.getMonth(), dateend.getDate()])
+						}
+						//var dte_start = Date.parse(datestart)
+						//var dte_end = Date.parse(dateend)
+
+						//console.log("From datestart pickadate : datestart = "+datestart+" dateend = "+dateend)
+
+
+                	},
+
+                	//document.getElementById("dateend").textContent
+  				//formatSubmit: 'yyyy/mm/dd',--Comment
+  				//hiddenPrefix: 'prefix__',--Comment
+  				//hiddenSuffix: '__suffix'--Comment
+  				//hiddenName: undefined,--Comment
+				});
+
+				 $('#dateend').pickadate({
+                // Escape any “rule” characters with an exclamation mark (!). --Comment
+  					format: 'mmmm d, yyyy',
+  					selectMonths: true,
+  					onStart: function ()
+                	{
+                		var date = new Date();
+                		this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+                		
+                	},
+                	onSet: function()
+                	{
+						var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+						var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+						if (datestart>dateend){
+							this.set('select', [datestart.getFullYear(), datestart.getMonth(), datestart.getDate()])
+						}						
+
+						//console.log("From dateend pickadate : datestart = "+datestart+" dateend = "+dateend)
+
+                	},
+                	//document.getElementById("datestart").textContent
+  				//formatSubmit: 'yyyy/mm/dd',--Comment
+  				//hiddenPrefix: 'prefix__',--Comment
+  				//hiddenSuffix: '__suffix'--Comment
+  				//hiddenName: undefined,--Comment
+				});
+
+
+				 	
+
+    			</script>
+
+<style>
+
+.node circle {
+  fill: #999;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.node--internal circle {
+  fill: #555;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
+
+</style>
+
+
+<script>
+
+
+    	// Load hierarchy
+		var dataset = [{% for each in hierarchy %}
+                       {"name": "{{ each.name}}", "parent": "{{each.parent}}"},
+                       {% endfor %}];
+        //console.log(dataset);
+        // Convert dataset into a hierarchy for display
+
+var svg = d3.select("#d3-bu-hierarchy"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height"),
+    g = svg.append("g").attr("transform", "translate(40,0)");
+
+var tree = d3.tree()
+    .size([height, width - 100]);
+
+var stratify = d3.stratify()
+                 .id(function(d) { return d.name; })
+                 .parentId(function(d) { return d.parent; })
+
+  var root = stratify(dataset)
+      .sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
+
+  tree(root);
+
+  var link = g.selectAll(".link")
+      .data(root.descendants().slice(1))
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        return "M" + d.y + "," + d.x
+            + "C" + (d.parent.y + 100) + "," + d.x
+            + " " + (d.parent.y + 100) + "," + d.parent.x
+            + " " + d.parent.y + "," + d.parent.x;
+    });
+
+  var node = g.selectAll(".node")
+      .data(root.descendants())
+      .enter().append("g")
+      .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+
+  node.append("circle")
+      .attr("r", 2.5);
+
+  node.append("text")
+      .attr("dy", 3)
+      .attr("x", function(d) { return d.children ? -8 : 8; })
+      .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+      .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); })
+
+
+
+
+</script>
+
+    			<!--
+
+				Script to initiate ajax response will go here.
+
+    			-->
+{% endblock %}
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

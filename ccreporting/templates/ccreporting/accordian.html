@@ -1,0 +1,140 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Reporting{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Testing accordian search </h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+<!--     <div class="container" 
+     id="page_container">
+      <div id="accordion_search_bar_container">
+      <input type="search" id="accordion_search_bar" placeholder="Search"/>
+  </div> -->
+                        <div class="panel-body">
+
+                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="accordion_search_bar" placeholder="Search">
+                                                        <div class="form-control-feedback">
+                                                            <i class="icon-search4 text-size-base"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                            </div>
+                            <div class="row">
+
+
+                        <div class="panel-group content-group-lg" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-white" id="panel_one">
+                                    <div class="panel-heading">
+                                        <h6 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#accordion-group1">One</a>
+                                        </h6>
+                                    </div>
+                                    <div id="accordion-group1" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-white" id="panel_two">
+                                    <div class="panel-heading">
+                                        <h6 class="panel-title">
+                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-group2">Two</a>
+                                        </h6>
+                                    </div>
+                                    <div id="accordion-group2" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                    <h5 class="modal-title">Report categorises changes - (x axis) date (y axis) level</h5>
+                                                    <hr>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Label1 </label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input type="text" name="projectname" placeholder="Project Name" class="form-control" maxlength="40" required id="id_projectname" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-white" id="panel_three">
+                                    <div class="panel-heading">
+                                        <h6 class="panel-title">
+                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-group3">Three</a>
+                                        </h6>
+                                    </div>
+                                    <div id="accordion-group3" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </div>
+</div>
+    {% endblock %} {% block chartcode%}
+
+
+
+
+
+    <script>
+
+
+// This section makes the search work.
+(function() {
+  var searchTerm, panelContainerId;
+  $('#accordion_search_bar').on('change keyup paste', function() {
+    searchTerm = $(this).val();
+    $('#accordion > .panel').each(function() {
+      panelContainerId = '#' + $(this).attr('id');
+
+      // Makes search to be case insesitive 
+      $.extend($.expr[':'], {
+        'contains': function(elem, i, match, array) {
+          return (elem.textContent || elem.innerText || '').toLowerCase()
+            .indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+      });
+
+      // END Makes search to be case insesitive
+
+      // Show and Hide Triggers
+      $(panelContainerId + ':not(:contains(' + searchTerm + '))').hide(); //Hide the rows that done contain the search query.
+      $(panelContainerId + ':contains(' + searchTerm + ')').show(); //Show the rows that do!
+
+    });
+  });
+}());
+    </script>
+    {% endblock %}

@@ -1,0 +1,364 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Project Change Update{% endblock %} 
+
+{% block main_content%}
+<!-- 2 columns form -->
+<div class="row">
+    <!--<div class="col-md-12">-->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">Update Project</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <legend class="text-semibold"><i class="icon-reading position-left"></i>Project Details</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-semibold">
+                        <label>Project Name:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.project_name }}
+                    </div>
+                    <div class="text-semibold">
+                        <label>Customer Impact:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.customer_impact }}
+                    </div>
+                    <div class="text-semibold">
+                        <label>Driver:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.driver }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-semibold">
+                        <label>Project Benefit:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.benefit_desc }}
+                    </div>
+                    <div class="text-semibold">
+                        <label>Description:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.description }}
+                    </div>
+                    <div class="text-semibold">
+                        <label>Created On:</label>
+                    </div>
+                    <div class="well well-sm">
+                        {{ project.created_on }}
+                    </div>
+                </div>
+                <form method="POST" name="hierarchyform">
+                    {% csrf_token %}
+                    <!--fieldset-->
+                    <!--Make the updates for the question and answer groups here-->
+                    <div class="row">
+                        <div class="panel panel-flat">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% for field in form %} {% if field.id_for_label|slice:"3:8" == "proj_" %}
+                                        <div class="form-group">
+                                            {{ field.label_tag}} {{ field }}
+                                        </div>
+                                        {% endif %} {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--div class="col-md-3">                                   
+                                            <button type="button" 
+                                                     class="btn bg-teal-400 btn-labeled"  
+                                                     data-toggle="modal" 
+                                                     data-target="#diagrammodal">
+                                                     <b><i class="icon-tree7"></i></b> 
+                                                     Diagram
+                                            </button>
+                                        </div-->
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                <legend class="text-semibold"><i class="icon-tree7 position-left"></i>Business Hierarchy</legend>
+                                <button type="button" class="btn bg-teal-400 btn-labeled" data-toggle="modal" data-target="#treemodal">
+                                    <b><i class="icon-table"></i></b> Select Nodes
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <legend class="text-semibold"><i class=" icon-reminder position-left"></i>Add Change Nickname</legend>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="icon-typography"></i></span> {{ form.nickname }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <legend class="text-semibold"><i class="icon-calendar3 position-left"></i>Schedule Change Update or Impact</legend>
+                                <div class="col-md-6">
+                                    <!--label>Start Date:</label-->
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="icon-calendar5"></i></span> {{ form.datestart }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="icon-calendar5"></i></span> {{ form.dateend }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--This is where all the changes for questions will be rendered-->
+                    <!--The biggest problem will be getting the form to work with the template-->
+                    <!-- ******************************** START OF CHANGES **************************** -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="text-semibold"><i class="icon-truck position-left">
+                                                    </i>Change or Impact Details</legend>
+                        </div>
+                    </div>
+                    <!--Make the updates for the question and answer groups here-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for field in form %} {% if field.id_for_label|slice:"3:8" == "chan_" %}
+                            <div class="form-group">
+                                {{ field.label_tag}} {{ field }}
+                            </div>
+                            {% endif %} {% endfor %}
+                        </div>
+                    </div>
+                    <!--End of changes everything else should be fine-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="text-semibold"><i class="icon-clipboard3 position-left"></i>Notes</legend>
+                            <div class="form-group">
+                                {{ form.changenote }}
+                            </div>
+                        </div>
+                        <!-- ******************************** END OF CHANGES **************************** -->
+                    </div>
+                    <div class="text-right row">
+                        <button type="submit" class="btn btn-danger" name="canceleditbtn">Cancel</button>
+                        <!--button type="submit" class="btn btn-primary" name="editprojectbtn" onclick="btncontrol();"-->
+                        <button type="submit" class="btn btn-primary" name="editprojectbtn">
+                            Add Change <i class="icon-arrow-right14 position-right"></i></button>
+                    </div>
+                    <!-- Add Diagram Modal -->
+                    <div id="diagrammodal" class="modal fade">
+                        <div class="modal-dialog modal-full">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h5 class="modal-title">Assign change using diagram view</h5>
+                                </div>
+                                <!--form action="#"-->
+                                <div class="modal-body">
+                                    <h6 class="text-semibold">Diagram View</h6>
+                                    <p>Select business unit to attch change or impact</p>
+                                    <hr>
+                                    <div class="panel-body">
+                                        <div class="chart-container">
+                                            <div class="chart flex-container">
+                                                <svg id="d3-bu-hierarchy" width="1200" height="500"></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <!-- Below is not yet implemented -->
+                                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Confim Change</button>
+                                </div>
+                                <!--/form-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /vertical form modal -->
+                    <!--fieldset-->
+                    <!-- Add TreeView Modal -->
+                    <div id="treemodal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h5 class="modal-title">Assign change or impact using treeview</h5>
+                                </div>
+                                <!--form action="POST"-->
+                                <div class="modal-body">
+                                    <h6 class="text-semibold">Tree view</h6>
+                                    <p>Select business unit to attach change or impact</p>
+                                    <hr>
+                                    <!-- Diagram view output -->
+                                    <div class="panel-body">
+                                        <div id="treemodalid" class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+                                            <!-- Add hierarchy code here -->
+                                            {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                                            <!--*********************** -->
+                                            <input type="hidden" id="hierarchyid" name="hierarchy" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <!-- Below is not yet implemented -->
+                                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Confirm Change</button>
+                                </div>
+                                <!--/fieldset-->
+                </form>
+                </div>
+                </div>
+                </div>
+                <!-- /vertical form modal -->
+                {% endblock %}
+                <!--Parent core js override-->
+                {% block customjs %}
+                <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+                <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+                <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.time.js' %}"></script>
+                <script type="text/javascript">
+                {% if messages %} 
+                    {% for message in messages %} 
+                        {% if message.tags == 'success' %}
+
+                function makenotification() {
+
+                    new PNotify({
+                        title: '',
+                        text: 'Change has been successfully added',
+                        type: 'success'
+                    });
+
+
+
+                }; 
+
+                {% else %}
+
+                function makenotification() {
+
+                    new PNotify({
+                        title: 'Change not successful!',
+                        text: 'Not all fields have been correctly actioned!',
+                        type: 'error'
+                    });
+
+                };
+
+                        {% endif %} 
+                    {% endfor %}
+                window.onload = makenotification; 
+
+                {% endif %}
+                </script>
+                <script type="text/javascript">
+                $("#treemodalid").fancytree({
+                    checkbox: true,
+                    selectMode: 3,
+                    //activate: function(event, data) {
+                    //  $("#echoActive1").text(data.node.title);
+                    //},
+                    init: function(event, data) {
+                    $('.has-tooltip .fancytree-title').tooltip();
+                    },
+                    select: function(event, data) {
+                        // Display list of selected nodes
+                        var s = data.tree.getSelectedNodes();
+
+                        //console.log(s[0]['key']);
+
+                        var t = $.map(s, function(node) {
+                            return node.key;
+
+                        });
+
+                        $('#hierarchyid').val(JSON.stringify(t));
+                        //console.log(t);
+
+                    },
+
+                });
+
+
+
+
+                $('#datestart').pickadate({
+                    // Escape any “rule” characters with an exclamation mark (!). --Comment
+                    format: 'mmmm d, yyyy',
+                    selectMonths: true,
+                    onStart: function() {
+                        //var date = new Date();
+                        //this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+                        this.set('clear')
+
+                    },
+                    onSet: function() {
+
+                        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+                        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+                        // Parse dates and compare
+                        if (datestart > dateend) {
+                            this.set('select', [dateend.getFullYear(), dateend.getMonth(), dateend.getDate()])
+                        }
+                        //var dte_start = Date.parse(datestart)
+                        //var dte_end = Date.parse(dateend)
+
+
+
+
+                    },
+
+                    //document.getElementById("dateend").textContent
+                    //formatSubmit: 'yyyy/mm/dd',--Comment
+                    //hiddenPrefix: 'prefix__',--Comment
+                    //hiddenSuffix: '__suffix'--Comment
+                    //hiddenName: undefined,--Comment
+                });
+
+                $('#dateend').pickadate({
+                    // Escape any “rule” characters with an exclamation mark (!). --Comment
+                    format: 'mmmm d, yyyy',
+                    selectMonths: true,
+                    onStart: function() {
+                        //var date = new Date();
+                        //this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+                        this.set('clear')
+
+                    },
+                    onSet: function() {
+                        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+                        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+                        if (datestart > dateend) {
+                            this.set('select', [datestart.getFullYear(), datestart.getMonth(), datestart.getDate()])
+                        }
+
+                        console.log("From dateend pickadate : datestart = " + datestart + " dateend = " + dateend)
+
+                    },
+                    //document.getElementById("datestart").textContent
+                    //formatSubmit: 'yyyy/mm/dd',--Comment
+                    //hiddenPrefix: 'prefix__',--Comment
+                    //hiddenSuffix: '__suffix'--Comment
+                    //hiddenName: undefined,--Comment
+                });
+
+                </script>
+                <!--
+
+                Script to initiate ajax response will go here.
+
+                -->
+                {% endblock %}
+                <!--Parent chart js override-->
+                <!--Parent theme js override-->

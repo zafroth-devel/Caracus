@@ -1,0 +1,203 @@
+{% extends "base.html" %} 
+{% load staticfiles %} 
+{% load dict_get %}
+{% block title %}View Change{% endblock %} {% block main_content%} {% block custcss %} {% endblock %}
+
+                    <form method="POST" name="hierarchyform">
+                        {% csrf_token %}
+                        <div class="panel panel-flat">
+                            <div class="panel-heading">
+                                <h5 class="panel-title">Add New Project</h5>
+                                <div class="heading-elements">
+                                    <ul class="icons-list">
+                                        <li><a data-action="collapse"></a></li>
+                                        <li><a data-action="reload"></a></li>
+                                        <li><a data-action="close"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <fieldset>
+                                            <legend class="text-semibold"></i>Details</legend>
+
+                                            <div class="form-group">
+                                                {{ form.projectname.label_tag }} {{ form.projectname }}
+                                                <input type="hidden" name="browser-timezone-name" id="browser-timezone-id">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="id_impacttype">Project Type:</label>
+                                                <div class="multi-select-full">
+                                                    <select class="multiselect-select-all-filtering" name="impacttype" id="id_impacttype">
+                                                        {% autoescape off %} {% for type in impacttype %} {{ type.select_option }} {% endfor %} {% endautoescape %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                        
+                                            <div class="form-group">
+                                                {{ form.projectdesc.label_tag }}{{ form.projectdesc }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form.benefitdesc.label_tag }} {{ form.benefitdesc }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form.customerimpact.label_tag }} {{ form.customerimpact }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form.driver.label_tag }} {{ form.driver }}
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <fieldset>
+                                            <legend class="text-semibold">Status and Oversight</legend>
+                                            <div class="form-group">
+                                                {{ form.projectstatus.label_tag }} {{ form.projectstatus }}
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="id_sponsors">{{ form.sponsors.label }}</label>
+                                                <div class="multi-select-full">
+                                                 {{ form.sponsors }}
+                                                </div>
+                                            </div>
+                                            {% for field in form %} {% if field.id_for_label|slice:"3:8" == "proj_" %}
+                                            <div class="form-group">
+                                                
+                                                {% autoescape off %}
+                                                {{ project_category_labels|hash:field.name }}
+                                                {{ field.label }} 
+                                                {% endautoescape %}
+                                                {{ field }}
+                                            </div>
+                                            {% endif %} {% endfor %}
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                            <fieldset>    
+
+                            <div class="form-group">
+                                <legend class="text-semibold">Viewing Permissions</legend>
+                                    <div class="multi-select-full">
+                                        <select class="multiselect-select-all-filtering" multiple="multiple" name="viewperm">
+                                            {% autoescape off %}
+                                            {% for perm in vperms %}
+                                                {{ perm }}
+                                            {% endfor %}
+                                            {% endautoescape %}
+                                        </select>
+                                    </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                    <div class="row">
+                    <div class="text-right">
+                        <div class="form-group">
+                        <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewproject' %}'">Cancel</button>
+                        <button type="submit" class="btn bg-purple-400" name="editprojectbtn" id="saveandadd-btn-id">Save and add impacts</button>
+                        <button type="submit" class="btn bg-purple-400" name="addprojectbtn" id="save-btn-id">Save <i class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                            </div>
+                        </div>
+                    </form>
+             
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'assets/js/editor/wysihtml_toolbar.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/editor/advanced_and_extended.js' %}"></script>
+
+
+
+<link href="{% static 'assets/js/base/editor/dist/summernote.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/editor/dist/summernote.js' %}"></script>
+
+<script>
+
+$(function(){
+
+    $('#browser-timezone-id').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+
+$('.multiselect-select-all-filtering').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        templates: {
+            filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+        },
+        onSelectAll: function() {
+            $.uniform.update();
+        }
+    });
+
+var project_name = '{{ project_name }}';
+var description = '{{ description }}';
+var benefit_desc = '{{ benefit_desc }}';
+var driver = '{{ driver }}';
+var customer_impact = '{{ customer_impact }}';
+
+if (project_name && description && benefit_desc && driver && customer_impact) {
+
+    $('#id_projectname').val(project_name);
+    $('#id_projectdesc').append(description);
+    $('#id_benefitdesc').append(benefit_desc);
+    $('#id_customerimpact').append(customer_impact);
+    $('#id_driver').append(driver);
+
+
+}
+
+
+});
+
+</script>
+
+
+<script>
+
+$(function(){
+
+$('.add_hsnote').summernote({
+  airMode: true,
+  placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+  disableDragAndDrop: true,
+  popover: {
+    air: [
+      ['Font',['fontname','fontsize','color','bold','italic','underline','strikethrough','superscript','subscript','clear']],
+      ['Para',['style','ol','ul','paragraph','height']],
+      ['Insert',['link','table','hr']],
+      ['Misc',['fullscreen','undo','redo','help']]
+    ]
+  }
+});
+
+}); 
+
+
+</script>
+
+
+
+{% endblock %}

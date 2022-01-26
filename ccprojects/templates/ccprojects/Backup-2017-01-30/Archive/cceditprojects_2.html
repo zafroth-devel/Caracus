@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+
+{% block title %}Review Project{% endblock %}
+
+
+{% block main_content%}
+
+<!-- 2 columns form -->
+		<div class="row">
+			<!--<div class="col-md-12">-->
+
+						<div class="panel panel-flat">
+							<div class="panel-heading">
+								<h5 class="panel-title">Update Project</h5>
+								<div class="heading-elements">
+									<ul class="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                		<li><a data-action="reload"></a></li>
+				                		<li><a data-action="close"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6">
+
+											<legend class="text-semibold"><i class="icon-reading position-left"></i>Project Details</legend>
+
+
+											<div class="text-semibold">
+												<label>Project Name:</label>
+											</div>
+
+											<div class="well well-sm">
+												{{ project.project_name }}
+											</div>
+								
+
+											<div class="text-semibold">
+												<label>Description:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.description }}
+											</div>
+											
+
+											<div class="text-semibold">
+												<label>Project Benefit:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.benefit_desc }}
+											</div>
+										
+
+											<div class="text-semibold">
+												<label>Customer Impact:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.customer_impact }}
+											</div>
+										
+											<div class="text-semibold">
+												<label>Driver:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.driver }}
+											</div>
+																					
+
+											<div class="text-semibold">
+												<label>Created On:</label>
+											</div>
+											<div class="well well-sm">
+												{{ project.created_on }}
+											</div>
+										
+										<form method="POST">
+										{% csrf_token %}
+
+
+									<fieldset>
+
+
+									<legend class="text-semibold"><i class="icon-calendar3 position-left"></i>Business Hierarchy</legend>
+
+
+									<div class="content-group-lg">
+										<p>Pin Update To Business:</p>
+										<div class="input-group">
+												<span class="input-group-addon"><i class="icon-calendar5"></i></span>
+												Blah
+
+										</div>
+									</div>
+
+
+									<legend class="text-semibold"><i class="icon-calendar3 position-left"></i>Schedule Change Update or Impact</legend>
+
+
+									<div class="content-group-lg">
+										<p>Click on Date to change:</p>
+										<div class="input-group">
+												<span class="input-group-addon"><i class="icon-calendar5"></i></span>
+												{{ form.dateinput }}
+
+										</div>
+									</div>
+
+										</fieldset>
+					               </div>
+
+
+
+
+
+									<div class="col-md-6">
+										<fieldset>
+						                	<legend class="text-semibold"><i class="icon-truck position-left"></i>Change Update Details</legend>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Benefit:</label>
+														{{ form.benefitoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Health:</label>
+														{{ form.healthoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Size:</label>
+														{{ form.changeoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Volume:</label>
+														{{ form.voloptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Care:</label>
+														{{ form.careoptions }}
+													</div>
+												</div>
+									
+
+											
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Type</label>
+														{{ form.changetypeoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Status:</label>
+														{{ form.statusoptions }}
+													</div>
+												</div>
+
+
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Group Category:</label>
+														{{ form.categoryoptions }}
+													</div>
+												</div>
+
+											</div>
+
+		
+
+											<div class="row">
+												
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Confirmed:</label>
+														{{ form.confirmedoptions }}
+													</div>
+												</div>
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>Project Level:</label>
+															{{ form.leveloptions }}
+														</div>
+													</div>
+
+
+											</div>
+                                       
+                                       <legend class="text-semibold"><i class="icon-unlink2 position-left"></i>Impacts</legend>
+											
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Impact Level:</label>
+														{{ form.ileveloptions }}
+													</div>
+												</div>
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>Impact Type:</label>
+															{{ form.itypeoptions }}
+														</div>
+													</div>
+									
+                                            </div> 
+
+
+										<legend class="text-semibold"><i class="icon-unlink2 position-left"></i>Notes</legend>
+											<div class="row">
+
+
+												<div class="col-md-12">
+													<div class="form-group">
+														<label>Note:</label>
+														{{ form.changenote }}
+													</div>
+												</div>
+
+		
+									
+                                            </div> 
+
+
+
+
+
+
+
+
+										</fieldset>
+									</div>
+								</div>
+
+								<div class="text-right row">
+								    <button type="submit" class="btn btn-danger" name="cancelbtn">Cancel</button>
+									<button type="submit" class="btn btn-primary" name="addprojectbtn">Add Change <i class="icon-arrow-right14 position-right"></i></button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- /2 columns form -->	
+				</div>
+
+
+				<div class="col-md-12">
+
+					<div class="panel panel-white">
+							<div class="panel-heading">
+								<h5 class="panel-title">Previous changes</h5>
+								<div class="heading-elements">
+									<ul class="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                		<li><a data-action="reload"></a></li>
+				                		<li><a data-action="close"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+
+				<!-- Last five updates here in this table -->
+
+
+						<div class="table-responsive">
+							<table class="table table-xxs table-bordered">
+								<thead>
+									<tr> 
+									    <th class="bg-slate-800">Category</th>
+									    <th class="bg-slate-800">Change -5</th>
+										<th class="bg-slate-800">Change -4</th>
+										<th class="bg-slate-800">Change -3</th>
+										<th class="bg-slate-800">Change -2</th>
+										<th class="bg-slate-800">Last Change</th>
+									</tr>
+								</thead>
+								<tbody>
+
+
+
+									{% for pchange in pchanges %}
+
+									<tr>
+                                        <td class="bg-slate-800">{{ pchange.category }}</td>
+										<td class="bg-slate-600">{{ pchange.key4 }}</td>
+										<td class="bg-slate-600">{{ pchange.key3 }}</td>
+										<td class="bg-slate-600">{{ pchange.key2 }}</td>
+										<td class="bg-slate-600">{{ pchange.key1 }}</td>
+										<td class="bg-slate-600">{{ pchange.key0 }}</td>
+
+									</tr>
+
+									{% endfor %}
+
+
+
+
+
+								</tbody>
+							</table>
+						</div>
+
+
+
+
+
+					</div>
+				</div>
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+    				{% block customjs%}
+
+    			<script>
+
+
+
+    			$('#datepicker').pickadate({
+                // Escape any “rule” characters with an exclamation mark (!). --Comment
+  					format: 'mmmm d, yyyy',
+  					selectMonths: true,
+  					onStart: function ()
+                	{
+                		var date = new Date();
+                		this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+                	},
+  				//formatSubmit: 'yyyy/mm/dd',--Comment
+  				//hiddenPrefix: 'prefix__',--Comment
+  				//hiddenSuffix: '__suffix'--Comment
+  				//hiddenName: undefined,--Comment
+				});
+    			</script>
+
+
+    			<!--
+
+				Script to initiate ajax response will go here.
+
+    			-->
+
+
+    			{% endblock %}
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

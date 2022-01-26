@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}View Change{% endblock %}
+
+                
+
+
+
+                {% block main_content%}
+
+                       <div class="panel panel-white">
+                                <div class="panel-heading">
+                                    <h6 class="panel-title">View Change Project - {{ project_id }}</h6>
+                                    <div class="heading-elements">
+                                        <ul class="icons-list">
+                                            <li><a data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+                                            <li><a data-action="reload" data-popup="tooltip" title="Reload"></a></li>
+                                            <li><a data-action="close" data-popup="tooltip" title="Close"></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+<hr>BLAH</hr>
+
+                            <table id="myTable" class="table datatables-responsive table-bordered table-striped table-hover bg-purple-400">
+                            <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>File Code</th>
+                                            <th>Attachment</th>
+
+                                        </tr>
+                            </thead>
+                            <tbody>
+
+
+
+                           {% for attachment in attached %}
+      
+                                    <tr>
+                                        
+                                      <td>{{ attachment.id }}</td>
+                                      <td>{{ attachment.filecode }}</td>
+                                      <td>{{ attachment.attachment }}</td>
+                                    </tr>
+
+
+                            {% endfor %}
+
+
+
+                            </tbody>
+
+                        </div>
+
+
+
+                {% endblock %}
+
+                    <!--Parent core js override-->
+
+                {% block customjs%}
+
+                <script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+                <script type="text/javascript" src="{% static 'assets/js/core/app.js' %}"></script>    
+                <script type="text/javascript" src="{% static 'assets/js/pages/datatables_advanced.js' %}"></script>
+
+
+
+                {% endblock %}
+
+                <!--Parent chart js override-->
+
+
+
+                <!--Parent theme js override-->

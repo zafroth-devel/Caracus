@@ -1,0 +1,87 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Schedule Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Company Icon </h6>
+
+    </div>
+    <div class="panel-body">
+        <form action="{% url 'icloadview' %}" class="dropzone" id="hi-dropzone-hinyango-ci">
+                        {% csrf_token %}
+                        <!--div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div-->
+                        <input type="hidden" name="dropzone-hidden-name" id="dropzone-hidden-id" value="companyicon">
+        </form>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+<!--script type="text/javascript" src="{% static '<<PATH TO ASSET>>' %}"></script>
+<script  type="text/javascript"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/uploaders/dropzone.js' %}"></script>
+<script type="text/javascript">
+
+
+$(function() {
+
+    Dropzone.autoDiscover = false;
+
+    $("#hi-dropzone-hinyango-ci").dropzone({paramName: 'file',
+                                         maxFilesize: 100,
+                                         addRemoveLinks: true,
+                                         maxFiles:1,
+                                         acceptedFiles: "image/jpeg,image/png",
+                                         dictDefaultMessage: 'Drag in files or click for dialog'});
+
+
+/**
+    Dropzone.options.hiDropzoneHinyango = {
+        paramName: "guff", // The name that will be used to transfer the file
+        maxFilesize: 300, // MB
+        addRemoveLinks: true,
+        maxFiles: 1,
+        accept: function(file, done) {
+                 console.log(file);
+                 if (file.name == "justinbieber.jpg") {
+                       done("Naha, you don't.");
+                    } else { done(); }
+               },
+        dictDefaultMessage: 'Drop picture in or <span>or CLICK</span>'
+        
+    };
+
+**/
+});
+
+//hiDropzoneHinyango.on("maxfilesexceeded", function(file) { this.removeFile(file); });
+
+    msgonce = true;
+
+
+
+    function present_warning(){
+
+        if(msgonce){
+
+
+                                    new PNotify({
+                                    title: 'Company Icon Upload',
+                                    text: 'Only the first ipload will be used',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-info-sign'
+                                    });
+                                    msgonce = false;
+                                }
+    }
+
+present_warning();
+
+    
+
+
+
+
+</script>
+{% endblock %}

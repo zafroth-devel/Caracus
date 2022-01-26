@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+
+{% block title %}AddProject{% endblock %}
+
+
+
+
+
+
+					{% block main_content%}
+
+<!-- 2 columns form -->
+					<form method="POST">
+					{% csrf_token %}
+						<div class="panel panel-flat">
+							<div class="panel-heading">
+								<h5 class="panel-title">Add Project</h5>
+								<div class="heading-elements">
+									<ul class="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                		<li><a data-action="reload"></a></li>
+				                		<li><a data-action="close"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6">
+										<fieldset>
+											<legend class="text-semibold"><i class="icon-reading position-left"></i>Project Details</legend>
+
+											<div class="form-group">
+												<label>Project Name:</label>
+												{{ form.projectname }}
+											</div>
+
+											<div class="form-group">
+												<label>Description:</label>
+												{{ form.projectdesc }}
+											</div>
+
+											<div class="form-group">
+												<label>Project Benefit:</label>
+												{{ form.benefitdesc }}
+											</div>
+
+											<div class="form-group">
+												<label>Customer Impact:</label>
+												{{ form.customerimpact }}
+											</div>
+
+											<div class="form-group">
+												<label>Driver:</label>
+												{{ form.driver }}
+											</div>
+
+										</fieldset>
+									</div>
+
+									<div class="col-md-6">
+										<fieldset>
+						                	<legend class="text-semibold"><i class="icon-truck position-left"></i>Project Information</legend>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Benefit:</label>
+														{{ form.benefitoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Health:</label>
+														{{ form.healthoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Size:</label>
+														{{ form.changeoptions }}
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Volume:</label>
+														{{ form.voloptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Customer Care:</label>
+														{{ form.careoptions }}
+													</div>
+												</div>
+									
+
+											
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Change Type:</label>
+														{{ form.changetypeoptions }}
+													</div>
+												</div>
+											</div>
+
+
+											<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Status:</label>
+														{{ form.statusoptions }}
+													</div>
+												</div>
+
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Group Category:</label>
+														{{ form.categoryoptions }}
+													</div>
+												</div>
+
+
+												<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Confirmed:</label>
+														{{ form.confirmedoptions }}
+													</div>
+												</div>
+
+									
+
+											
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Impact Level:</label>
+														{{ form.ileveloptions }}
+													</div>
+												</div>
+
+
+                                       			</div>
+
+                                       			<div class="row">
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Impact Type:</label>
+														{{ form.itypeoptions }}
+													</div>
+												</div>
+												
+
+										
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Project Level:</label>
+														{{ form.leveloptions }}
+													</div>
+												</div>
+
+
+                                            </div> 
+
+										</fieldset>
+									</div>
+								</div>
+
+								<div class="text-right row">
+								    <button type="submit" class="btn btn-danger" name="cancelbtn">Cancel</button>
+									<button type="submit" class="btn btn-primary" name="addprojectbtn">Submit form <i class="icon-arrow-right14 position-right"></i></button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- /2 columns form -->		       
+
+
+
+
+					{% endblock %}
+

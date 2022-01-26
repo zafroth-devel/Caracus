@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+
+				<!-- Side menu section 
+				{% block manage_projects %}
+				<li>
+					<a href="#"><i class="icon-stack2"></i> <span>Manage Projects</span></a>
+					<ul>
+						<li><a href="{% url 'addproject' %}">Add</a></li>
+						<li><a href="#">Delete</a></li>
+						<li><a href="#">Update</a></li>
+					</ul>
+				</li>
+				{% endblock %}
+-->
+
+
+
+					{% block main_content%}
+					<!-- Main charts -->
+
+					<h6 class="content-group text-semibold">
+						Project Changes
+						<small class="display-block">Customer impacts</small>
+					</h6>
+
+					<div class="row">
+						<div class="col-md-7">
+
+						<!-- Chart Display Panel -->
+							<div class="panel panel-white">
+								<div class="panel-heading">
+									<h6 class="panel-title">Customer Impacts</h6>
+									<div class="heading-elements">
+										<ul class="icons-list">
+					                		<li><a data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+					                		<li><a data-action="reload" data-popup="tooltip" title="Reload"></a></li>
+					                		<li><a data-action="close" data-popup="tooltip" title="Close"></a></li>
+					                	</ul>
+				                	</div>
+								</div>
+								
+								<div class="panel-body">
+									Chart goes in here
+								</div>
+								<!--Chart block markup goes in here-->
+
+							  <div class="panel-body text-center">
+                                  <canvas id="ccpie"></canvas>
+                              </div>
+
+
+							</div>
+						<!-- Chart Display Panel -->
+
+						</div>
+
+						<div class="col-md-5">
+
+						<!-- Chart Display Panel -->
+							<div class="panel panel-white">
+								<div class="panel-heading">
+									<h6 class="panel-title">Project Impacts</h6>
+									<div class="heading-elements">
+										<ul class="icons-list">
+					                		<li><a data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+					                		<li><a data-action="reload" data-popup="tooltip" title="Reload"></a></li>
+					                		<li><a data-action="close" data-popup="tooltip" title="Close"></a></li>
+					                	</ul>
+				                	</div>
+								</div>
+								
+								<div class="panel-body">
+								Box block title goes here
+								</div>
+								<!--Chart block markup goes in here-->
+
+							  <div class="panel-body text-center">
+                                  <canvas id="ccbar"></canvas>
+                              </div>
+
+
+
+
+
+							</div>
+						<!-- Chart Display Panel -->
+						</div>
+
+						<div class="col-md-12">
+						<!-- Chart Display Panel -->
+							<div class="panel panel-white">
+								<div class="panel-heading">
+									<h6 class="panel-title">Projects</h6>
+									<div class="heading-elements">
+										<ul class="icons-list">
+					                		<li><a data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+					                		<li><a data-action="reload" data-popup="tooltip" title="Reload"></a></li>
+					                		<li><a data-action="close" data-popup="tooltip" title="Close"></a></li>
+					                	</ul>
+				                	</div>
+								</div>
+								
+								<!--
+								<div class="panel-body">
+									List of projects user has responsibility for
+								</div>-->
+
+								<div class="table-responsive">
+									<table class="table table-bordered table-striped table-hover bg-info-800">
+									<thead>
+										<tr>
+											<th>Id</th>
+											<th>Project Name</th>
+											<th>Description</th>
+											<th>Benefit</th>
+											<th>Changes Pending</th>
+											<th>Changes Confirmed</th>
+											<th>Date Created</th>
+										</tr>
+									</thead>
+									<tbody>
+
+
+                                    {% for project in projectdata %}
+      
+                                    <tr>
+                                        
+                                      <td>{{ project.id }}</td>
+                                      <td>{{ project.project_name }}</td>
+                                      <td>{{ project.description }}</td>
+                                      <td>{{ project.benefit }}</td>
+                                      <td>Not yet implemented</td>
+                                      <td>Not yet implemented</td>
+                                      <td>{{ project.created_on }}</td>
+                                      
+                                    </tr>
+                                  
+                                    {% endfor %}
+
+
+									</tbody>
+									</table>
+
+
+                                    <div class="pagination">
+    									<span class="step-links">
+        									{% if projectdata.has_previous %}
+            									<a href="?page={{ projectdata.previous_page_number }}">Previous.</a>
+            									<a href="?page=1">Home.</a>
+        									{% endif %}
+
+
+
+        								<span class="current">
+            							Page {{ projectdata.number }} of {{ projectdata.paginator.num_pages }}.
+       			 						</span>
+
+        								{% if projectdata.has_next %}
+            							<a href="?page={{ projectdata.next_page_number }}">Next</a>
+        								{% endif %}
+    									</span>
+									</div>
+
+								</div>	
+							</div>
+
+
+
+
+
+						</div>						
+
+
+
+
+						</div>
+					</div>
+					<!-- /dashboard content -->
+					{% endblock %}
+
+
+					{% block chartcode%}
+					<script type="text/javascript">
+    						var script = function() { 
+    						var pieData = [{% for chart in piedata %}
+        					               {value : {{ chart.total }},color : '{{ chart.color }}',label : '{{ chart.label }}',labelcolor : 'white',labelFontSize : 16 },
+        					               {% endfor %}];
+        					var barChartData = {labels : {{ benefit_labels|safe }},
+    											datasets : [{fillColor : "rgba(220,220,220,0.5)",
+        										strokeColor : "rgba(220,220,220,1)",
+           										data : {{ chart1 }}}]};
+
+
+							var ctx = document.getElementById('ccpie').getContext('2d');
+							var piechart = new Chart(ctx).Pie(pieData);
+							var ctx = document.getElementById('ccbar').getContext('2d');
+							var barchart = new Chart(ctx).Bar(barChartData);}();
+					</script>  
+					{% endblock %}

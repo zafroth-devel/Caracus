@@ -1,0 +1,2365 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Question Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+-->
+<style> 
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-typechange,
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-typechange {
+  color: #fff;
+  background: #67aeca;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-typeproject,
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-typeproject {
+  color: #fff;
+  background: #e52a6f;
+}
+</style>
+{% endblock %} {% block main_content%}
+<div class="row">
+    <div class="col-md-12">
+        <div class="navbar navbar-default navbar-component" style="position: relative; z-index: 30; border: 1px solid #d5d5d5">
+            <div class="navbar-header">
+                <a class="navbar-brand" id='question-management-tool-title'>Question Management</a>
+                <ul class="nav navbar-nav pull-right visible-xs-block">
+                    <li><a data-toggle="collapse" data-target="#navbar-demo1"><i class="icon-grid3"></i></a></li>
+                </ul>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-demo1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Types<span class="caret"></span></a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a id="type-new">New</a></li>
+                            <li><a id="type-delete">Delete</a></li>
+                            <li><a id="type-list">List</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Questions<span class="caret"></span></a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a id="question-new">New</a></li>
+                            <li><a id="question-modify">Modify</a></li>
+                            <li><a id="question-delete">Delete</a></li>
+                            <!--li><a id="question-search">Search</a></li-->
+                            <li><a id="question-rank">Rank</a></li>
+                            <!--li><a id="question-upload">Upload</a></li-->
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="help-link">Help</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- NEW QUESTION FORM-->
+<div class="row" id="new-question-form" style="display: none;">
+    <div class="col-md-12">
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <h6 class="text-semibold">Question Section</h6>
+                <hr>
+                <!---->
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_level_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Target</label>
+                            <div class="col-lg-10">
+                                <select name="add_new_type_question_level" id="add_new_question_level_id" class="form-control">
+                                    <option value="">--Please choose an option--</option>
+                                    <option value="Change">Change</option>
+                                    <option value="Project">Project</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_level_select_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Type</label>
+                            <div class="col-lg-10">
+                                <select name="add_new_question_level_select_name" id="add_new_question_level_select_id" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_na_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Can be NA</label>
+                            <div class="col-lg-10">
+                                <div class="checkbox ">
+                                    <label>
+                                        <input type="checkbox" class="styled" id="add_new_question_na_id">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_name_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Name</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="add_new_question_name" id="add_new_question_name_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_question_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Question</label>
+                            <div class="col-lg-10">
+                                <!--input type="text" class="form-control" name="add_new_type_question_desc"-->
+                <textarea name="add_new_question_question_name" cols="40" rows="4" class="add_hsnote form-control " maxlength="9999" required id="add_new_question_question_id"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_question_desc_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <!--input type="text" class="form-control" name="add_new_type_question_desc"-->
+    <textarea name="add_new_question_desc_name" cols="40" rows="4" class="add_hsnote form-control " maxlength="9999" id="add_new_question_desc_id" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn bg-purple-400" id="add-new-question-submit-btn">Add</button>
+                    </div>
+                    <h6 class="text-semibold">Answer Section</h6>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="new_answers_linked_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Linked Question</label>
+                            <label class="control-label col-lg-10" id='new_answers_linked_label'>No linked question</label>
+                        </div>
+                    </div>
+                    <!-- ADD ANSWER RANKING TABLE -->
+                    <div class="form-group" id="answer-ranking-table" style="display: none;">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="new_answers_ranking_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Rank Answers</label>
+                            <div class="col-md-12">
+                                <!---->
+                                <div class="table-responsive">
+                                    <table class="table datatable-row-basic" id="answer-rank-responsive" width="100%" cellspacing="0">
+                                    </table>
+                                </div>
+                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END ANSWER RANKING TABLE -->
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="new_answers_answer_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Answer</label>
+                            <div class="col-lg-10">
+                                <input type='text' class='form-control' id='new_answers_answer_id' name='new_answers_answer_name'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="new_answers_desc_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <textarea name="new_answers_desc_name" cols="40" rows="4" class="add_hsnote form-control " maxlength="9999" required id="new_answers_desc_id"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn bg-purple-400" id="add-new-answer-add-btn" disabled="disabled">Add</button>
+                        <button type="button" class="btn bg-purple-400" id="add-new-answer-submit-btn" disabled="disabled">Submit</button>
+                    </div>
+                </form>
+                <!---->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- NEW QUESTION FORM-->
+<!-- QUESTION TYPE LIST TABLE-->
+<div class="row" id="question-type-list-table" style="display: none;">
+    <div class="col-md-12">
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!---->
+                        <div class="table-responsive">
+                            <table class="table datatable-row-basic" id="question-type-list-responsive" width="100%" cellspacing="0">
+                            </table>
+                        </div>
+                        <!---->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END QUESTION TYPE LIST TABLE-->
+
+<!-- QUESTION DELETE LIST TABLE-->
+<div class="row" id="question-delete-table" style="display: none;">
+    <div class="col-md-12">
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!---->
+                        <div class="table-responsive">
+                            <table class="table datatable-row-basic" id="question-delete-list-responsive" width="100%" cellspacing="0">
+                            </table>
+                        </div>
+                        <!---->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END QUESTION DELETE LIST TABLE-->
+
+<!-- QUESTION RANK LIST TABLE-->
+<div class="row" id="question-rank-table" style="display: none;">
+    <div class="col-md-12">
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3">
+            
+                        <button type="button" class="btn bg-purple-400" id="submit-new-q-rank" disabled="disabled">Commit Ranking</button>
+           
+                    </div>
+                    <div class="col-sm-3">
+
+                        <input type="checkbox" class="switch" data-on-text="Change" data-off-text="Project" data-on-color="typechange" data-off-color="typeproject"  data-size="large" id="target-type-check-box">              
+         
+                    </div>
+
+                    <!--New feature addition not complete equal weighted questions-->
+<!--                     <div class="col-sm-3">
+
+                        <label class="checkbox-inline">
+                                <input type="checkbox" class="styled" id="all-equal-rank">
+                                Equal Rank
+                        </label>            
+                    
+                    </div> -->
+
+
+                </div>
+
+            
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!---->
+                        <div class="table-responsive">
+                            <table class="table datatable-row-basic" id="question-rank-list-responsive" width="100%" cellspacing="0">
+                            </table>
+                        </div>
+                        <!---->
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END QUESTION RANK LIST TABLE-->
+<!--
+
+MODAL SECTION
+
+-->
+<!-- ADD QUESTION TYPE MODAL-->
+<div id="type-new-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Add new question type</h5>
+            </div>
+            <form class="form-horizontal">
+                <div class="modal-body">
+                    <h6 class="text-semibold">New Question Type</h6>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_type_question_level_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Target</label>
+                            <div class="col-lg-10">
+                                <select name="add_new_type_question_level" id="add_new_type_question_level_id" class="form-control">
+                                    <option value="">--Please choose an option--</option>
+                                    <option value="Change">Change</option>
+                                    <option value="Project">Project</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_type_question_name_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Name</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="add_new_type_question_type" id="add_new_type_question_type_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-10" id="add_new_type_question_desc_msg"></div>
+                        <div class="row">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <!--input type="text" class="form-control" name="add_new_type_question_desc"-->
+                                <textarea name="add_new_type_question_desc" cols="40" rows="4" class="add_hsnote form-control " maxlength="9999" required id="add_new_type_question_desc_id"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="app_add_new_answer_id_area" name="app_functional_site" value="add_answer_modal">
+                    <input type="hidden" id="app_add_new_answer_hid_id" name="app_add_new_answer_hid_name" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn bg-purple-400" id="type-new-submit-btn">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END ADD QUESTION TYPE MODAL-->
+<!-- VIEW ANSWER DESCRIPTION MODAL  -->
+<div id="modal_view_adesc" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><label name="ptitle"></label></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div id="sn_view_div"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW ANSWER DESCRIPTION MODAL -->
+<!-- VIEW SUMMERNOTE MODAL  -->
+<div id="modal_view_snote" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><label name="ptitle"></label></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div id="sn_view_div"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SUMMERNOTE MODAL  -->
+<!-- DELETE TYPE MODAL  -->
+<div id="modal_delete_question_type_id" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Delete Question Type</h5>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-title">Only types not attached to a question can be deleted</h6>
+                <hr>
+                <div class="form-group">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-10" id="add_new_type_question_level_msg"></div>
+                    <div class="row">
+                        <label class="control-label col-lg-2">Target</label>
+                        <div class="col-lg-10">
+                            <select name="delete_type_question_target" id="delete_type_question_target_id" class="form-control">
+                                <option value="">--Please choose an option--</option>
+                                <option value="Change">Change</option>
+                                <option value="Project">Project</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-10" id="add_new_type_question_level_msg"></div>
+                    <div class="row">
+                        <label class="control-label col-lg-2">Type</label>
+                        <div class="col-lg-10">
+                            <select name="delete-question-type-name" id="delete-question-type-id" class="form-control">
+                                <option value="">--Please choose an option--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn bg-purple-400" id="type-delete-submit-btn">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END DELETE TYPE MODAL  -->
+<!-- START Find question modal  -->
+<div id="modal_question_search" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Question Search</h5>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-title">Which question do you want to modify?</h6>
+                <hr>
+                <div class="form-group">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-10" id="modify_search_question_dropdown_msg"></div>
+                    <div class="row">
+                        <label class="control-label col-lg-2">Target</label>
+                        <div class="col-lg-10">
+                            <select name="modify_search_question_dropdown_name" id="modify_search_question_dropdown_id" class="form-control">
+                                <option value="">--Please choose a question--</option>
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn bg-purple-400" id="modify_search_submit_btn">Modify</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Find Question Modal  -->
+<!-- VIEW is question name correct  -->
+<div id="modal_view_qcorrect" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><label name="ptitle">The linked question has a different name in the database</label></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Current Name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="currentname" id="qcorrect_answer_cname"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Database Name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="dbasename" id="qcorrect_answer_dbname"></label>
+                            </div>
+                        </div>
+                </div>
+                <hr>
+                <p>Check the question has it been renamed but not submitted?</p>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal" id="qcorrect_answer_cancel">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW is question name correct  -->
+
+<!-- VIEW is question name correct  -->
+<div id="modal_qdelete_confirm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><label name="ptitle">Make question inactive</label></h5>
+            </div>
+            <div class="modal-body">
+
+                <p>This will make the question permanently inactive. Do you wish to proceed?</p>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal" id="qcorrect_answer_cancel">Cancel</button>
+                <button type="button" class="btn bg-purple-400" data-dismiss="modal" id="qcorrect_answer_confirm">Confirm</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW is question name correct  -->
+
+
+{% endblock %} {% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<!-- <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/row_reorder.min.js' %}"></script>
+<link href="{% static 'assets/js/base/editor/dist/summernote.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/editor/dist/summernote.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/core/libraries/jquery_ui/full.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/switch.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/base/fuse/fuse.min.js' %}"></script>
+
+<!-- Update once development completed -->
+<!--script type="text/javascript" src="{% static 'assets/js/base/hinyango/hinyango_q_and_a_parsing.js' %}"></script-->
+<!-- Update once development completed -->
+<script type="text/javascript">
+$(function() {
+
+
+    // Setup Impact type fussy search rejection
+    rejection_list = [{match: "Impact Type"}]
+    var options = {
+        shouldSort: true,
+        includeScore: true,
+        threshold: 0.2,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: ["match"]
+    };
+    var fuse = new Fuse(rejection_list, options);
+    //var result = fuse.search("Impact Type");
+
+    $(".styled, .multiselect-container input").uniform({
+        radioClass: 'choice'
+    });
+
+
+    var answertable = null;
+
+
+    // Return data from post
+    var post_data = function(fvar1 = 'No Content', data_pack) {
+
+        var csrftoken = Cookies.get('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Return AJAX promise
+        return $.ajax({
+            type: "POST",
+            url: "{% url 'qaiew' %}", // Insert required URL
+            data: { 'output': JSON.stringify({ output: { request: fvar1, data: data_pack } }) }
+
+        });
+    }
+
+    var getfielddata = function(){
+        var mfields = {};
+        var qna = $('#add_new_question_na_id').prop('checked');
+        mfields['add_new_question_level_id'] = $('#add_new_question_level_id').val();
+        mfields['add_new_question_level_select_id'] = $('#add_new_question_level_select_id').val();
+        if(qna){
+            mfields['add_new_question_na_id'] = 'Yes';
+        }else{
+            mfields['add_new_question_na_id'] = 'No';
+        }
+        mfields['add_new_question_name_id'] = $('#add_new_question_name_id').val();
+
+        ///<p><br></p>
+
+        qdata = $('#add_new_question_question_id').val();
+        if(qdata==='<p><br></p>'){
+            mfields['add_new_question_question_id'] = ''
+        }else{
+            mfields['add_new_question_question_id'] = qdata;
+        }
+        qddata = $('#add_new_question_desc_id').val();
+        if(qddata==='<p><br></p>'){
+            mfields['add_new_question_desc_id'] = ''
+        }else{
+            mfields['add_new_question_desc_id'] = qddata;
+        }
+        //mfields[''] = $('#answer-rank-responsive').val();
+        mfields['new_answers_answer_id'] = $('#new_answers_answer_id').val();
+        mfields['new_answers_desc_id'] = $('#new_answers_desc_id').val();
+        return(mfields);
+    }
+
+
+    /* Events
+       ------
+    */
+
+    var linkedquestion = function(){
+        var question_text = $('#add_new_question_name_id').val();
+
+        // Add search for linked question here
+        var result = fuse.search(question_text);
+
+        if (question_text === "") {
+            $('#new_answers_linked_label').text('No linked question');
+            //$('#answer-ranking-table').hide();
+            $('#add-new-question-submit-btn').prop("disabled", "disabled");
+
+            $('#add-new-answer-add-btn').prop("disabled", "disabled");
+            $('#new_answers_answer_msg').html('');
+            $('#add_new_question_name_msg').html('');
+        }
+        else if(result.length===1){
+            $('#add_new_question_name_msg').html('<label style="color:red;">Question name must be significantly different from Impact Type</label>');
+            $('#add-new-question-submit-btn').prop("disabled", "disabled");
+            $('#add-new-answer-add-btn').prop("disabled", "disabled");
+            $('#new_answers_answer_msg').html('');
+
+        } else {
+            $('#new_answers_linked_label').text($('#add_new_question_name_id').val());
+            //$('#answer-ranking-table').show();
+            $('#add-new-answer-add-btn').prop("disabled", false);
+            $('#add-new-question-submit-btn').prop("disabled", false);
+            $('#new_answers_answer_msg').html('');
+            $('#add_new_question_name_msg').html('');
+        }
+
+    }
+
+    // Answer section linked question connection
+    $('#add_new_question_name_id').on('change keyup paste', function(evt) {
+        linkedquestion();
+    });
+
+
+
+
+
+
+    $(".firstName").on('change keyup paste', function() {
+        var element = $(this);
+        console.log(element);
+        var dataAttribute = $(element).attr("data-someattr");
+        console.log("someattr: " + dataAttribute);
+    });
+
+
+
+
+
+    // Tool title
+    $('#question-management-tool-title').on('click', function(evt) {
+        console.log('QMTT event fired');
+    });
+
+    // Question Types
+    $('#type-new').on('click', function(evt) {
+        remevent();
+
+        $('#type-new-submit-btn').on('click', function(evt) {
+
+            // Check name for null and for already taken
+            var new_type_name = $('#add_new_type_question_type_id').val();
+            var new_type_target = $('#add_new_type_question_level_id').val();
+            var new_type_desc = $('#add_new_type_question_desc_id').val();
+
+            $('#add_new_type_question_desc_msg').html('');
+            $('#add_new_type_question_level_msg').html('');
+            $('#add_new_type_question_name_msg').html('');
+
+            if (new_type_desc === "") {
+                $('#add_new_type_question_desc_msg').html('<label style="color:red;">Description required</label>');
+            }
+
+            if (new_type_target === '') {
+
+                $('#add_new_type_question_level_msg').html('<label style="color:red;">Target required</label>');
+            }
+
+            if (new_type_name === '') {
+                $('#add_new_type_question_name_msg').html('<label style="color:red;">Name required</label>');
+            }
+
+
+            if (new_type_desc !== '' && new_type_target !== '' && new_type_name !== '') {
+
+                var promise = post_data(fvar1 = 'check-new-type',
+                    data_pack = {
+                        name: new_type_name,
+                        target: new_type_target,
+                        desc: new_type_desc
+                    });
+
+                promise.success(function(data) {
+
+                    console.log(data['message'])
+
+                    if (data['message'] === 'Exists') {
+
+                        $('#add_new_type_question_name_msg').html('<label style="color:red;">Name already exists</label>');
+
+                    } else {
+                        // Do something on success
+
+                        $('#add_new_type_question_desc_msg').html('');
+                        $('#add_new_type_question_level_msg').html('');
+                        $('#add_new_type_question_name_msg').html('');
+
+                        $('#add_new_type_question_level_id').val('');
+                        $('#add_new_type_question_type_id').val('');
+                        $('#add_new_type_question_desc_id').summernote('code', '');
+
+                        new PNotify({
+                            title: 'Success',
+                            text: 'New type added successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+                    }
+                });
+
+                promise.error(function(err) {
+                    // Report error move on
+                    reporterror(err);
+                });
+            }
+        });
+
+        // Unbind submit button handler when not in use
+        $('#type-new-modal').on('hide.bs.modal', function() {
+            $('#type-new-submit-btn').unbind();
+        })
+
+        // Launch modal
+        $('#type-new-modal').modal('show');
+
+    });
+
+    $('#type-delete').on('click', function(evt) {
+        remevent();
+
+        // Disable the question type until target chosen (Project or Change)
+        $('#delete-question-type-id').attr('disabled', 'disabled');
+        // Fill modal with list of names
+        var promise = post_data(fvar1 = 'get-type-names-ex');
+
+        var hold_data = '';
+
+        promise.success(function(data) {
+
+            hold_data = data['message'];
+
+            // Remove all items from the list and start again so no double ups
+            $('#delete-question-type-id').find('option').remove().end();
+            $('#delete_type_question_target_id').val('');
+
+            // Add default
+            $('#delete-question-type-id').append('<option value="">--Please choose an option--</option>');
+
+            // Add a bunch of items
+            $.each(hold_data, function(i, item) {
+
+                $('#delete-question-type-id').append($('<option>', {
+                    value: item.id,
+                    text: item.question_type
+                }));
+            });
+            // Set to default
+            $('#delete-question-type-id').val('');
+
+            // Act when the target changes (Project or Change)
+            $('#delete_type_question_target_id').on('change', function(event) {
+
+
+                // Immediately set question type to default stops erroneous selects on return
+                $('#delete-question-type-id').val('');
+
+                var item_list = $('#delete_type_question_target_id').val();
+
+                // Act if target not the default
+                if (item_list !== '') {
+
+                    // For all options
+                    $.each(hold_data, function(i, item) {
+
+                        // Enable all options and then selectively disable when not target
+                        $('#delete-question-type-id option[value="' + item.id + '"]').removeAttr('disabled');
+
+                        if (item.question_level !== item_list) {
+
+                            $('#delete-question-type-id option[value="' + item.id + '"]').attr('disabled', 'disabled');
+
+                        }
+
+                    });
+
+                    // Enable previously disabled type select
+                    $('#delete-question-type-id').removeAttr('disabled');
+
+                } else {
+
+                    // Disable type and set to default helps stop erroneous selects on return
+                    $('#delete-question-type-id').attr('disabled', 'disabled');
+                    $('#delete-question-type-id').val('');
+                }
+
+            });
+
+        });
+
+        // Fail with message
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+        // On selection act
+        $('#type-delete-submit-btn').on('click', function(evt) {
+
+            var selected_id = $('#delete-question-type-id').val();
+
+            var promise = post_data(fvar1 = 'delete_selected_type', data_pack = selected_id);
+
+            promise.success(function(data) {
+
+                if (data['outcome'] == 'success') {
+                    new PNotify({
+                        title: 'Success',
+                        text: 'Type deleted successfully',
+                        type: 'success',
+                        icon: 'glyphicon glyphicon-thumbs-up'
+                    });
+
+                } else {
+                    new PNotify({
+                        title: 'Warning',
+                        text: 'Type was not deleted check with administrator',
+                        type: 'info',
+                        icon: 'glyphicon glyphicon-warning-sign'
+                    });
+
+                }
+
+            });
+
+            promise.error(function(err) {
+                // Report error move on
+                reporterror(err);
+            });
+
+        });
+
+
+        $('#modal_delete_question_type_id').on('hide.bs.modal', function() {
+            $('#type-delete-submit-btn').unbind();
+        })
+
+        $('#modal_delete_question_type_id').modal('show');
+        // Working on delete question type modal
+    });
+
+    $('#type-list').on('click', function(evt) {
+        // Send request for type list
+        remevent();
+
+        var promise = post_data(fvar1 = 'get-type-list');
+
+        promise.success(function(data) {
+            // Do something on success
+
+            if (!$.fn.DataTable.isDataTable('#question-type-list-responsive')) {
+
+                var typetable = $('#question-type-list-responsive').DataTable({
+                    dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+                    rowReorder: false,
+                    data: data['data'],
+                    paging: true,
+                    info: false,
+                    searching: true,
+                    columns: [{ title: "Id" }, { title: "Question Type" }, { title: "Description" }, { title: "Target" }],
+                    columnDefs: [{
+                        targets: 2,
+                        render: function(data, type, row, meta) {
+                            return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Question Type Description" data-pdesc=\'' + data + '\'>View...</a>';
+                        }
+                    }]
+
+                });
+
+
+
+                $('#question-type-list-table').show();
+
+                $('#modal_view_snote').on('show.bs.modal', function(event) {
+
+                    var button = $(event.relatedTarget);
+                    var ptitle = button.data('ptitle');
+                    var pdesc = button.data('pdesc');
+
+                    var modal = $(this);
+                    modal.find('label[name="ptitle"]').text(ptitle);
+
+                    $("#sn_view_div").html(pdesc);
+
+
+                });
+
+
+            }
+
+        });
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+    });
+
+    // ----------------------------
+    // START New Question Add event
+    // ----------------------------
+    $('#question-new').on('click', function(evt) {
+
+        remevent();
+
+        // Change modify to add and disable
+        $('#add-new-question-submit-btn').text('Add');
+        $('#add-new-question-submit-btn').prop("disabled", "disabled");
+
+        // ------------------------------------------------------------------------------
+        // START OF THE COPY
+        // ------------------------------------------------------------------------------
+
+        // Fill type select before checking to see if form can be shown (tradeoff)
+
+        // Internal Question New
+        $('#add_new_question_level_select_id').attr('disabled', 'disabled');
+
+
+        // Internal Question New
+        var hold_data = '';
+        // Internal Question New
+        var promise = post_data(fvar1 = 'get-type-names-inc');
+
+        // START Internal Question add Promise Success
+        promise.success(function(data) {
+
+            hold_data = data['message'];
+
+            // Remove all items from the list and start again so no double ups
+            $('#add_new_question_level_select_id').find('option').remove().end();
+            $('#add_new_question_level_id').val('');
+
+            // Add default
+            $('#add_new_question_level_select_id').append('<option value="">--Please choose an option--</option>');
+
+            $.each(hold_data, function(i, item) {
+                $('#add_new_question_level_select_id').append($('<option>', {
+                    value: item.id,
+                    text: item.question_type
+                }));
+            });
+
+            // Set to default
+            $('#add_new_question_level_select_id').val('');
+
+            // Act when the target changes (Project or Change)
+            $('#add_new_question_level_id').on('change', function(event) {
+
+
+                // Immediately set question type to default stops erroneous selects on return
+                $('#add_new_question_level_select_id').val('');
+
+                var item_list = $('#add_new_question_level_id').val();
+
+                // Act if target not the default
+                if (item_list !== '') {
+
+                    // For all options
+                    $.each(hold_data, function(i, item) {
+
+                        // Enable all options and then selectively disable when not target
+                        $('#add_new_question_level_select_id option[value="' + item.id + '"]').removeAttr('disabled');
+
+                        if (item.question_level !== item_list) {
+
+                            $('#add_new_question_level_select_id option[value="' + item.id + '"]').attr('disabled', 'disabled');
+
+                        }
+
+                    });
+
+                    // Enable previously disabled type select
+                    $('#add_new_question_level_select_id').removeAttr('disabled');
+
+                } else {
+
+                    // Disable type and set to default helps stop erroneous selects on return
+                    $('#add_new_question_level_select_id').attr('disabled', 'disabled');
+                    $('#add_new_question_level_select_id').val('');
+                }
+
+            });
+
+        });
+        // END Internal Question add Promise Success
+
+        // START Internal Question add Promise Error
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+        // END Internal Question add Promise Error
+
+
+
+        // START Internal Question add Promise Success
+        // Check to see that at least one question type has been loaded
+        var promise = post_data(fvar1 = 'get-type-names-inc');
+
+        // START Internal Question add Promise Success A0001
+        promise.success(function(data) {
+
+            // In promise A0001
+            hold_data = data['message'];
+
+            if (hold_data.length > 0) {
+                // There are question types loaded clear page load form
+                $('#new-question-form').show();
+                // Manage inputs
+                $('#add-new-question-submit-btn').on('click', function(evt) {
+                    $('#add_new_question_level_msg').html('');
+                    $('#add_new_question_name_msg').html('');
+                    $('#add_new_question_desc_msg').html('');
+                    $('#add_new_question_question_msg').html('');
+                    $('#add_new_question_level_select_msg').html('');
+                    var qtarget = $('#add_new_question_level_id').val();
+                    var qna = $('#add_new_question_na_id').prop('checked');
+                    var qname = $('#add_new_question_name_id').val();
+                    var qdesc = $('#add_new_question_desc_id').val();
+                    var qquestion = $('#add_new_question_question_id').val();
+                    var qlevel = $('#add_new_question_level_select_id').val();
+                    if (qlevel === '') {
+                        $('#add_new_question_level_select_msg').html('<label style="color:red;">Type required</label>');
+
+                    }
+
+                    if (qtarget === '') {
+
+                        $('#add_new_question_level_msg').html('<label style="color:red;">Target required</label>');
+
+                    }
+
+                    if (qname === '') {
+
+                        $('#add_new_question_name_msg').html('<label style="color:red;">Name required</label>');
+
+                    }
+
+                    if (qdesc === '') {
+
+                        $('#add_new_question_desc_msg').html('<label style="color:red;">Description required</label>');
+
+                    }
+                    if (qquestion === '') {
+
+                        $('#add_new_question_question_msg').html('<label style="color:red;">Question required</label>');
+
+                    }
+
+                    if (qtarget !== '' && qname !== '' && qdesc !== '' && qquestion !== '' && qlevel !== '') {
+
+                        var q_promise = post_data(fvar1 = 'check-question-name', data_pack = qname);
+
+                        q_promise.success(function(data) {
+
+                            if (data['message'][0] === 'yes') {
+                                $('#add_new_question_name_msg').html('<label style="color:red;">Question name exists</label>');
+                            } else {
+                                var q_data_p = post_data(fvar1 = 'save-question', data_pack = {
+                                    target: qtarget,
+                                    not_applicable: qna,
+                                    name: qname,
+                                    desc: qdesc,
+                                    question: qquestion,
+                                    level: qlevel
+                                });
+
+                                q_data_p.success(function(data) {
+
+
+                                    if (data['outcome'] == 'success') {
+                                        new PNotify({
+                                            title: 'Success',
+                                            text: 'Question added successfully',
+                                            type: 'success',
+                                            icon: 'glyphicon glyphicon-thumbs-up'
+                                        });
+
+
+                                    } else {
+                                        new PNotify({
+                                            title: 'Warning',
+                                            text: 'Question was not saved check with administrator',
+                                            type: 'info',
+                                            icon: 'glyphicon glyphicon-warning-sign'
+                                        });
+
+                                    }
+
+
+                                });
+
+                                q_data_p.error(function(err) {
+                                    // Report error move on
+                                    reporterror(err);
+                                });
+
+                            }
+                        });
+
+                        q_promise.error(function(err) {
+                            // Report error move on
+                            reporterror(err);
+                        });
+
+                    }
+
+                })
+
+            } else {
+
+                // No types error out
+                new PNotify({
+                    title: 'Error',
+                    text: 'There are no types added. Create at least one each for projects and impacts.',
+                    type: 'error',
+                    icon: 'glyphicon glyphicon-exclamation-sign',
+                    delay: 20000
+                });
+
+
+            }
+
+        });
+
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+
+    // Add answer when enter is pressed
+    $('#new_answers_answer_id').on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            $('#add-new-answer-add-btn').trigger('click');
+        }
+    });
+
+    // ----------------------------
+    // START New Question Add event
+    // ============================
+
+    // Add new answer event handler
+    // REF ANSWER BUTTON NEW ****
+    $('#add-new-answer-add-btn').on('click', function(evt) {
+
+        var qname = $('#add_new_question_name_id').val();
+        var aval = $('#new_answers_answer_id').val();
+        var adesc = $('#new_answers_desc_id').val();
+        // Check to see if answer exists
+        var q_promise = post_data(fvar1 = 'check-question-name', data_pack = qname);
+
+        // Question checking
+        q_promise.success(function(data) {
+
+            if (data['message'][0] === 'yes' && data['message'][1] === 'no') {
+
+                // Add datatable if it doesn't exist add row if it does
+                if (!$.fn.DataTable.isDataTable('#answer-rank-responsive')) {
+
+                    var answertable = $('#answer-rank-responsive').DataTable({
+                        //rowReorder: true,
+                        rowReorder: {
+                            selector: 'td:nth-child(2)'
+                        },
+                        responsive: true,
+                        data: [
+                            [1, aval, adesc]
+                        ],
+                        paging: false,
+                        info: false,
+                        searching: false,
+                        columns: [{ title: "Rank" }, { title: "Answer" }, { title: "Desc" }, { title: "Delete" }],
+                        "columnDefs": [
+                            { "width": "20%", "targets": 0 },
+                            { "width": "5%", "targets": 2 },
+                            { "width": "5%", "targets": 3 },
+                            {
+                                targets: 2,
+                                render: function(data, type, row, meta) {
+                                    return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Answer Description" data-pdesc=\'' + data + '\'>View...</a>';
+                                }
+                            },
+                            {
+                                targets: 3,
+                                render: function(data, type, row, meta) {
+                                    return '<div style="text-align: center"><button type="button" class="btn btn-link" data-bid=' + row[0] + '><i class="icon-trash"></i></button></div>';
+                                }
+                            }
+                        ]
+
+                    });
+
+
+                    addanswerdel(answertable);
+
+                    $('#answer-ranking-table').show();
+                    answertable.columns.adjust().draw();
+                } else {
+
+                    var answertable = $('#answer-rank-responsive').DataTable();
+
+                    var already_added = false;
+
+                    answertable.rows().every(function() {
+                        var row = this.data();
+                        if (row[1] === aval) {
+                            already_added = true;
+                        }
+                    });
+
+                    if (already_added === false) {
+
+                        var numbrows = answertable.rows().count() + 1;
+
+                        answertable.row.add([numbrows, aval, adesc]).draw();
+                        $('#new_answers_answer_msg').html('');
+                        $('#add-new-answer-submit-btn').removeAttr('disabled');
+
+                    } else {
+
+                        $('#new_answers_answer_msg').html('<label style="color:red;">Answer already in ranking</label>');
+
+                    }
+
+
+                }
+
+
+
+            } else {
+
+                //queston exists yes no answers
+                // question exists and yes answers
+                //no question
+
+                if (data['message'][1] === 'yes') {
+                    $('#new_answers_answer_msg').html('<label style="color:red;">Already answers in database!</label>');
+                } else {
+                    $('#new_answers_answer_msg').html('<label style="color:red;">Question does not exist!</label>');
+                }
+            }
+
+
+
+        });
+
+        // 
+        q_promise.error(function(err) {
+            // Question doesn't exist 
+            reporterror(err);
+        });
+
+
+    });
+
+
+
+
+    // ADD NEW ANSWER SUBMIT BUTTON
+    // ----------------------------
+    $('#add-new-answer-submit-btn').on('click', function(evt) {
+        console.log('Submit answers event fired');
+
+
+        var answertable = $('#answer-rank-responsive').DataTable();
+
+        var qname = $('#add_new_question_name_id').val();
+
+        var atdata = answertable.data();
+
+        var numbrows = answertable.rows().count();
+
+        var i;
+        var new_array = [];
+        for (i = 0; i < numbrows; i++) {
+            console.log(atdata[i]);
+            new_array[i] = atdata[i];
+        }
+
+        output = { question: qname, dataarray: new_array }
+
+
+        // Submit Promise init
+        var submit_promise = post_data(fvar1 = 'submit-answer-data', data_pack = output);
+        // END Submit Promise init
+
+        // Submit Promise Success
+        submit_promise.success(function(data) {
+
+                            new PNotify({
+                            title: 'Success',
+                            text: 'Answers created successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+        });
+        // END Submit Promise Success
+
+        // Submit Promise Error
+        submit_promise.error(function(err) {
+            // Question doesn't exist 
+            reporterror(err);
+        });
+        // END Submit Promise Error
+
+
+
+
+    });
+    // END ADD NEW ANSWER SUBMIT BUTTON
+
+
+
+    });
+
+
+
+    // ---------------------------
+    // START Modify Question Event
+    // ---------------------------
+    $('#question-modify').on('click', function(evt) {
+        // Logging event
+        remevent();
+
+        // Modify question search parameters
+        var hold_data = '';
+
+        // Initialise object for quick data select
+        var qdict = {};
+
+        // Get questions as data
+        var promise = post_data(fvar1 = 'get-question-data');
+
+        // START get question data process
+        promise.success(function(data) {
+
+            hold_data = data['message'][0];
+            // Remove all items from the list and start again so no double ups
+            $('#modify_search_question_dropdown_id').find('option').remove().end();
+            // Add default
+            $('#modify_search_question_dropdown_id').append('<option value="">--Please choose a question--</option>');
+
+            // Add options to drop down
+            $.each(hold_data, function(i, item) {
+
+                // Add items to drop down
+                $('#modify_search_question_dropdown_id').append($('<option>', {
+                    value: item.id,
+                    text: item.name
+                }));
+
+                // Create array by value
+                qdict[item.id] = item;
+            });
+
+
+            // Set to default
+            $('#modify_search_question_dropdown_id').val('');
+
+
+        });
+
+        // Report any errors
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+
+        $('#modify_search_submit_btn').on('click', function(event) {
+            $('#modal_question_search').modal('hide');
+
+
+            fillmodifyform(qdict[$('#modify_search_question_dropdown_id').val()])
+
+            $('#new-question-form').show();
+
+        });
+
+        // Display search for question modal 
+        $('#modal_question_search').modal('show');
+
+    });
+    // ---------------------------
+    // END Modify Question Event
+    // ===========================
+
+
+    // ---------------------------
+    // START get type data
+    //----------------------------
+
+    var gettypedata = function(idselected,level){
+
+
+        var hold_data = '';
+        // Internal Question New
+        var promise = post_data(fvar1 = 'get-type-names-inc');
+
+        // START Internal Question add Promise Success
+        promise.success(function(data) {
+
+            hold_data = data['message'];
+
+            // Add default
+            $('#add_new_question_level_select_id').append('<option value="">--Please choose an option--</option>');
+
+            var selected_value = false;
+
+            $.each(hold_data, function(i, item) {
+
+                selected_value = false;
+                disabled_value = true;
+                if(item.question_type===idselected){
+                    selected_value = true;
+                }
+                if(item.question_level===level){
+                    disabled_value = false;
+                }
+
+                $('#add_new_question_level_select_id').append($('<option>', {
+                    value: item.question_type,
+                    text: item.question_type,
+                    selected: selected_value,
+                    disabled: disabled_value
+                }));
+
+
+            });
+
+
+
+        });
+
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+    }
+
+    // ---------------------------
+    // END get type data
+    // ===========================
+
+    // ------------------------------------
+    // START Add delete row to answer table
+    // ------------------------------------
+
+    var addanswerdel = function(ttarget){
+                    $('#answer-rank-responsive tbody').on('click', 'td', function() {
+                        var rowindex = ttarget.cell(this).index()['row']
+
+                        var colindex = ttarget.cell(this).index()['column']
+
+                        if(colindex==3){
+
+                        ttarget.row(rowindex).remove(); //.draw();
+
+                        rowcount = 1;
+
+                        ttarget.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                            var data = this.data();
+
+                            data[0] = rowcount;
+                            rowcount = rowcount + 1;
+                            this.data(data);
+                        });
+
+                        ttarget.draw();
+
+
+                        var numbrows = ttarget.rows().count();
+
+
+                        if (numbrows < 2) {
+
+                            $('#add-new-answer-submit-btn').attr('disabled', 'disabled');
+
+                        }else{
+                            $('#add-new-answer-submit-btn').prop('disabled', false);
+                        }
+
+                    }
+
+
+
+                    });
+
+    }
+
+
+    var addquestiondel = function(ttarget){
+                    $('#question-delete-list-responsive tbody').on('click', 'td', function() {
+                        var rowindex = ttarget.cell(this).index()['row']
+
+                        var colindex = ttarget.cell(this).index()['column']
+
+                        if(colindex==6){
+
+                        $('#qcorrect_answer_confirm').on('click',function(evt){
+
+                            $('#qcorrect_answer_confirm').unbind('click');
+
+                            var delid = ttarget.row(rowindex).data()[0];
+
+
+                            ttarget.row(rowindex).remove();
+
+                            rowcount = 1;
+
+                            ttarget.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                                var data = this.data();
+
+                                data[0] = rowcount;
+                                rowcount = rowcount + 1;
+                                this.data(data);
+                            });
+
+                            ttarget.draw();
+
+
+                            var numbrows = ttarget.rows().count();
+
+                            // Make db question inactive
+                            var promise = post_data(fvar1 = 'question-inactive', data_pack = delid);
+
+
+                            promise.success(function(data){
+                                console.log(data);
+
+
+                            });
+                            promise.error(function(err){
+                                // Report error move on
+                                reporterror(err);
+                            });
+
+
+
+                        });
+
+
+                        $('#modal_qdelete_confirm').modal('show');
+
+                    }
+
+
+
+                    });
+
+    }
+    // ------------------------------------
+    // END Add delete row to answer table
+    // ------------------------------------
+
+$('#modal_view_adesc').on('show.bs.modal', function(event) {
+
+                        var button = $(event.relatedTarget);
+                        var ptitle = button.data('ptitle');
+                        var pdesc = button.data('pdesc');
+
+                        var modal = $(this);
+                        modal.find('label[name="ptitle"]').text(ptitle);
+
+                        $("#sn_view_div").html(pdesc);
+
+
+                    });
+
+
+var remevent = function(){
+
+$('#type-new-submit-btn').unbind( "click" );
+$('#type-delete-submit-btn').unbind( "click" );
+$('#add-new-question-submit-btn').unbind( "click" );
+$('#add-new-answer-add-btn').unbind( "click" );
+$('#add-new-answer-submit-btn').unbind( "click" );
+$('#modify_search_submit_btn').unbind( "click" );
+$('#answer-rank-responsive tbody').unbind( "click" );
+$('#question-delete-list-responsive tbody').unbind( "click" );
+
+}
+
+    // ---------------------------
+    // START get answer data
+    //----------------------------
+
+    var getanswerdata = function(qname){
+
+        var hold_data = '';
+        // Internal Question New
+        output = {question:qname};
+
+        var promise = post_data(fvar1 = 'get-answer-data', data_pack = output);
+
+        // START Internal Question add Promise Success
+        promise.success(function(data) {
+            hold_data = data['message'];
+
+            // Prepare to add answers
+            if (!$.fn.DataTable.isDataTable('#answer-rank-responsive')) {
+
+                    var answertable = $('#answer-rank-responsive').DataTable({
+                        //rowReorder: true,
+                        rowReorder: {
+                            selector: 'td:nth-child(2)'
+                        },
+                        responsive: true,
+                        // data: [
+                        //     [hold_data['arank'], hold_data['answers'], hold_data['description']]
+                        // ],
+                        paging: false,
+                        info: false,
+                        searching: false,
+                        columns: [{ title: "Rank" }, { title: "Answer" }, { title: "Desc" }, { title: "Delete" }],
+                        "columnDefs": [
+                            { "width": "20%", "targets": 0 },
+                            { "width": "5%", "targets": 2 },
+                            { "width": "5%", "targets": 3 },
+                            {
+                                targets: 2,
+                                render: function(data, type, row, meta) {
+                                    return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Answer Description" data-pdesc=\'' + data + '\'>View...</a>';
+                                }
+                            },
+                            {
+                                targets: 3,
+                                render: function(data, type, row, meta) {
+                                    return '<div style="text-align: center"><button type="button" class="btn btn-link" data-bid=' + row[0] + '><i class="icon-trash"></i></button></div>';
+                                }
+                            }
+                        ]
+
+                    });
+            }else{
+                $('#answer-rank-responsive').DataTable().clear();
+            }
+
+
+            // Add data to datatable
+            var answertable = $('#answer-rank-responsive').DataTable();
+
+            $.each(hold_data, function(i, item) {
+                answertable.row.add([item.arank, item.answers, item.description]).draw();
+            });
+
+            answertable.draw();
+
+            // Row delete code needs to 
+            addanswerdel(answertable);
+
+            var numbrows = answertable.rows().count();
+
+
+            if (numbrows < 2) {
+                $('#add-new-answer-submit-btn').attr('disabled', 'disabled');
+            }else{
+                $('#add-new-answer-submit-btn').prop('disabled', false);
+            }
+
+            // Display table after data loaded
+            $('#answer-ranking-table').show();
+
+
+        });
+
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+    }
+
+    // ---------------------------
+    // END get answer data
+    // ===========================
+
+    var updatedata = function(updatedata){
+        var promise = post_data(fvar1 = 'load-modified-question', data_pack = updatedata);
+        console.log('sending to server');
+        promise.success(function(data){
+            console.log(data);
+        });
+        promise.error(function(err){
+            reporterror(err);
+        });
+    }
+
+    // ---------------------------
+    // START Update answer data
+    // ---------------------------
+
+    var updateanswers = function(updatedata){
+ 
+        var promise = post_data(fvar1 = 'check-question-name-id', data_pack = updatedata);
+
+        // START Internal Question add Promise Success
+        promise.success(function(data){
+            hold_data = data['message'];
+            console.log(hold_data);
+
+            if(hold_data[0]==='No Match'){
+                console.log('no match');
+
+                $('#qcorrect_answer_cname').text(hold_data[1]);
+                $('#qcorrect_answer_dbname').text(hold_data[2]);
+
+                $('#modal_view_qcorrect').modal('show');                
+
+            }else{
+                new PNotify({
+                            title: 'Success',
+                            text: 'Answers modified successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+
+            }
+        });
+        promise.error(function(data){
+            reporterror();
+        });
+
+    }
+
+
+    // ---------------------------
+    // START Fill question form
+    // ---------------------------
+    var fillmodifyform = function(filldata){
+
+        // Need to clear all forms and events
+
+        $('#add_new_question_level_id').val(filldata['level']);
+        $('#add_new_question_level_id').prop('disabled',true);
+
+        gettypedata(filldata['type'],filldata['level']);
+
+        $('#add_new_question_level_select_id').val(filldata['type']).prop('selected', true);
+
+        if(filldata['hasna']==='Yes'){
+            $('#add_new_question_na_id').prop('checked',true);
+        }else{
+            $('#add_new_question_na_id').prop('checked',false);
+        }
+
+        $('#add_new_question_name_id').val(filldata['name']);
+
+        // Make sure name is updated with question
+        linkedquestion();
+
+        // Remove the generic summernote extension I think that this should probably be changed
+        $('#add_new_question_question_id').summernote('destroy');
+        $('#add_new_question_question_id').text(filldata['question']);
+        $('#add_new_question_question_id').summernote({
+                airMode: true,
+                placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+                disableDragAndDrop: true,
+                popover: {
+                  air: [
+                    ['Font',['fontname','fontsize','color','bold','italic','underline','strikethrough','superscript','subscript','clear']],
+                    ['Para',['style','ol','ul','paragraph','height']],
+                    ['Insert',['link','table','hr']],
+                    ['Misc',['fullscreen','undo','redo','help']]
+                  ]
+                }
+        });
+
+
+        $('#add_new_question_desc_id').summernote('destroy');
+        $('#add_new_question_desc_id').text(filldata['description']);
+        $('#add_new_question_desc_id').summernote({
+                airMode: true,
+                placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+                disableDragAndDrop: true,
+                popover: {
+                  air: [
+                    ['Font',['fontname','fontsize','color','bold','italic','underline','strikethrough','superscript','subscript','clear']],
+                    ['Para',['style','ol','ul','paragraph','height']],
+                    ['Insert',['link','table','hr']],
+                    ['Misc',['fullscreen','undo','redo','help']]
+                  ]
+                }
+        });
+
+        getanswerdata(filldata['name']);
+
+        // Change add to modify
+        $('#add-new-question-submit-btn').text('Modify');
+
+        // Add answer when enter is pressed
+    $('#new_answers_answer_id').on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            $('#add-new-answer-add-btn').trigger('click');
+        }
+    });
+
+
+
+    $('#add-new-question-submit-btn').on('click', function(evt) {
+
+        console.log('submitting data');
+
+        $('#add_new_question_name_msg').html('');
+        $('#add_new_question_level_select_msg').html('');
+        $('#add_new_question_desc_msg').html('');
+        $('#add_new_question_question_msg').html('');
+
+        var haschanged = false;
+        var fielddata = getfielddata();
+
+        if (fielddata['add_new_question_level_select_id'] === '') {
+            $('#add_new_question_level_select_msg').html('<label style="color:red;">Type required</label>');
+        }
+        if (fielddata['add_new_question_name_id'] === '') {
+            $('#add_new_question_name_msg').html('<label style="color:red;">Name required</label>');
+        }
+        if (fielddata['add_new_question_desc_id'] === '') {
+            $('#add_new_question_desc_msg').html('<label style="color:red;">Description required</label>');
+        }
+        if (fielddata['add_new_question_question_id'] === '') {
+            $('#add_new_question_question_msg').html('<label style="color:red;">Question required</label>');
+        }
+
+
+        if (fielddata['add_new_question_level_select_id'] !== '' && fielddata['add_new_question_name_id'] !== '' && fielddata['add_new_question_desc_id'] !== '' && fielddata['add_new_question_question_id'] !== '') {
+            console.log('no nulls');
+        // Check what has changed only issue server request when something has changed
+        // 1. Match contents of filldata with contents of fields
+        if(filldata['description']===fielddata['add_new_question_desc_id'] && 
+           filldata['name']===fielddata['add_new_question_name_id'] &&
+           filldata['hasna']===fielddata['add_new_question_na_id'] &&
+           filldata['type']===fielddata['add_new_question_level_select_id'] &&
+           filldata['question']===fielddata['add_new_question_question_id']){
+            new PNotify({
+                title: 'Warning',
+                text: 'Nothing has changed',
+                type: 'info',
+                icon: 'glyphicon glyphicon-warning-sign'
+            });
+        }else{
+            console.log('Checking name change');
+            // Has the name changed? Check to see it doesn't already exist
+            if(filldata['name']!==fielddata['add_new_question_name_id']){
+                 var promise = post_data(fvar1 = 'check-question-name', data_pack = fielddata['add_new_question_name_id']);
+
+                // START Internal Question add Promise Success
+                promise.success(function(data) {
+                    hold_data = data['message'];
+                    console.log(hold_data);
+
+                    if(hold_data[0]==='yes'){
+
+                        // Set warning exit
+                        $('#add_new_question_name_msg').html('<label style="color:red;">Another question with that name already exists.</label>');
+
+                    }else{
+
+                        updatedata(data_pack={id: filldata['id'],
+                                              not_applicable: fielddata['add_new_question_na_id'],
+                                              name: fielddata['add_new_question_name_id'],
+                                              desc: fielddata['add_new_question_desc_id'],
+                                              question: fielddata['add_new_question_question_id'],
+                                              level: fielddata['add_new_question_level_select_id'],
+                                              target: fielddata['add_new_question_level_id']});
+
+                        new PNotify({
+                            title: 'Success',
+                            text: 'Question modified successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+
+                    }
+
+                });
+
+                promise.error(function(err) {
+                // Report error move on
+                    reporterror(err);
+                });
+
+            } else {
+
+                        updatedata(data_pack={id: filldata['id'],
+                                              not_applicable: fielddata['add_new_question_na_id'],
+                                              name: fielddata['add_new_question_name_id'],
+                                              desc: fielddata['add_new_question_desc_id'],
+                                              question: fielddata['add_new_question_question_id'],
+                                              level: fielddata['add_new_question_level_select_id'],
+                                              target: fielddata['add_new_question_level_id']});
+
+                        new PNotify({
+                            title: 'Success',
+                            text: 'Question modified successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+
+            }
+            
+        }
+    }
+        // 2. Has the name changed? If Yes check that question doesn't already exist. If no issue change.
+        // 3. If the name hasn't changed has anything else if yes issue change. If no ignore with a message
+        // 4. 
+
+    });
+
+
+    // ----------------------------
+    // START New Answer Add event
+    // ============================
+
+    // Reference ****
+    $('#add-new-answer-add-btn').on('click', function(evt) {
+
+        var question_name = $('#add_new_question_name_id').val();
+        var new_answer = $('#new_answers_answer_id').val();
+        var new_description = $('#new_answers_desc_id').val();
+        var answertable = $('#answer-rank-responsive').DataTable();
+
+        var already_added = false;
+
+        answertable.rows().every(function() {
+            var row = this.data();
+            if (row[1] === new_answer) {
+                already_added = true;
+            }
+        });
+
+        if (already_added === false) {
+
+            var numbrows = answertable.rows().count() + 1;
+
+            answertable.row.add([numbrows, new_answer, new_description]).draw();
+            $('#new_answers_answer_msg').html('');
+            $('#add-new-answer-submit-btn').removeAttr('disabled');
+
+        } else {
+
+            $('#new_answers_answer_msg').html('<label style="color:red;">Answer already in ranking</label>');
+
+        }     
+
+    });
+
+    // ----------------------------
+    // END New Answer Add event
+    // ============================
+
+
+    $('#add-new-answer-submit-btn').on('click', function(evt) {
+
+        var answertable = $('#answer-rank-responsive').DataTable();
+
+        var atdata = answertable.data();
+
+        var numbrows = answertable.rows().count();
+
+        console.log(filldata);
+
+        var i;
+        var dict = {};
+        for (i = 0; i < numbrows; i++) {
+            dict[atdata[i][1]] = atdata[i]
+        }
+
+        var current_qname = $('#add_new_question_name_id').val();
+
+        data_pack = {name:current_qname,id:filldata['id'],dataarray:dict};
+
+        updateanswers(data_pack);
+
+    });
+
+
+
+    }
+    // ---------------------------
+    // END Fill question form
+    // ===========================
+
+
+
+    // ---------------------------
+    // START Delete Question Event
+    // ---------------------------
+    $('#question-delete').on('click', function(evt) {
+        //console.log('Delete question event fired');
+        remevent();
+
+        var promise = post_data(fvar1 = 'get-question-data');
+
+        promise.success(function(data) {
+            // Do something on success
+
+            hold_data = data['message'][1];
+            //console.log(hold_data);
+
+            if (!$.fn.DataTable.isDataTable('#question-delete-list-responsive')) {
+
+                var typetable = $('#question-delete-list-responsive').DataTable({
+                    rowReorder: false,
+                    data: hold_data,
+                    paging: true,
+                    info: false,
+                    searching: true,
+                                  
+                    columns: [{ title: "Id" }, { title: "Name" }, {title: "Type"},{title: "Question"},{ title: "Description" }, { title: "Target" },{title:"Delete"}],
+                    columnDefs: [{
+                        targets: 3,
+                        render: function(data, type, row, meta) {
+                            return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Question" data-pdesc=\'' + data + '\'>View...</a>';
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: function(data, type, row, meta) {
+                            return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Question Description" data-pdesc=\'' + data + '\'>View...</a>';
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: function(data, type, row, meta) {
+                            return '<div style="text-align: center"><button type="button" class="btn btn-link" data-bid=' + row[0] + '><i class="icon-trash"></i></button></div>';
+                        }
+                    }]
+
+                });
+
+
+
+                
+
+                $('#modal_view_snote').on('show.bs.modal', function(event) {
+
+                    var button = $(event.relatedTarget);
+                    var ptitle = button.data('ptitle');
+                    var pdesc = button.data('pdesc');
+
+                    var modal = $(this);
+                    modal.find('label[name="ptitle"]').text(ptitle);
+
+                    $("#sn_view_div").html(pdesc);
+
+
+                });
+
+                addquestiondel(typetable);
+                $('#question-delete-table').show();
+
+
+            }
+
+        });
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+
+    });
+    // ---------------------------
+    // END Modify Question Event
+    // ===========================
+
+
+
+
+    $('#question-rank').on('click', function(evt) {
+        console.log('Rank Event');
+        remevent();
+
+        var promise = post_data(fvar1 = 'get-qrank-data');
+
+        promise.success(function(data) {
+            // Do something on success
+
+            hold_data = data['message']['change'];
+            console.log(hold_data);
+
+            if (!$.fn.DataTable.isDataTable('#question-rank-list-responsive')) {
+
+                var typetable = $('#question-rank-list-responsive').DataTable({
+                    dom: '<"datatable-header"l><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+                    rowReorder: {
+                            selector: 'td:nth-child(2)'
+                        },
+                    responsive: true,
+                    data: hold_data,
+                    paging: false,
+                    info: false,
+                    searching: true,
+                                  
+                    columns: [{ title: "Rank" },{ title: "Name" }, {title: "Type"},{title: "Question"},{ title: "Description" }, { title: "Target" },{title:"Id",visible:false}],
+                    columnDefs: [{
+                        targets: 3,
+                        render: function(data, type, row, meta) {
+                            return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Question" data-pdesc=\'' + data + '\'>View...</a>';
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: function(data, type, row, meta) {
+                            return '<a data-toggle="modal" data-target="#modal_view_adesc" data-ptitle="Question Description" data-pdesc=\'' + data + '\'>View...</a>';
+                        }
+                    }]
+
+                });
+
+
+                        $("#target-type-check-box").bootstrapSwitch({
+                            onSwitchChange: function(e,state){
+
+                                var togglestate = $('#target-type-check-box').bootstrapSwitch('state');
+                                console.log(togglestate);
+
+                                var typetable = $('#question-rank-list-responsive').DataTable();
+
+                                typetable.clear();
+
+                                if(togglestate === true){
+                                    typetable.rows.add(data['message']['change']);
+                                }else{
+                                    typetable.rows.add(data['message']['project']);
+                                }
+
+                                typetable.draw();
+
+                            }
+                        });
+
+
+                        // Feature addition not yet loaded
+                        // -------------------------------
+                        // $("#all-equal-rank").on('click',function(evt){
+
+                        //     console.log($("#all-equal-rank").prop("checked"));
+                        //     var typetable = $('#question-rank-list-responsive').DataTable();
+
+
+
+                        // });
+
+
+                $('#modal_view_snote').on('show.bs.modal', function(event) {
+
+                    var button = $(event.relatedTarget);
+                    var ptitle = button.data('ptitle');
+                    var pdesc = button.data('pdesc');
+
+                    var modal = $(this);
+                    modal.find('label[name="ptitle"]').text(ptitle);
+
+                    $("#sn_view_div").html(pdesc);
+
+
+                });
+
+                typetable.on( 'row-reorder', function ( e, diff, edit ) {
+
+                    $('#submit-new-q-rank').removeAttr('disabled');
+
+                });
+
+                $('#submit-new-q-rank').on('click',function(evt){
+
+                    // This is a bit weird but I am hoping it works
+                    var typetable = $('#question-rank-list-responsive').DataTable();
+
+                    // Clear the table and load change
+                    typetable.clear();
+                    typetable.rows.add(data['message']['change']);
+                    var col_rank_change = typetable.columns(0).data();
+                    var col_id_change = typetable.columns(6).data();
+
+                    // Clear the table and load project
+                    typetable.clear();
+                    typetable.rows.add(data['message']['project']);
+                    var col_rank_project = typetable.columns(0).data();
+                    var col_id_project = typetable.columns(6).data();
+
+                    outer = [];
+                    for(var i=0;i < col_id_change.length; i++){
+                        
+                        outer.push([col_id_change[i],col_rank_change[i]]);
+                    }
+                    for(var i=0;i < col_id_project.length; i++){
+                        
+                        outer.push([col_id_project[i],col_rank_project[i]]);
+                    }
+
+                    // Prepare to send data to the server
+                    var promise = post_data(fvar1 = 'save-q-ranking',data_pack = outer);
+
+                    promise.success(function(data) {
+                        new PNotify({
+                            title: 'Success',
+                            text: 'Question ranking uploaded successfully',
+                            type: 'success',
+                            icon: 'glyphicon glyphicon-thumbs-up'
+                        });
+                    });
+                    promise.error(function(err){
+                        reporterror(err);
+                    });
+
+
+                });
+
+                typetable.draw();
+
+                $("#target-type-check-box").trigger( "click");
+
+                $('#question-rank-table').show();
+
+
+
+            }
+
+        });
+        promise.error(function(err) {
+            // Report error move on
+            reporterror(err);
+        });
+    });
+
+    // ---------------------------
+    // START Search Question Event
+    // ---------------------------
+    $('#question-search').on('click', function(evt) {
+        console.log('Search question event fired');
+    });
+    // ---------------------------
+    // END Search Question Event
+    // ===========================
+
+    // ---------------------------
+    // START Help Event
+    // ---------------------------
+    $('#help-link').on('click', function(evt) {
+        console.log('Help event fired');
+    });
+    // ---------------------------
+    // END Help Event
+    // ---------------------------
+
+    // -----------------------
+    // START Utility functions
+    // -----------------------
+    var reporterror = function(err) {
+        // Do something on error
+        if (err.status === 500) {
+            new PNotify({
+                title: 'Error',
+                text: 'Server Error - contact administrator',
+                type: 'error',
+                icon: 'glyphicon glyphicon-exclamation-sign',
+                delay: 20000
+            });
+        } else {
+            new PNotify({
+                title: 'Warning',
+                text: 'Query returned no data',
+                type: 'info',
+                icon: 'glyphicon glyphicon-warning-sign'
+            });
+        }
+    }
+    // ---------------------
+    // END Utility functions
+    // =====================
+
+
+});
+</script>
+
+<script>
+
+$(function(){
+
+$('.add_hsnote').summernote({
+  airMode: true,
+  placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+  disableDragAndDrop: true,
+  popover: {
+    air: [
+      ['Font',['fontname','fontsize','color','bold','italic','underline','strikethrough','superscript','subscript','clear']],
+      ['Para',['style','ol','ul','paragraph','height']],
+      ['Insert',['link','table','hr']],
+      ['Misc',['fullscreen','undo','redo','help']]
+    ]
+  }
+});
+
+});
+
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+
+				<!-- Side menu section 
+				{% block manage_projects %}
+				<li>
+					<a href="#"><i class="icon-stack2"></i> <span>Manage Projects</span></a>
+					<ul>
+						<li><a href="{% url 'addproject' %}">Add</a></li>
+						<li><a href="#">Delete</a></li>
+						<li><a href="#">Update</a></li>
+					</ul>
+				</li>
+				{% endblock %}
+-->
+
+
+
+					{% block main_content%}
+
+
+
+		<div class="row">
+
+				<div class="col-md-7"> 
+
+
+					<!-- Simple interaction -->
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h5 class="panel-title">Dummy interactive chart</h5>
+							<div class="heading-elements">
+								<ul class="icons-list">
+			                		<li><a data-action="collapse"></a></li>
+			                		<li><a data-action="reload"></a></li>
+			                		<li><a data-action="close"></a></li>
+			                	</ul>
+		                	</div>
+						</div>
+
+						<div class="panel-body">
+
+
+							<div class="checkbox content-group">
+								<label><input type="checkbox" class="toggle-dataset"> Change data set</label>
+							</div>
+
+							<div class="chart-container">
+								<div class="chart" id="d3-simple-interaction"></div>
+							</div>
+						</div>
+					</div>
+					<!-- /simple interaction -->
+				</div>
+
+				<div class="col-md-5">  
+					<!-- Sortable vertical bar chart -->
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h5 class="panel-title">Dummy Pie Chart</h5>
+							<div class="heading-elements">
+								<ul class="icons-list">
+			                		<li><a data-action="collapse"></a></li>
+			                		<li><a data-action="reload"></a></li>
+			                		<li><a data-action="close"></a></li>
+			                	</ul>
+		                	</div>
+						</div>
+
+						<div class="panel-body">
+
+							<div class="chart-container">
+								<div class="chart flex-container" id="d3-donut-arc-tween"></div>
+							</div>
+						</div>
+					</div>
+					<!-- /sortable vertical bar chart -->
+				</div>
+
+		</div>
+
+								<div class="panel panel-white">
+								<div class="panel-heading">
+									<h6 class="panel-title">Projects</h6>
+									<div class="heading-elements">
+										<ul class="icons-list">
+					                		<li><a data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+					                		<li><a data-action="reload" data-popup="tooltip" title="Reload"></a></li>
+					                		<li><a data-action="close" data-popup="tooltip" title="Close"></a></li>
+					                	</ul>
+				                	</div>
+								</div>
+
+						<table class="table datatable-responsive table-bordered table-striped table-hover bg-info-800">
+							<thead>
+										<tr>
+											<th>Id</th>
+											<th>Project Name</th>
+											<th>Description</th>
+											<th>Benefit</th>
+											<th>Changes Pending</th>
+											<th>Date Created</th>
+											<th>Action</th>
+										</tr>
+							</thead>
+							<tbody>
+								    {% for project in projectdata %}
+      
+                                    <tr>
+                                        
+                                      <td>{{ project.id }}</td>
+                                      <td>{{ project.project_name }}</td>
+                                      <td>{{ project.description }}</td>
+                                      <td>{{ project.benefit }}</td>
+                                      <td>Not yet implemented</td>
+                                      <td>{{ project.created_on }}</td>
+
+									  <td class="text-center">
+										<ul class="icons-list">
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+													<i class="icon-menu9"></i>
+												</a>
+
+												<ul class="dropdown-menu dropdown-menu-right">
+													<li><a href="#"><i class="icon-eye"></i> Review</a></li>
+													<li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
+													<li><a href="#"><i class="icon-close2"></i> Close</a></li>
+												</ul>
+											</li>
+										</ul>
+									  </td>
+
+                                      
+                                    </tr>
+                                  
+                                    {% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<!-- /basic responsive configuration -->
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

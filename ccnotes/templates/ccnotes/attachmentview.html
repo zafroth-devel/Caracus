@@ -1,0 +1,159 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Notes{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">View Attachments Project - {{ project_id }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <table id="myTable" class="table datatable-responsive table-bordered table-striped table-hover alpha-slate">
+        <thead>
+            <tr class="bg-slate">
+                <th>Id</th>
+                <th>File Code</th>
+                <th>Attachment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attachment in attached %}
+            <tr>
+                <td>{{ attachment.id }}</td>
+                <td>{{ attachment.filecode }}</td>
+                <td>{{ attachment.attachment }}</td>
+                <td class="text-center">
+                    <ul class="icons-list">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="icon-menu9"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="{% url 'request_download' file_id=attachment.fileid %}"><i class="icon-pencil"></i> Download</a></li>
+                                <li class="divider"></li>
+<li><a data-toggle="modal" data-target="#delete_warning" data-pid="{{ attachment.fileid }}" data-pname="{{ attachment.attachment }}"><i class="icon-pencil"></i> Delete</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+</table>
+</div>
+
+
+<div id="delete_warning" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Delete Attachment!</h5>
+            </div>
+            <form action="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Notes...</h6>
+                    <p>Are you sure you want to permanently delete this attachment?</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>File name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pname"></label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="delete-hidden-name" id="delete-hidden-id" value="file_id">
+                        <input type="hidden" name="delete-hidden-name" id="delete-hidden-id" value="{{ project_id }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400" id='delete-form' data-dismiss="modal" name="deleteattached">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+
+
+
+<script type="text/javascript">
+$('#delete_warning').on('show.bs.modal', function(event) {
+    var addpid = document.getElementById("delete-hidden-id")
+    var button = $(event.relatedTarget)
+    var pid = button.data("pid")
+    var pname = button.data("pname")
+    var modal = $(this)
+    modal.find('label[name="pname"]').text(pname)
+
+    addpid.value = pid
+});
+</script>
+<script type="text/javascript">
+$("#delete-form").on("click", function() {
+
+    var addpid = document.getElementById("delete-hidden-id")
+
+    var fid = addpid.value;
+    var pid = {{ project_id }}
+
+    console.log("WE SEE SOMETHING")
+
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    console.log(csrftoken);
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    console.log(csrftoken);
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'delete_download' %}",
+        data: {
+            'file_id': fid,
+            'project_id': pid
+        }
+
+    });
+
+
+});
+</script>
+<script>
+$('#delete_warning').on('hidden.bs.modal', function () {
+ location.reload();
+})
+</script>
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

@@ -1,0 +1,235 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Message Centre{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Send Message</h6>
+                    <div class="heading-elements">
+                        <!-- Below is not yet implemented -->
+                        <button type="button" class="btn btn-primary" id="id_send_message">Send</button>
+                    </div>
+                </div>
+
+
+                <div class="panel-body">
+                    <div class="row">
+                        <form method="POST" name="hierarchyform">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <select name="username"   multiple='multiple' autofocus class="form-control"  id="id_username" required>
+                                            {% autoescape off %}
+                                            {% for usr in all_users %}
+                                                {{ usr.users }}
+                                            {% endfor %}
+                                            {% endautoescape %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="hinyango_message_subject" placeholder="Subject..." class="form-control" maxlength="50" required id="id_message_subject" />
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="hinyango_message" cols="40" rows="16" placeholder="Message Body..." class="form-control" maxlength="9999" required id="id_message_body"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <h6 class="panel-title">All Messages</h6>
+                    <div class="heading-elements">
+                        <button type="button" class="btn btn-primary" id='mark-all-as-read-id'>Mark Read</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Application</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for msg in all_messages %}
+                                <tr>
+                                    <td>
+                                        <div class="media-body">
+                                            <div class="media-heading">
+                                                <a href="#" class="letter-icon-title" onclick="read_function('{{ msg.id }}','{{ msg.sender }}','{{ msg.subject }}','{{ msg.message }}','{{ msg.as_read }}')">
+                                                    {% if msg.as_read == 'Y' %}
+                                                    <i class="icon-checkmark3 text-size-mini position-left" id="mark-as-read-{{ msg.id}}"></i>
+                                                    {% else %}
+                                                    <i id="mark-as-read-{{ msg.id}}"></i>
+                                                    {% endif %}
+
+                                                {{ msg.sender }}</a>
+                                            </div>
+                                            <div class="text-muted text-size-small">{{ msg.subject }}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted text-size-small">{{ msg.date_sent }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal_all_messages" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Read Message</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>From: </span>
+                    </div>
+                    <div class="col-sm-9">
+                        <div id='all-message-from'></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span>Subject: </span>
+                    </div>
+                    <div class="col-sm-9">
+                        <div id='all-message-subject'></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr>
+                    <div class="col-sm-12">
+                        <div id='all-message-contents'></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+<script type="text/javascript">
+
+$('#id_username').select2({
+        minimumResultsForSearch: Infinity,
+        containerCssClass: 'select-xs',
+        placeholder: "Username..."
+
+    });
+
+
+$('#id_send_message').on("click", function() {
+
+    console.log('working');
+
+    var recipient = $('#id_username').val();
+    var subject = $('#id_message_subject').val();
+    var body = $('#id_message_body').val();
+
+    if(recipient==null || subject==null || body==0){
+                                            new PNotify({
+                                    title: 'Error',
+                                    text: 'All fields must be filled in to send',
+                                    type: 'error',
+                                    icon: 'glyphicon glyphicon-exclamation-sign',
+                                    delay: 5000
+                                    });
+
+    }else {
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'message_centre' %}",
+        data: { 'action': 'send hinyango message','recipients':JSON.stringify(recipient),'subject':JSON.stringify(subject),'body':JSON.stringify(body)},
+        success: function(data) {
+                                                new PNotify({
+                                    title: 'Success',
+                                    text: 'Message has been sent',
+                                    type: 'success',
+                                    icon: 'glyphicon glyphicon-thumbs-up'
+                                    });
+
+        },
+        complete: function() {
+
+
+
+    $("#id_username").val('').trigger('change')
+    $('#id_message_subject').val('');
+    $('#id_message_body').val('');
+
+
+        }
+    });
+}
+
+});
+
+$('#mark-all-as-read-id').click(function() {
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'message_centre' %}",
+        data: { 'action': 'mark all messages read' },
+        success: function(data) {
+            //console.log(data);
+
+        },
+        complete: function() {
+            //console.log('Done');
+            location.reload();
+        }
+    });
+
+});
+
+function read_function(idin, sender, subject, message, is_read) {
+
+    $('#all-message-from').html('');
+    $('#all-message-subject').html('');
+    $('#all-message-contents').html('');
+
+    $('#all-message-from').html(sender);
+    $('#all-message-subject').html(subject);
+    $('#all-message-contents').html(message);
+
+    //getReadMessages(idin);
+
+    $('#modal_all_messages').modal();
+    if (is_read == 'N') {
+
+
+        $('#mark-as-read-' + idin).html('');
+        getReadMessages(idin);
+
+
+
+
+
+    }
+
+}
+</script>
+{% endblock %}

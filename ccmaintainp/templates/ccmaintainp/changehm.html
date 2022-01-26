@@ -1,0 +1,432 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Hierarchy Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Manage Organisational Structure</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <form class="form-horizontal" name="modifyhierarchy" id="modhierid" method="POST">
+    {% csrf_token %}
+    <div class="panel-body">
+            <legend class="text-bold">Drag items to move nodes - select items to delete</legend>
+
+        <div class='row'>
+            <div class="form-group">
+            <div class="col-lg-12">
+                    <select name="select" class="form-control" id = "nodechangeid">
+                        <option value="" disabled selected hidden>Select a node to expand...</option>
+                        {% for node in nodes %}
+                        <option value="{{ node.name }}">{{ node.bu}} - (ID : {{node.name}})</option>
+                        {% endfor %}
+                    </select>
+            </div>
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class="form-group">
+                <div class="col-lg-12">
+
+                    <div class="tree-drag well border-left-info border-left-lg" id="treepoint">
+                        {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                            <input type="hidden" id="hierarchyid" name="hierarchy" value="" />    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='row'>
+            <!--div class="form-group"-->
+                <div class="text-right">
+                    <button type="button" class="btn bg-purple-400"  onclick="collapsenodes()"">Collapse</button>
+                    <button type="button" class="btn bg-purple-400" data-toggle="modal" data-target="#treemodal">Add</button>
+                    <button type="button" class="btn bg-purple-400" name="delhiername" id="delhierid">Delete</button>
+                    <button type="submit" class="btn bg-purple-400" name="hierchangename" id="hierchangeid">Submit</button>
+
+                </div>
+            <!--/div-->
+        </div>
+    </div>
+</form>
+</div>
+
+<div id="treemodal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Organisation Node and Identifier</h5>
+            </div>
+            <!--form action="POST"-->
+            <div class="modal-body">
+                <p>New Node - Enter ID and Title</p>
+                <hr>
+                <!-- Diagram view output -->
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="control-label col-md-3">Node Identifier</label>
+                            <div class="col-md-9">
+                                                    <div class="form-group">
+                                <input type="text" class="form-control" name="node_key_name" id="node_key_id" data-popup="tooltip" title="Enter a unique identifier" placeholder="eg. x0001">
+                            </div>
+                    </div>
+                </div>
+<div class="row">
+
+                        <label class="control-label col-md-3">Node Label</label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                <input type="text" class="form-control" name="node_title_name" id="node_title_id" data-popup="tooltip" title="Business unit label" placeholder="eg. Financial Division">
+                            </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn bg-purple-400"  onclick="addgenkey()"">KeyGen</button>
+                <button type="button" class="btn bg-purple-400" data-dismiss="modal" onclick="addnewnode()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/trees/fancytree_childcounter.js' %}"></script>
+<!--script type="text/javascript" src="{% static 'assets/js/util/circular-json.js' %}"></script-->
+<script type="text/javascript" src="{% static 'assets/js/util/he.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/util/uuid.min.js' %}"></script>
+
+<script type="text/javascript">
+
+
+$('#nodechangeid').on('change', function() {
+    console.log("Fired");
+
+    var nodeid = $('#nodechangeid').val()
+    console.log(nodeid);
+    var tree = $("#treepoint").fancytree("getTree");
+    var node = tree.getNodeByKey(nodeid);
+
+    node.toggleExpanded();
+
+    // Get all node parents from node to root
+
+
+    parent_of_node = node;
+    do {
+        parent_of_node = parent_of_node.parent;
+        parent_of_node.setExpanded(true);
+        }
+        while (parent_of_node.parent['parent']!=null);
+
+
+});
+
+
+
+function collapsenodes(){
+
+$('#nodechangeid').prop('selectedIndex',0);
+$("#treepoint").fancytree("getTree").visit(function(node){
+        node.setExpanded(false);
+      });
+
+    
+}
+
+function addgenkey(){
+
+
+
+
+$("#node_key_id").val(uuid());
+
+}
+
+
+
+
+var tree = $("#treepoint").fancytree({
+    checkbox: true,
+    selectMode: 3,
+    extensions: ["dnd", "edit"],
+    //source: {
+    //    url: "{% static 'assets/demo_data/fancytree/fancytree.json' %}"
+    //},
+    dnd: {
+        autoExpandMS: 400,
+        focusOnClick: true,
+        preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+        preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+        dragStart: function(node, data) {
+            return true;
+        },
+        dragEnter: function(node, data) {
+            return true;
+        },
+        dragDrop: function(node, data) {
+
+            // This function MUST be defined to enable dropping of items on the tree.
+            if(node.parent['parent']==null){
+                    new PNotify({
+                                   title: 'Warning',
+                                    text: 'The base node can not have siblings!',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-warning-sign',
+                                    //delay: 15000
+                                    });
+                
+            }else{
+
+
+                data.otherNode.moveTo(node, data.hitMode);
+            }
+            //data.otherNode.moveTo(node, data.hitMode);
+        }
+    },
+    init: function(event, data) {
+        $('.has-tooltip .fancytree-title').tooltip();
+    },
+    edit: {
+        adjustWidthOfs: 0,
+        inputCss: { minWidth: "0" },
+        triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+        save: function(event, data) {
+            //alert("save " + data.input.val()); // Save data.input.val() or return false to keep editor open
+            //return (false);
+        }
+    }
+
+
+
+});
+
+var addnewnode = function() {
+    var new_key = $("#node_key_id").val();
+    var new_title = $("#node_title_id").val();
+    console.log(new_key);
+    console.log(new_title);
+
+    var titlematch = /^[0-9a-zA-Z_\-\s]+$/;
+    var keymatch = /^[0-9a-zA-Z_\-]+$/;
+
+    if(new_key && new_title && new_key.match(keymatch) && new_title.match(titlematch)) {
+
+    var tree = $("#treepoint").fancytree("getTree");
+    var node = tree.getActiveNode();
+    var nodeunique = true
+
+    vertice_list = []
+
+    tree.visit(function(node){
+            vertice_list.push(node.key);
+    });
+
+
+
+    console.log(uuid());
+
+    vertice_list.forEach(function(key){
+
+        if(new_key==key){
+            nodeunique = false
+        }
+
+
+    });
+
+    if(nodeunique==true){
+    var newData = { title: new_title, value: new_key, id: new_key, key: new_key };
+    if(node.parent['parent']!=null){
+    var newSibling = node.appendSibling(newData);
+}else{
+                    new PNotify({
+                                   title: 'Warning',
+                                    text: 'The base node can not have siblings! Select a child of the base node before attempting to add a new node.',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-warning-sign',
+                                    //delay: 15000
+                                    });
+}
+    }else{
+                    new PNotify({
+                        title: 'Key Error',
+                        text: 'Nodes requires a unique key! Which is usually a business unit identifier or code.',
+                        type: 'Error'
+                    });
+
+    }
+} else{
+
+
+                    new PNotify({
+                        title: 'key or title error',
+                        text: 'Key or title is missing or the key has characters other than numbers and letters',
+                        type: 'Error'
+                    });
+
+
+
+}
+};
+
+
+$( "#hierchangeid" ).click(function() {
+var tree = $("#treepoint").fancytree("getTree");
+
+
+      console.log(tree.getFirstChild().key);
+
+      var hlist = [];
+
+      var edge_number = 0;
+      tree.visit(function(node){
+            edge_number++;
+            innerdict = {}
+            innerdict['from'] = node.parent.key;
+            innerdict['from_title'] = he.decode(node.parent.title);
+            innerdict['to'] = node.key;
+            innerdict['to_title'] = he.decode(node.title);
+            hlist.push(innerdict);
+            //hdict[edge_number]='from:'.concat(node.parent.key).concat(',to:'.concat(node.key));
+            //console.log(edge_number);
+            //console.log('from:'.concat(node.parent.key).concat('to:'.concat(node.key)));
+
+        });
+
+
+nodestr = JSON.stringify(hlist);
+
+$("#hierarchyid").val(nodestr);
+
+});
+
+
+$("#delhierid").click(function(event){
+      var tree = $("#treepoint").fancytree("getTree");
+          //node = tree.getActiveNode();
+          //console.log(node);
+
+      searchIDs = tree.getSelectedNodes();
+
+     // console.log('---------------------------------------------------------');
+
+      //var remove = [];
+      // The problem for this is that the nodes are removed meaning there is no more key to identify 
+      // The nodes will 
+
+      //for(var i = 0; i < searchIDs.length; i++){
+
+        //console.log(i);
+
+        //node = tree.getNodeByKey(searchIDs[0].key);
+
+        //console.log(searchIDs[i].key);
+        //console.log(node);
+
+        searchIDs.forEach(function(node){
+
+                    if(node.hasChildren()){
+                       var children_of_node = $.map(node.children,function(itm){
+
+                        return itm.key;
+
+                       });
+ 
+
+
+                       for(var i = 0; i < children_of_node.length;i++){
+
+                            node_to_move = tree.getNodeByKey(children_of_node[i]);
+                            //node_to_move.reRegister(key,referencekey);
+                            //node_to_move.moveTo(node.parent, node.getNextSibling());
+                            if(node.parent){
+                            node.parent.addChildren(node_to_move,node.getNextSibling());
+                        }
+
+                       }
+
+
+                   }
+                    //while(node.hasChildren() ) {
+                    
+                    //    node.getFirstChild().moveTo(node.parent, "child");}
+                    //}
+
+
+                    //while( node.hasChildren() ) {
+                    //    node.getFirstChild().moveTo(node.parent, "child");}
+                    //}
+        if(node.parent){
+        node.remove();
+}
+        });
+
+        //searchIDs.forEach(function(node){
+
+        //node.remove();
+
+        //});
+
+
+      //}
+
+/**
+      searchIDs.forEach(function(node){
+        //console.log(node);
+       $children = node.children;
+       if ($children!==null) {
+        node.parent.addChildren($children,node.getNextSibling());
+        node.remove();
+        //remove.push(node.key);
+        //console.log('==================================');
+        //console.log(node);
+        //console.log('==================================');
+       }
+       else{
+       node.remove();
+       }
+      });
+      **/
+
+    //   for (var i = 0; i < remove.length; i++) {
+    //     node = tree.getNodeByKey(remove[i])
+    //     console.log('remove '+node.key+': '+node.title);
+    //     node.remove();
+    // }
+    
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

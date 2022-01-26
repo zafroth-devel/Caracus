@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Add new user{% endblock %} 
+{% block custcss %}
+<link href="{% static 'assets/css/dropzone.css' %}" rel="stylesheet" type="text/css">
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} 
+{% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Upload Company Image</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+       <form action="{% url 'cyicon' %}" class="dropzone" id="hi-dropzone-companyicon">
+                        {% csrf_token %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/uploaders/dropzone.js' %}"></script>
+    <script type="text/javascript">
+//$(document).ready(function() {
+
+console.log('hey baby');
+//$(function() {
+
+    Dropzone.autoDiscover = false;
+
+    $("#hi-dropzone-companyicon").dropzone({paramName: 'companyimage',
+                                         maxFilesize: 100,
+                                         addRemoveLinks: true,
+                                         maxFiles:1,
+                                         dictDefaultMessage: 'Drag in company icon in png format or click for dialog'});
+
+
+
+//});
+</script>
+{% endblock %}
+

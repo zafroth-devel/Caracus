@@ -1,0 +1,237 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Org Chart{% endblock %} {% block custcss %}
+<link href="{% static 'assets/js/base/VIZ/vis.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'assets/js/base/VIZ/vis-network.min.css' %}" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        body {
+            font: 10pt sans;
+        }
+
+        #orgchart {
+            /*width: 600px;*/
+            height: 600px;
+            /*border: 1px solid lightgray;*/
+        }
+
+        #heatchart {
+            width: 400px;
+            height: 200px;
+
+        }
+    </style>
+{% endblock %} {% block main_content %}
+
+    <div class="panel panel-white">
+        <div class="panel-heading"><h5 class="panel-title">Org Chart</h5></div>
+        <div class="panel-body">
+            
+            <div id="orgchart"></div>
+
+
+        </div>
+    </div>
+
+            <div id="heatchart"></div>
+  
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<!--script src="{% static '/assets/js/base/datatables/datatables.js' %}"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/base/VIZ/vis.js' %}"></script>
+<script src="{% static '/assets/js/base/vega2/vega.min.js' %}"></script>
+<script src="{% static '/assets/js/base/vega/vega_tooltip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+<script type="text/javascript">
+        var nodes = null;
+        var edges = null;
+        var network = null;
+        var rangedates = {};
+
+        var mouseX;
+        var mouseY;
+
+        vcc = {
+            element:'#heatchart',
+            width_mod:.8,
+            height_mod:1,
+            inp_type:'both'
+            };
+
+        $(document).mousemove( function(e) {
+           mouseX = e.pageX; 
+           mouseY = e.pageY;
+        });
+
+        //Change this to include the maximum size of the words in the hierarchy names
+        var sh = ($(window).width())*3/6;
+
+        console.log(sh);
+
+        function destroy() {
+            if (network !== null) {
+                network.destroy();
+                network = null;
+            }
+        }
+
+        function draw() {
+            destroy();
+
+            nodes = new vis.DataSet([
+            {% for node in nodes %}
+                //nodes.push({{ node|safe }})
+                {{ node|safe }},
+            {% endfor %}
+            ]);
+
+            edges = new vis.DataSet([
+            {% for edge in edges %}
+                //edges.push({{ edge|safe }})
+                {{ edge|safe }},
+            {% endfor %}
+            ]);
+
+
+            // create a network
+            var container = document.getElementById('orgchart');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            var options = {
+                nodes:{shadow:true},
+                layout:{improvedLayout:true},
+                edges: {
+                    smooth: {
+                        type: 'dynamic',
+                        forceDirection: 'horizontal',
+                        roundness: 0.4
+                    },
+                    arrows: {to : true },
+                    shadow:true
+                },
+                layout: {
+                        hierarchical: {
+                        direction:'LR',
+                        enabled: true,
+                        levelSeparation: sh,
+                        nodeSpacing: 60
+                        }},
+                physics: false,
+                interaction:{multiselect:false,hover:true}
+
+            };
+            network = new vis.Network(container, data, options);
+
+            network.fit();
+
+        }
+
+         draw();
+
+            network.on("click", function (params) {
+
+                nodeids = params['nodes'][0];
+
+                // Gets the connected nodes id need to get the buid
+                if (typeof nodeids !== 'undefined'){
+                    connected = network.getConnectedNodes(params['nodes'][0],'to');
+                    connected.push(params['nodes'][0]);
+
+                    rangedates.date_from = moment().format("ll");
+                    rangedates.date_to = moment().add(12,"months").format("ll");
+
+            
+                if(connected.length>0){
+
+                    var buids = [];
+                    for (let itm of connected) {
+                        buids.push(nodes.get(itm)['buid']);
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'vegaheatmap' %}",
+                        data: {
+                            'org_nodes': JSON.stringify(buids),
+                            'slider_dates': JSON.stringify(rangedates),
+                            'model_units':JSON.stringify('month')
+                        },
+                
+                        success: function(data) {
+            
+                            if(data['response']=='success'){
+            
+                                heatmap_plot(data['vegaconfig'],vcc.element,vcc.width_mod,vcc.height_mod,vcc.inp_type);
+                            }
+            
+                            $(vcc.element).css({'top':mouseY-130,'left':mouseX,'position':'absolute'}).fadeIn('slow');
+                            
+                        }
+                
+                    });
+
+                    var view;
+
+        var render = function(spec,element) {
+            var handler = new vegaTooltip.Handler();
+            view = new vega.View(vega.parse(spec))
+                           .renderer('svg')
+                           .tooltip(handler.call)  
+                           .initialize(element) 
+                           .hover()             
+                           .run();
+
+        }
+
+        var setvegasize = function($element,width_mod,height_mod,inp_type){
+
+            var width = $('#heatchart').width();
+            var height = $('#heatchart').height();
+
+            console.log(width);
+
+
+            if(inp_type=='width'){
+                view.signal('width', width*width_mod).run('enter');
+            }else if(inp_type=='height'){
+                view.signal('height', height*height_mod).run('enter');
+            }else {
+                view.signal('width', width*width_mod).signal('height', height*height_mod).run('enter');
+            }
+        }
+
+
+        var vegarefresh = function(spec,element,width,height,type){
+            render(JSON.parse(spec),element);
+            setvegasize($(element),width,height,type);
+        }
+
+                function heatmap_plot(data,element,width,height,type) {
+
+            vegarefresh(data,element,width,height,type);
+
+        }
+
+
+                }
+            }else{
+              $(vcc.element).fadeOut('slow');  
+            }
+
+            });
+
+
+            network.on("blurNode", function (params) {
+                $(vcc.element).fadeOut('slow');
+            });
+
+
+
+       
+
+
+    </script>
+{% endblock %}

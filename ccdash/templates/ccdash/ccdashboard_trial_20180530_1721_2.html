@@ -1,0 +1,138 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Dashboard{% endblock %} 
+{% block custcss %} 
+
+
+{% endblock %} {% block main_content %}
+
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-flat" id="bob1">
+            <div class="container-fluid">
+                <div class="row">
+
+                        <div  class="col-lg-6" id="chart_1_responsive">
+
+                            <div id="chart_1"></div>
+ 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script src="{% static '/assets/js/base/vega/vega.min.js' %}"></script>
+
+
+ <script type="text/javascript">
+
+// Here we need an AJAX call to get the spec
+var csrftoken = Cookies.get('csrftoken');
+var view;
+
+
+    function render(spec) {
+        //console.log(spec);
+      view = new vega.View(vega.parse(spec))
+        .renderer('canvas')  // set renderer (canvas or svg)
+        .initialize('#chart_1') // initialize view within parent DOM container
+        .hover()             // enable hover encode set processing
+        .run();
+
+        //console.log(view);
+
+    };
+
+   
+
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    console.log(csrftoken);
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'vconfig' req_id='config' data_id='levels' %}",
+
+        success: function(data) {
+
+            console.log(data)
+
+            render(JSON.parse(data));
+            setvegasize($("#chart_1_responsive"));
+
+        }
+
+    });
+
+
+
+function setvegasize($element){
+    //const $element = $("chart_1_responsive")
+    var width = $element.width();
+    var height = $element.height();
+
+console.log(width);
+console.log(height);
+
+
+//view.width(width*.7).height(height*.8).run();
+          view.signal('width', width*.8)
+              .signal('height', height*.8)
+              .run('enter');
+
+
+
+
+};
+
+$(function() {
+
+$(window).on('resize', function() {
+
+
+
+
+setvegasize($("#chart_1_responsive"));
+
+
+
+});
+
+
+
+
+});
+
+
+
+  </script>
+
+
+
+
+{% endblock %}

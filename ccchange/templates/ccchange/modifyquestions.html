@@ -1,0 +1,85 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Change{% endblock %} {% block main_content%} {% block custcss %} {% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">{{ modify_target_title }} - {{ nickname }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form method="POST" name="hierarchyform">
+                {% csrf_token %}
+                <div class="col-md-12">
+                    {% for field in form %}
+                    <div class="row">
+                        <div class="form-group">
+                            {{ field.label_tag}} {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-right">
+                <button type="button" class="btn btn-danger" onclick="window.location='{% url 'viewchange' project_id=projectid %}'">Cancel</button>
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+            </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%} 
+<script>
+//Update fields with selected
+
+
+
+
+
+
+//$(function() {
+
+    //$('#id_both_Behavioural Impact').val("19-No impact to the way people work").prop('selected', true);
+
+
+
+    //var selections = {% autoescape off %}{{ selected_answers }}{% endautoescape%};
+
+    //document.getElementById('both_Having a go').value = '38-Not much 3';
+    
+
+    //for (var key in selections){
+
+      //  geo = document.getElementById(key);
+        //geo.value = selections[key];
+        //console.log( key, selections[key] );
+    //}
+
+
+//$.each( selections, function( key, value ) {
+  //$('#'+key).val(value)
+//});
+
+//});
+
+
+</script>
+
+
+
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

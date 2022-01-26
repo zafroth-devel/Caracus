@@ -1,0 +1,279 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Change{% endblock %} {% block main_content%} {% block custcss %} {% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Add Project Details</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form method="POST" name="hierarchyform">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {{ form.projectname.label_tag }} {{ form.projectname }}
+                        </div>
+
+                        {{ form.projectdesc.label_tag }}
+                        <div class="form-group">
+                            <div id="id-editor-toolbar" style="display: none;">
+
+                            <div class="btn-group">
+
+                                            <button type="button" class="btn btn-icon btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
+                                                <span class="selection">Normal Text</span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="div">Normal Text</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1">Heading 1</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2">Heading 2</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3">Heading 3</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4">Heading 4</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5">Heading 5</a></li>
+            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6">Heading 6</a></li>
+
+                                            </ul>
+                                        </div>
+
+                                            <div class="btn-group">
+
+                                            <button type="button" class="btn btn-icon btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
+                                                <i class = "icon-droplet"></i><span class="selection">FG-Black</span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="black"><i class = "icon-droplet" style="color:black;"></i>FG-Black</a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="white"><i class = "icon-droplet" style="color:rgb(249, 248, 249);"></i>FG-White</a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="silver"><i class = "icon-droplet" style="color:silver;"></i>FG-Silver</a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="gray">  <i class = "icon-droplet" style="color:gray;">  </i>FG-Gray  </a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="maroon"><i class = "icon-droplet" style="color:maroon;"></i>FG-Maroon</a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="red">   <i class = "icon-droplet" style="color:red;">   </i>FG-Red   </a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="purple"><i class = "icon-droplet" style="color:purple;"></i>FG-Purple</a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="green"> <i class = "icon-droplet" style="color:green;"> </i>FG-Green </a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="olive"> <i class = "icon-droplet" style="color:olive;"> </i>FG-Olive </a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="navy">  <i class = "icon-droplet" style="color:navy;">  </i>FG-Navy  </a></li>
+            <li><a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="blue">  <i class = "icon-droplet" style="color:blue;">  </i>FG-Blue  </a></li>
+                                            </ul>
+                                        </div>
+
+                                                        <div class="btn-group">
+
+                                            <button type="button" class="btn btn-icon btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
+                                                <i class = "icon-droplet"></i><span class="selection">BG-White</span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="white"><i class = "icon-droplet" style="color:rgb(249, 248, 249);"></i>BG-White</a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="black"><i class = "icon-droplet" style="color:black;"></i>BG-Black</a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="silver"><i class = "icon-droplet" style="color:silver;"></i>BG-Silver</a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="gray">  <i class = "icon-droplet" style="color:gray;">  </i>BG-Gray  </a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="maroon"><i class = "icon-droplet" style="color:maroon;"></i>BG-Maroon</a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="red">   <i class = "icon-droplet" style="color:red;">   </i>BG-Red   </a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="purple"><i class = "icon-droplet" style="color:purple;"></i>BG-Purple</a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="green"> <i class = "icon-droplet" style="color:green;"> </i>BG-Green </a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="olive"> <i class = "icon-droplet" style="color:olive;"> </i>BG-Olive </a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="navy">  <i class = "icon-droplet" style="color:navy;">  </i>BG-Navy  </a></li>
+            <li><a data-wysihtml5-command="backColor" data-wysihtml5-command-value="blue">  <i class = "icon-droplet" style="color:blue;">  </i>BG-Blue  </a></li>
+                                            </ul>
+                                        </div>
+                            
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="bold"><i class="icon-bold2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="italic"><i class=" icon-italic2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="underline"><i class="icon-underline2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="strikeThrough"><i class="icon-strikethrough3"></i></button>
+                                        </div>
+
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="justifyleft"><i class="icon-paragraph-left2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="justifyright"><i class="icon-paragraph-right2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="justifycenter"><i class="icon-paragraph-center2"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="justifyfull"><i class=" icon-paragraph-justify2"></i></button>
+                                        </div>
+
+
+
+
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="insertUnorderedList"><i class="icon-list"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="insertOrderedList"><i class="icon-list-numbered"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="Indent"><i class="icon-indent-increase"></i></button>
+                                            <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="Outdent"><i class="icon-indent-decrease"></i></button>
+                                        </div>
+
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="undo"><i class="icon-undo2"></i></button>
+                                        <button type="button" class="btn btn-icon btn-default btn-xs" data-wysihtml5-command="redo"><i class="icon-redo2"></i></button>
+                                    </div>
+                                        
+
+                                        
+
+
+                                 
+                       
+
+
+                            </div>
+                            <div class="form-group"></div>
+
+                                {{ form.projectdesc }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.benefitdesc.label_tag }} {{ form.benefitdesc }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.customerimpact.label_tag }} {{ form.customerimpact }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.driver.label_tag }} {{ form.driver }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.projectstatus.label_tag }} {{ form.projectstatus }}
+                            </div>
+                            {% for field in form %} {% if field.id_for_label|slice:"3:8" == "proj_" %}
+                            <div class="form-group">
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                            {% endif %} {% endfor %}
+                            <div class="form-group">
+                                <label><span class="text-semibold">Set viewing permissions</label>
+                                        <div class="multi-select-full">
+                                            <select class="multiselect-select-all-filtering" multiple="multiple" name="viewperm">
+                                                {% autoescape off %}
+                                                {% for perm in vperms %}
+                                                
+                                                    {{ perm }}
+                                                
+                                                {% endfor %}
+                                                {% endautoescape %}
+                                            </select>
+                                        </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+
+                    <div class="text-right">
+                        <div class="form-group">
+                        <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewproject' %}'">Cancel</button>
+                        <button type="submit" class="btn bg-purple-400" name="editprojectbtn">Save and add impacts</button>
+                        <button type="submit" class="btn bg-purple-400" name="addprojectbtn">Save <i class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                    </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'assets/js/editor/wysihtml_toolbar.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/editor/advanced_and_extended.js' %}"></script>
+
+<!-- <script type="text/javascript" src="{% static 'assets/js/editor/wysihtml.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/editor/advanced.js' %}"></script> -->
+
+<!-- include summernote css/js -->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+
+
+<script>
+
+
+$('.multiselect-select-all-filtering').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        templates: {
+            filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+        },
+        onSelectAll: function() {
+            $.uniform.update();
+        }
+    });
+
+var project_name = '{{ project_name }}';
+var description = '{{ description }}';
+var benefit_desc = '{{ benefit_desc }}';
+var driver = '{{ driver }}';
+var customer_impact = '{{ customer_impact }}';
+
+if (project_name && description && benefit_desc && driver && customer_impact) {
+
+    $('#id_projectname').val(project_name);
+    $('#id_projectdesc').append(description);
+    $('#id_benefitdesc').append(benefit_desc);
+    $('#id_customerimpact').append(customer_impact);
+    $('#id_driver').append(driver);
+
+
+}
+
+
+
+
+</script>
+
+
+<script>
+
+$(function(){
+
+   var editor = new wysihtml5.Editor('id_projectdesc', {
+    toolbar: 'id-editor-toolbar',
+    parserRules:  wysihtml5ParserRules,
+    stylesheets: ["{% static 'assets/css/editor/editor.css' %}"]
+  });
+
+   // editor.on("load", function() {
+   //      var composer = editor.composer,
+   //          h1 = editor.composer.element.querySelector("h1");
+   //      if (h1) {
+   //        composer.selection.selectNode(h1);
+   //      }
+   //    });
+
+$(".dropdown-menu li a").click(function(){
+
+  $(this).parents(".btn-group").find('.selection').text($(this).text());
+  $(this).parents(".btn-group").find('.selection').val($(this).text());
+
+});
+
+
+$('#id_customerimpact').summernote();
+
+
+}); 
+
+
+
+</script>
+
+
+
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

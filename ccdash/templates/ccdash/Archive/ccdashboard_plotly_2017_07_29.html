@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+					{% block main_content%}
+
+		       
+		<div class="row">
+
+				<!--div class="col-md-7"--> 
+
+
+					<!-- Simple interaction -->
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h5 class="panel-title">Change Heatmap</h5>
+							<div class="heading-elements">
+								<ul class="icons-list">
+			                		<li><a data-action="collapse"></a></li>
+			                		<li><a data-action="reload"></a></li>
+			                		<li><a data-action="close"></a></li>
+			                	</ul>
+		                	</div>
+						</div>
+
+						<div class="panel-body">
+
+
+                        <div id="d3-simple-interaction" class="plotly" align="center"></div>
+
+						</div>
+					</div>
+					<!-- /simple interaction -->
+				<!--/div-->
+
+
+
+		</div>
+
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+
+	{% block chartcode%}
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+<script>
+var d3 = Plotly.d3;
+var WIDTH_IN_PERCENT_OF_PARENT = 90,
+    HEIGHT_IN_PERCENT_OF_PARENT = 90;
+
+var plot_config = {
+
+modeBarButtonsToRemove: ['sendDataToCloud'],
+displaylogo: false,
+displayModeBar: false,
+autosizable: true,
+
+// set the length of the undo/redo queue
+queueLength: 10,
+// if we DO autosize, do we fill the container or the screen?
+fillFrame: false,
+
+// if we DO autosize, set the frame margins in percents of plot size
+//frameMargins: 0,
+
+// mousewheel or two-finger scroll zooms the plot
+//scrollZoom: false,
+
+}
+
+var layout = {
+  //title: 'Annotated Heatmap',
+  annotations: [],
+  xaxis: {
+    ticks: '',
+    side: 'top'
+  },
+  yaxis: {
+    ticks: '',
+    ticksuffix: ' ',
+    //width: 500,
+    //height: 500,
+    autosize: true
+  }
+};
+
+var gd3 = d3.select("div[id='d3-simple-interaction']")
+  .style({
+    width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+    'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+    height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+    'margin-bottom': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+});
+
+var my_Div = gd3.node();
+
+
+
+
+// These are the values that must be filled in using Django
+// ---------------------------------------------------------
+
+var xValues = ['A', 'B', 'C', 'D', 'E'];
+
+var yValues = ['W', 'X', 'Y', 'Z'];
+
+var zValues = [
+  [0.00, 0.00, 0.75, 0.75, 0.00],
+  [0.00, 0.00, 0.75, 0.75, 0.00],
+  [0.75, 0.75, 0.75, 0.75, 0.75],
+  [0.00, 0.00, 0.00, 0.75, 0.00]
+];
+
+// ---------------------------------------------------------
+
+
+
+
+
+
+
+
+var colorscaleValue = [
+  [0, '#3D9970'],
+  [1, '#001f3f']
+];
+
+var colorscaleValue = 'Bluered'
+
+var data = [{
+  x: xValues,
+  y: yValues,
+  z: zValues,
+  type: 'heatmap',
+  colorscale: colorscaleValue,
+  showscale: true
+}];
+
+for ( var i = 0; i < yValues.length; i++ ) {
+  for ( var j = 0; j < xValues.length; j++ ) {
+    var currentValue = zValues[i][j];
+    if (currentValue != 0.0) {
+      var textColor = 'white';
+    }else{
+      var textColor = 'black';
+    }
+    var result = {
+      xref: 'x1',
+      yref: 'y1',
+      x: xValues[j],
+      y: yValues[i],
+      text: zValues[i][j],
+      font: {
+        family: 'Arial',
+        size: 12,
+        color: 'rgb(50, 171, 96)'
+      },
+      showarrow: false,
+      font: {
+        color: textColor
+      }
+    };
+    layout.annotations.push(result);
+  }
+}
+
+Plotly.plot(my_Div,data,layout,plot_config);
+    
+        
+window.onresize = function() { Plotly.Plots.resize( my_Div ) };
+
+</script>
+
+
+
+
+
+	{% endblock %}
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

@@ -1,0 +1,518 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Projects{% endblock %} 
+{% block custcss %}
+<link href="{% static 'assets/css/dropzone.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'assets/css/colors.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block main_content%}
+
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">View Projects</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--table id="myTable" class="table datatables-responsive table-bordered table-striped table-hover bg-info-800  datatable-show-all"-->
+    <div class="panel-body">
+        <table id="viewprojecttable" class="table datatable-responsive table-bordered table-striped table-hover alpha-slate">
+            <thead>
+                <tr class='bg-slate'> 
+                    <th>PID</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Description</th>
+                    <th>Benefit</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>View</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projectdata %}
+                <tr>
+                    <td class="pid-tooltip" title="View Impact Table" onclick="window.location='{% url 'viewimpacts' project_id=project.id %}'">{{ project.id }}</td>
+                    <td class="pid-tooltip" title="Add New Impact" onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'" >{{ project.project_name }}</td>
+                    <td class="pid-tooltip" title="Add New Impact" onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'">{{ project.owner }}</td>
+                    <!--td onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'">{{ project.description }}</td-->
+                    <td><a data-toggle="modal" data-target="#modal_view_snote" data-ptitle="Description" data-pdesc="{{ project.description }}">View...</a></td>
+                    
+                    <!--td onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'">CURLY Brackets project.benefit_desc CURLY Brackets</td-->
+                    <td><a data-toggle="modal" data-target="#modal_view_snote" data-ptitle="Benefit" data-pdesc="{{ project.benefit_desc }}">View...</a></td>
+
+
+                    <td class="pid-tooltip" title="Change Status" onclick="window.location='{% url 'chgpstatus' project_id=project.id %}'" data-toggle="tooltip" data-placement="bottom" title="Click to update status">{{ project.status }}</td>
+                    
+                    <td class="pid-tooltip" title="Add New Impact" onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'">{{ project.created_on }}</td>
+
+                    {% if project.viewer %}
+                    <td class="pid-tooltip" title="Add New Impact" onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'" style="text-align: center"><i class="icon-file-eye"></i></td>
+                    
+                    {% else %}
+                    <td class="pid-tooltip" title="Add New Impact" onclick="window.location='{% url 'addnewimpact' change_target='change' project_id=project.id %}'" style="text-align: center"></td>
+
+                    {% endif %}
+                    <td class="text-center">
+                        <ul class="icons-list">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-menu9"></i></a>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="{% url 'addnewimpact' change_target='change' project_id=project.id %}"><i class="icon-pencil"></i> Add New Impact</a></li>
+                                    <li><a href="{% url 'viewchange' project_id=project.id %}"><i class="icon-loop"></i> Impact Schedule</a></li>
+                                    <li><a href="{% url 'changeviewvisual' project_id=project.id %}"><i class="icon-loop"></i> Impact Schedule 2</a></li>
+                                    <li><a href="{% url 'viewimpacts' project_id=project.id %}"><i class="icon-table"></i> Impact Table</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'modifyproject' change_target='project' project_id=project.id status_flag='existing' %}"><i class="icon-notebook"></i> Modify Project Details</a></li>
+                                    <li class="divider"></li>
+                                    <!-- Move this onto a separate page -->
+                                    <li><a data-toggle="modal" data-target="#modal_add_note" data-pname="{{ project.project_name }}" data-pid="{{ project.id }}" data-pdesc="{{ project.description }}" data-pdate="{{ project.created_on }}"><i class="icon-clipboard3"></i> Add Note</a></li>
+                                    <li><a href="{% url 'viewnotes' project_id=project.id %}"><i class="icon-stack"></i> List Notes</a></li>
+                                    <li><a data-toggle="modal" data-target="#modal_add_attachments" data-pname="{{ project.project_name }}" data-pid="{{ project.id }}" data-pdesc="{{ project.description }}" data-pdate="{{ project.created_on }}"><i class="icon-file-plus"></i> Add Attachments</a></li>
+                                    <li><a href="{% url 'viewattachments' project_id=project.id %}"><i class="icon-stack2"></i> List Attachments</a></li>
+                                    <li class="divider"></li>
+                                    <li><a data-toggle="modal" data-target="#modal_close_form" data-pname="{{ project.project_name }}" data-pid="{{ project.id }}" data-pdesc="{{ project.description }}" data-pdate="{{ project.created_on }}"><i class="icon-close2"></i> Close</a> </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- /basic responsive configuration -->
+<!--
+This is for any and all modals
+Close project modal dialog note this needs more work. An ajax script is required to produce the response and send it to the correct Django class
+There is some documentation/instructions on how to do this in the documents folder of the ccompass repo
+-->
+
+<!-- View Summernote modal  -->
+<div id="modal_view_snote" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><label name="ptitle"></label></h5>
+            </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <div id="sn_view_div"></div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                </div>
+
+        </div>
+    </div>
+</div>
+<!-- Add Note Modal  -->
+<div id="modal_add_note" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Project Notes</h5>
+            </div>
+            <form action="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Notes...</h6>
+                    <p>Add a note or comment about this project</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pname"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Id:</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pid"></label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="addnote-hidden-name" id="addnote-hidden-id" value="projectid">
+                        <textarea class="form-control" cols="40" id="id_changenote" name="changenote" placeholder="Note..." rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <!-- Below is not yet implemented -->
+                    <button type="button" class="btn bg-purple-400" id='note-form' data-dismiss="modal">Add Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Add Attachments Modal -->
+<div id="modal_add_attachments" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Add Attachment</h5>
+            </div>
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <div class="heading-elements">
+                        <ul class="icons-list">
+                            <li>
+                                <a data-action="collapse"></a>
+                            </li>
+                            <li>
+                                <a data-action="reload"></a>
+                            </li>
+                            <li>
+                                <a data-action="close"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form action="{% url 'viewproject' %}" class="dropzone" id="hi-dropzone-hinyango">
+                        {% csrf_token %}
+                        <!--div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div-->
+                        <input type="hidden" name="dropzone-hidden-name" id="dropzone-hidden-id" value="projectid">
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Close Form Modal Move-->
+<div id="modal_close_form" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Project Close!</h5>
+            </div>
+            <form action="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Confirm details of Project before closing</h6>
+                    <p>After closure project will not accept anymore updates or changes. It will still continue to be tracked up until the close date. The project will still be present in any further analysis and in one or more dashboard chart.</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Id:</span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pid"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pname"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Description: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pdesc"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Date Created: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label name="pdate"></label>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Schedule Closure: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <input type="text" class="form-control pickadate" id="datepicker" value="June 29, 2016" placeholder="Try me&hellip;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="close-hidden-name" id="close-hidden-id" value="projectid">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn bg-purple-400" id="close-form" data-dismiss="modal">Close Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /vertical form modal -->
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/datatables_responsive.js' %}"></script>
+<!--script type="text/javascript" src="{% static 'assets/js/pages/new/datatables_advanced.js' %}"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/loaders/blockui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/uploaders/dropzone.js' %}"></script>
+
+<link href="{% static 'assets/js/base/editor/dist/summernote.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/editor/dist/summernote.min.js' %}"></script>
+<link href="{% static 'assets/js/base/jquery-ui.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/jquery-ui.js' %}"></script>
+
+<script type="text/javascript">
+//$(document).ready(function() {
+
+
+$(function() {
+
+    $('.pid-tooltip').tooltip({
+        classes: { "ui-tooltip": "ui-corner-all ui-widget-shadow"},
+        show: {
+          delay: 500
+        }});
+
+
+    Dropzone.autoDiscover = false;
+
+    $("#hi-dropzone-hinyango").dropzone({paramName: 'file',
+                                         maxFilesize: 100,
+                                         addRemoveLinks: true,
+                                         maxFiles:100,
+                                         dictDefaultMessage: 'Drag in files or click for dialog'});
+
+
+
+});
+
+/**
+$(function() {
+
+    Dropzone.autoDiscover = false;
+
+    Dropzone.options.hiDropzoneHinyango = {
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 100, // MB
+        addRemoveLinks: true,
+        maxFiles: 100,
+        dictDefaultMessage: 'Drop file to upload <span>or CLICK</span>',
+    }
+
+
+});
+**/
+
+$("#modal_add_attachments").on("show.bs.modal", function(event) {
+
+    var dzone = document.getElementById("dropzone-hidden-id")
+    var button = $(event.relatedTarget)
+    var pid = button.data("pid")
+    console.log(pid)
+
+    dzone.value = pid
+
+});
+</script>
+
+<script type="text/javascript">
+$('#modal_add_note').on('show.bs.modal', function(event) {
+    var addpid = document.getElementById("addnote-hidden-id")
+    var button = $(event.relatedTarget)
+    var pid = button.data("pid")
+    var pname = button.data("pname")
+    console.log(pid)
+    var modal = $(this)
+    modal.find('label[name="pname"]').text(pname)
+    modal.find('label[name="pid"]').text(pid)
+
+    addpid.value = pid
+});
+</script>
+<script type="text/javascript">
+$("#note-form").on("click", function() {
+
+
+    var note_text = $("#id_changenote").val()
+
+    var addpid = document.getElementById("addnote-hidden-id")
+
+    var pid = addpid.value;
+
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    console.log(csrftoken);
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'viewproject' %}",
+        data: {
+            'note_text': note_text,
+            'pid': pid
+        }
+
+    });
+
+
+
+});
+</script>
+<script type="text/javascript">
+$('#modal_close_form').on('show.bs.modal', function(event) {
+
+    var addpid = document.getElementById("close-hidden-id")
+
+    var button = $(event.relatedTarget)
+    var pname = button.data('pname')
+    var pid = button.data('pid')
+    var pdesc = button.data('pdesc')
+    var pdate = button.data('pdate')
+    addpid.value = pid
+    console.log(pid)
+    var modal = $(this)
+    modal.find('label[name="pname"]').text(pname)
+    modal.find('label[name="pid"]').text(pid)
+    modal.find('label[name="pdesc"]').html(pdesc)
+    modal.find('label[name="pdate"]').text(pdate)
+    //Add date and project description
+});
+</script>
+<script type="text/javascript">
+$("#close-form").on("click", function() {
+
+
+    var date_close = $("#datepicker").val()
+
+    var addpid = document.getElementById("close-hidden-id")
+
+    var pid = addpid.value;
+
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    console.log(csrftoken);
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'viewproject' %}",
+        data: {
+            'close_form': date_close,
+            'pid': pid
+        }
+
+    });
+
+
+
+});
+</script>
+<script type="text/javascript">
+$('#datepicker').pickadate({
+    // Escape any “rule” characters with an exclamation mark (!). --Comment
+    format: 'mmmm d, yyyy',
+    selectMonths: true,
+    onStart: function() {
+        var date = new Date();
+        this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+    },
+    //formatSubmit: 'yyyy/mm/dd',--Comment
+    //hiddenPrefix: 'prefix__',--Comment
+    //hiddenSuffix: '__suffix'--Comment
+    //hiddenName: undefined,--Comment
+});
+</script>
+<script type="text/javascript">
+$(".xx001-clickable-row").click(function() {
+    window.location = $(this).data("href");
+});
+</script>
+
+<script>
+
+$('#modal_view_snote').on('show.bs.modal', function(event) {
+
+    var button = $(event.relatedTarget);
+    var ptitle = button.data('ptitle');
+    var pdesc = button.data('pdesc');
+
+    var modal = $(this);
+    modal.find('label[name="ptitle"]').text(ptitle);
+
+    $("#sn_view_div").html(pdesc);
+    
+
+});
+
+
+
+</script>
+
+
+<!--
+
+        Script to initiate ajax response will go here.
+
+          -->
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

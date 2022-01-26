@@ -1,0 +1,150 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Dashboard{% endblock %} 
+{% block custcss %} 
+<style>
+ .panel--dash--correction {
+  padding-bottom: 0cm;
+}  
+
+.content--group--correction {
+    margin-bottom:  0;
+} 
+
+</style>
+<link rel="stylesheet" href="{% static 'assets/js/print/print.css' %}">
+
+
+{% endblock %} {% block main_content %}
+
+
+
+<a id="advanced" href="#nada" class="button button-primary">Print kittens</a>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-flat" id="bob1">
+            <div class="panel-heading">
+                <h6 class="panel-title">Hierarchy Level Heatmap</h6>
+            </div>
+            <div class="container-fluid">
+<!--                 <div class="row">
+                    <div class="col-lg-4">
+                        <div class="col-lg-10 col-lg-offset-1">
+                            <div class="content-group" id="new-visitors"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="col-lg-10 col-lg-offset-1">
+                            <div class="content-group" id="new-sessions"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="col-lg-10 col-lg-offset-1">
+                            <div class="content-group" id="total-online"></div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div class="position-relative" id="render_dash"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/charts/plotly/plotly-latest.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/sliders/ion_rangeslider.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/visualization/d3/d3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/Print/printThis.js' %}"></script>
+
+<script type="text/javascript">
+    $('#advanced').on("click", function () {
+      $('#bob1').printThis({
+        importCSS: false,
+        header: "<h1>Blah</h1>",
+        printContainer: false
+
+      });
+    });
+</script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() { 
+
+var colorscaleValue = [
+            [0, '#3D9970'],
+            [1, '#001f3f']
+        ];
+
+        var data = [{
+            {% autoescape off %}
+            x: {{ xValues }},
+            y: {{ yValues }},
+            z: {{ zValues }},
+            {% endautoescape %}
+            type: 'heatmap',
+            colorscale: 'YIOrRd',
+            //colorscale: colorscaleValue,
+            showscale: true
+        }];
+    
+        var layout = {
+            xaxis: {
+                ticks: '',
+                side: 'top'
+            },
+            yaxis: {
+                ticks: '',
+                ticksuffix: ' ',
+                "categoryorder": "array",
+                {% autoescape off %}
+                "categoryarray": {{ yValues }}
+                {% endautoescape %}
+            }
+        };
+
+
+
+
+var d3 = Plotly.d3;
+var WIDTH_IN_PERCENT_OF_PARENT = 90,
+    HEIGHT_IN_PERCENT_OF_PARENT = 100;
+var gd3 = d3.select("div[id='render_dash']")
+    .style({
+        width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+        'margin-top' : 0 //+ 'vh'
+        //'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+    });
+var dash_chart = gd3.node();
+
+
+
+Plotly.newPlot(dash_chart, data, layout, { displayModeBar: false,showLink: false });
+
+
+
+window.addEventListener('resize', function() { 
+
+    Plotly.Plots.resize(document.getElementById("render_dash"));
+
+});
+
+
+
+
+});
+
+
+
+
+</script>
+{% endblock %}

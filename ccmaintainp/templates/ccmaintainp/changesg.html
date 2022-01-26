@@ -1,0 +1,137 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Schedule Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Scheduling Parameters </h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="hot-container">
+            <div id="schedule_parameters"></div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+<!--script type="text/javascript" src="{% static '<<PATH TO ASSET>>' %}"></script>
+<script  type="text/javascript"></script-->
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/handsontable/handsontable.min.js' %}"></script>
+<script type="text/javascript">
+
+
+
+    msgonce = true;
+
+
+
+    function present_warning(){
+
+        if(msgonce){
+
+
+                                    new PNotify({
+                                    title: 'Warning',
+                                    text: 'Parameter changes take immediate effect!',
+                                    type: 'warning',
+                                    icon: 'glyphicon glyphicon-warning-sign'
+                                    });
+                                    msgonce = false;
+                                }
+    }
+
+present_warning();
+
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+// Define element
+var schedule_parameters = document.getElementById('schedule_parameters');
+
+
+var sched_param = [
+
+{% for itm in setting_parameters %}
+
+    { id: '{{ itm.id }}',parameter: '{{ itm.cmdstring }}', desc: '{{ itm.description }}', value: '{{ itm.cmdparameter }}' },
+
+{% endfor %}
+];
+// Initialize with options
+schedule_parameters = new Handsontable(schedule_parameters, {
+    data: sched_param,
+    stretchH: 'all',
+    fillHandle: false,
+    rowHeaders: true,
+    colHeaders: ['ID','Parameter Name', 'Description', 'Value'],
+    columns: [
+        {
+            data:'id',
+            editor: false
+        },
+
+        {
+            data: 'parameter',
+            editor: false
+        },
+        {
+            data: 'desc',
+            editor: false
+        },
+        {
+            data: 'value',
+            editor: 'numeric'
+        }
+    ],
+    afterChange: function(change, source) {
+
+
+        if(change){
+        var data = this.getDataAtRow(change[0][0]);
+        console.log(data);
+
+        data = JSON.stringify({id:data[0],
+                cmdstring:data[1],
+                cmdparameter:data[3]});
+    }
+
+    $.ajax({
+      url: "{% url 'sgview' %}",
+      type: 'POST',
+      data: {cmddata: data}
+      // ,
+      // success: function(data) {},
+      // complete: function() {}
+    });
+  }
+});
+
+
+
+
+
+</script>
+{% endblock %}

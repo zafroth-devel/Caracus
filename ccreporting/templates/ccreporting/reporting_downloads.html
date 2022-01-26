@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Reporting{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Scheduled Reporting Downloads</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table id="reportdownloads" class="table table-bordered table-striped table-hover alpha-slate">
+            <thead>
+                <tr class='bg-slate'>
+                    <th>Id</th>
+                    <th>Report Name</th>
+                    <th>Date</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+
+                {% for itms in reports %}
+                <tr>
+                    <th>{{ itms.id }}</th>
+                    <td><a href="{% url 'getreport' file_id=itms.id  %}">{{ itms.report_name }}</a></td>
+                    <td>{{ itms.created_on }}</td>
+
+
+                </tr>
+
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/base/ccreporting/reporting_downloads.js' %}"></script>
+{% endblock %}

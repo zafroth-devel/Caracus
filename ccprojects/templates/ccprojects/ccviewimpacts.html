@@ -1,0 +1,429 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Projects{% endblock %} 
+{% block custcss %}
+
+<link href="{% static 'assets/css/colors.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'assets/js/base/VIZ/vis.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'assets/js/base/VIZ/vis-network.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block main_content%}
+
+
+
+<div class="panel panel-white" id="impact-hierarchy-details" style="display:none;">
+    <div class="panel-heading">
+        <h6 class="panel-title">Business units</h6>
+        
+        <div class="heading-elements">
+
+            <button type="button" class="btn btn-link" id="return-to-normal">Cancel</button>
+
+        </div>
+    </div>
+    <div class="panel-body has-inner-drawer">
+        <div id="orgchart" style="height:600px;"></div>
+    </div>
+</div>
+
+
+<div class="panel panel-white" id="impact-view-details">
+    <div class="panel-heading">
+        <h6 class="panel-title">Viewing impacts for project - {{ pid }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table id="viewimpacttable" class="table datatables table-bordered table-striped table-hover alpha-slate">
+            <thead>
+                <tr class='bg-slate'> 
+                    <th>IID</th>
+                    <th>Nickname</th>
+                    <th>AMPP</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Confirmed</th>
+                    <th>Type</th>
+                    <th>GID</th>
+                    <th>BU</th>
+                    <th>Delete</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for impacts in impactdata %}
+    <tr>
+    <td>{{ impacts.id }}</td>      
+    <td class="pid-tooltip" title="Modify Impact" onclick="window.location='{% url 'altimpact' group_target='alt' change_target='change' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.nickname }}</td>
+    <td class="pid-tooltip" title="Modify Impact" onclick="window.location='{% url 'altimpact' group_target='alt' change_target='change' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.ampp }}</td>
+    <td class="pid-tooltip" title="Modify Impact" onclick="window.location='{% url 'altimpact' group_target='alt' change_target='change' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.start_date|date:"D d M Y" }}</td>
+    <td class="pid-tooltip" title="Modify Impact" onclick="window.location='{% url 'altimpact' group_target='alt' change_target='change' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.end_date|date:"D d M Y" }}</td>
+    <td class="pid-tooltip" title="Confirmation" onclick="window.location='{% url 'chgconfirmed' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.confirmed__confirmed }}</td>
+    <td class="pid-tooltip" title="Modify Impact" onclick="window.location='{% url 'altimpact' group_target='alt' change_target='change' project_id=pid change_id=impacts.groupkey_id %}'">{{ impacts.impact_type__impact_type }}</td>
+    <td>{{ impacts.groupkey_id }}</td>
+    <td class="pid-tooltip" title="View Hierarchy BU">None</td>
+    <td class="pid-tooltip" title="Delete Impact">None</td>
+    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- MODAL SECTION -->
+<div id="modal_confirm_delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- <h5 class="modal-title"><label name="ptitle"></label></h5> -->
+                <h5 class="modal-title"><label>Confirm Delete Impact</label></h5>
+            </div>
+            <div class="modal-body">
+
+                <p>This will permanently remove the selected impact. Do you wish to proceed?</p>
+                
+            </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal" id="cancel_impact_delete">Cancel</button>
+                    <button type="button" class="btn bg-purple-400" data-dismiss="modal" id="confirm_impact_delete">Confirm</button>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- END MODAL SECTION-->
+{% endblock %}
+
+{% block customjs%}
+
+<link href="{% static 'assets/js/base/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_select.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+<link href="{% static 'assets/js/base/jquery-ui.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/base/VIZ/vis.js' %}"></script>
+<script type="text/javascript">
+var nodes = null;
+var edges = null;
+var network = null;
+var selected = {};
+var selectedarray = [];
+
+        var vsize = $('#orgchart').width();
+        //Change this to include the maximum size of the words in the hierarchy names
+        var sh = {{ label_length }}*8;
+        //var sh = ($(window).width())*3/6;
+
+        function destroy() {
+            if (network !== null) {
+                network.destroy();
+                network = null;
+            }
+        }
+
+        function draw() {
+            destroy();
+            //nodeslst = [];
+            //edgeslst = [];
+
+            nodes = new vis.DataSet([
+            {% for node in nodes %}
+
+                {{ node|safe }},
+            {% endfor %}
+            ]);
+
+            edges = new vis.DataSet([
+            {% for edge in edges %}
+
+                {{ edge|safe }},
+            {% endfor %}
+            ]);
+
+    // create an array with edges
+
+            // create a network
+            var container = document.getElementById('orgchart');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            var options = {
+                nodes:{shadow:true},
+                layout:{improvedLayout:true},
+                edges: {
+                    smooth: {
+                        type: 'dynamic',
+                        forceDirection: 'horizontal',
+                        roundness: 0.4
+                    },
+                    arrows: {to : true },
+                    shadow:true
+                },
+                layout: {
+                        hierarchical: {
+                        direction:'LR',
+                        enabled: true,
+                        levelSeparation: sh,
+                        nodeSpacing: 50
+                        }},
+                physics: false,
+                interaction:{multiselect:false}
+
+            };
+            network = new vis.Network(container, data, options);
+
+
+
+network.on("afterDrawing", function (ctx) {
+    
+    if(!($.isEmptyObject(selected))){
+        
+        Object.entries(selected).forEach(([key, value]) => {
+            ctx.font = "bold 20px Arial";
+            var bounding = network.getBoundingBox(key);
+            ctx.fillText(value['recrequired'],bounding.right-7,bounding.top+3);
+        });
+
+           
+    }
+
+    ctx.font = "15px Arial";
+    var ids = nodes.getIds();
+    for (let itm of ids) {
+        var bounding = network.getBoundingBox(itm);
+        var resources = nodes.get(itm).resources;
+        ctx.fillText(resources,bounding.left-7,bounding.bottom+3);
+
+    
+    }
+
+
+
+
+  });
+
+
+
+
+        }
+        draw();
+        //network.fit();
+
+
+    </script>
+<script type="text/javascript">
+
+    $('#cancel_impact_delete').on('click',function(evt){
+        $('#confirm_impact_delete').off('click');
+    });
+
+    var post_data = function(fvar1 = 'No Content',data_pack) {
+
+        var csrftoken = Cookies.get('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Return AJAX promise
+        return $.ajax({
+            type: "POST",
+            url: "{% url 'hdata' %}", // Insert required URL
+            data: { 'output': JSON.stringify({ output: { request: fvar1, data: data_pack } }) }
+
+        });
+    }
+
+$('.pid-tooltip').tooltip({
+        classes: { "ui-tooltip": "ui-corner-all ui-widget-shadow"},
+        show: {
+          delay: 500
+        }});
+
+
+
+function showhierarchy(groupkey_id){
+
+// We need to get the selected hierarchy from the db
+
+var promise = post_data(fvar1 = 'get-hierarchy',data_pack = {id: groupkey_id,pid: {{ pid }}});
+
+promise.success(function(data) {
+    for (let itm of data['message']['selected']) {
+        var get_id = nodes.getIds({filter: function (item) {return (item.buid == itm['id']);}})[0];
+        selected[get_id] = nodes.get(get_id);
+        selected[get_id]['recrequired'] = itm['resources'];
+        nodes.update({id: get_id,shapeProperties:{borderDashes:[7,2]},borderWidth: 1.5,'color':{'border': '#545454','background': '#D3D3D3'}});
+    }
+    network.redraw();
+});
+promise.error(function(err) {
+    // Report error move on
+    reporterror(err);
+});
+
+$('#impact-view-details').hide();
+$('#impact-hierarchy-details').show();
+
+}
+
+
+$('#return-to-normal').click(function(evt){
+
+
+    Object.entries(selected).forEach(([key, value]) => {
+        nodes.update(selected[key]);
+    });
+
+    selected = {};
+
+    $('#impact-hierarchy-details').hide();
+    $('#impact-view-details').show();
+
+});
+
+
+$('#viewimpacttable').DataTable({
+      autoWidth: false,
+      responsive: true,
+      columnDefs: [{targets: 7,searchable: false,visible: false},{
+                    targets: 8,
+                    searchable: false,
+                    render: function(data, type, row, meta) {
+                        return '<div style="text-align: center"><a onclick="showhierarchy('+row[7]+')"><i class="icon-tree6"></i></a></div>'
+
+                        }
+                  },
+                  {
+                    targets: 9,
+                    searchable: false,
+                    render: function(data, type, row, meta) {
+    return '<div style="text-align: center"><button type="button" class="btn btn-link"><i class="icon-trash"></i></button></div>';
+                                }
+                  }],
+      dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+      language: {
+          search: '_INPUT_',
+          paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+      },
+      "drawCallback": function(){
+        var length_select = $("#viewimpacttable_length");
+        var select = $("#viewimpacttable_length").find("select").clone();
+        select.addClass("selectpicker").attr('data-width', '60px').attr('data-margin', '0 5px');
+        length_select.empty().append(select);
+        select.selectpicker();
+    },
+
+});
+
+
+    var reporterror = function(err) {
+        // Do something on error
+        if (err.status === 500) {
+            new PNotify({
+                title: 'Error',
+                text: 'Server Error - contact administrator',
+                type: 'error',
+                icon: 'glyphicon glyphicon-exclamation-sign',
+                delay: 20000
+            });
+        } else {
+            new PNotify({
+                title: 'Warning',
+                text: 'Query returned no data',
+                type: 'info',
+                icon: 'glyphicon glyphicon-warning-sign'
+            });
+        }
+    }
+
+
+
+
+
+            $('#viewimpacttable tbody').on('click', 'td', function(evt) {
+
+
+
+
+                        var answertable = $('#viewimpacttable').DataTable();
+
+                        var rowindex = answertable.cell(this).index()['row'];
+
+                        var colindex = answertable.cell(this).index()['column'];
+
+                        if(colindex==9){
+
+                            //answertable.row(rowindex).remove().draw();
+
+                            $('#confirm_impact_delete').on('click',function(evt){
+
+                                $('#confirm_impact_delete').off('click');
+
+
+                                // Remove item from db via js promise
+                                var delid = answertable.row(rowindex).data()[7];
+
+                                var promise = post_data(fvar1 = 'delete-impact',data_pack = {id: delid,pid: {{ pid }}});
+
+                                promise.success(function(data) {
+
+                                    new PNotify({
+                                    title: 'Success',
+                                    text: 'Impact removed',
+                                    type: 'success',
+                                    icon: 'glyphicon glyphicon-thumbs-up'
+                                    });
+
+
+                                    //Delete impact from table
+                                    answertable.row(rowindex).remove().draw(); 
+
+                                });
+                                promise.error(function(err) {
+                                    // Report error move on
+                                    reporterror(err);
+                                });
+
+                            });
+
+                            $('#modal_confirm_delete').modal('show');
+                        }
+
+
+});
+
+
+
+
+
+
+</script>
+{% endblock %}

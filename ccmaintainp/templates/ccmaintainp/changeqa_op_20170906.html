@@ -1,0 +1,865 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Question Settings{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" action="#">
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Question Management</h6>
+                    <div class="heading-elements">
+                        <ul class="icons-list">
+                            <li>
+                                <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                            </li>
+                            <li>
+                                <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                            </li>
+                            <li>
+                                <a data-action="close" data-popup="tooltip" title="Close"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <legend class="text-bold">Question Section</legend>
+                    <div class="row voffset2">
+                        <div class="text-right ">
+                            <button type="button" class="btn bg-purple-400" data-toggle="modal" data-target="#modal_add_question">New</button>
+                            <button type="button" class="btn bg-purple-400" data-toggle="modal" data-target="#modal_mod_question" id="modal_mod_q_btn" disabled>Modify</button>
+                            <button type="button" class="btn bg-purple-400" data-toggle="modal" data-target="#modal_del_question" id="modal_del_q_btn" disabled>Delete</button>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Question Type</label>
+                            <div class="col-lg-10">
+                                <select name="type_select" class="form-control" id="qtype">
+                                    {% for items in qtype %}
+                                    <option value="{{ items.id }}">{{ items.question_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Application Level</label>
+                            <div class="col-lg-10">
+                                <label class="control-label col-lg-2" for="applevel">Project</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Question</label>
+                            <div class="col-lg-10">
+                                <select name="question_select" class="form-control" id="qquestion" placeholder="Select a name first">
+                                    <option value="" disabled selected hidden>Select a question type first</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <textarea rows="5" cols="5" class="form-control" placeholder="Pick a question to see the description..." id="qdesc">Pick a question to see the description.
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group accordion-sortable content-group-lg" id="accordion-controls">
+                        <div class="panel panel-white">
+                            <div class="panel-heading">
+                                <h6 class="panel-title">
+                                            <a data-toggle="collapse" id="accordian_question_ranking_id" data-parent="#accordion-controls" href="#accordion-controls-group1">Question Ranking</a>
+                                        </h6>
+                                <div class="heading-elements">
+                                    <ul class="icons-list">
+                                        <li><a data-action="close"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="accordion-controls-group1" class="panel-collapse collapse">
+                                <div class="panel-body">
+
+
+
+                            <div class='row'>
+                                <div class="text-right">
+                                    <button type="button" name="commit_ranking_btn" class="btn bg-purple-400" id="commit_ranking_btn_id" onclick="question_commit_rank()" disabled>Commit Ranking</button>
+                                </div>
+                            </div>
+
+     
+
+                         
+                                    <div class='row'>
+                                        <div class="table-responsive">
+                                            <table class="table datatable-row-basic" id="qtable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rank</th>
+                                                        <th>Name</th>
+                                                        <th>Question</th>
+                                                        <th>Source</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <!--
+                                
+                                
+                                                    Add new table rows here
+                                
+                                
+                                                 -->
+ 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /accordion with controls -->
+                    <legend class="text-bold">Answer Section</legend>
+                    <div class='row voffset2'>
+                        <div class="text-right">
+                            <button type="button" class="btn bg-purple-400" data-toggle="modal" data-target="#modal_add_answer" id="answer_mod_new_btn" disabled>New</button>
+                            <button type="button" class="btn bg-purple-400"  id="answer_commit_rank_btn_id" onclick="answer_commit_rank()" disabled>Commit Ranking</button>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class="table-responsive">
+                            <table class="table datatable-row-basic" id="atable"  width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Answer</th>
+                                        <th class="text-center" style="width: 30px;">Options</th>
+                                        <th>Source</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--
+                                
+                                
+                                Add new table rows here
+                                
+                                
+                                -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--
+
+MODAL SECTION
+
+-->
+<!-- ADD QUESTION MODAL-->
+<div id="modal_add_question" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Add new change management question</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="addnewquestion">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Question</h6>
+                    <p>Add a new question </p>
+                    <hr>
+                    <fieldset class="content-group">
+                        <div class="form-group" id="typecheck">
+                            <label class="control-label col-lg-2">New Type</label>
+                            <div class="col-lg-10">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="cbtypecheck" class="styled" name="mod_add_new_type">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Type</label>
+                            <div class="col-lg-10" id="qtypeinput">
+                                <select name="mod_add_existing_type" class="form-control" id="qmodtype">
+                                    {% for items in qtype %}
+                                    <option value="{{ items.id }}">{{ items.question_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Level</label>
+                            <div class="col-lg-10">
+                                <select name="mod_add_question_qtype_select" class="form-control" id="qtypelevel">
+                                    <option value="1" checked="checked">Project</option>
+                                    <option value="2">Change</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Name</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="mod_question_input_name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Question</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="mod_question_input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <textarea name="mod_question_text_area" rows="5" cols="5" class="form-control" placeholder="Add Description of Question"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_id_area" name="app_functional_site" value="add_question_modal">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END ADD QUESTION MODAL-->
+<!-- MODIFY QUESTION MODAL-->
+<div id="modal_mod_question" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Modify existing change management question</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="modifyquestion">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Question</h6>
+                    <p>Modify question </p>
+                    <hr>
+                    <fieldset class="content-group">
+
+                        <!--div class="form-group">
+                            <label class="control-label col-lg-2">Name</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="mod_mod_question_input_name">
+                            </div>
+                        </div-->                    
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Question</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="modal_mod_question_text" id="idques">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <textarea rows="5" cols="5" class="form-control" name="modal_mod_question_desc" id="iddesc" placeholder="Add Description of Question"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_id_area" name="app_functional_site" value="mod_question_modal">
+                        <input type="hidden" id="app_mod_mod_hid_id" name="app_mod_mod_hid_name" value="">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>    
+</div>
+<!-- END MODIFY QUESTION MODAL-->
+<!-- DELETE QUESTION MODAL-->
+<div id="modal_del_question" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Are you sure you want to delete this question?</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="deletequestion">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Question</h6>
+                    <p>Delete question </p>
+                    <hr>
+                    <fieldset class="content-group">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Question</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="modal_del_question_text" id="idques" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <textarea rows="5" cols="5" class="form-control" name="modal_del_question_desc" id="iddesc" placeholder="Add Description of Question" disabled></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_id_area" name="app_functional_site" value="del_question_modal">
+                        <input type="hidden" id="modal_del_hid_id" name="modal_question_del_id" value="">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit</button>
+                    <!--button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_del_question_confirm">Delete</button-->
+                </div>
+
+
+                <!--TWO STEP VERIFICATION MODAL
+
+                <div id="modal_del_question_confirm" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h5 class="modal-title">Confirm deletion.</h5>
+                            </div>
+
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit <i class="icon-arrow-right14 position-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+                -->
+
+               
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END DELETE QUESTION MODAL-->
+
+<!-- ADD ANSWER MODAL-->
+<div id="modal_add_answer" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Add new change management answer</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="addnewquestion">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Answer</h6>
+                    <p>Add a new answer </p>
+                    <hr>
+                    <fieldset class="content-group">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Answer</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="modal_add_new_answer">
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_add_new_answer_id_area" name="app_functional_site" value="add_answer_modal">
+                        <input type="hidden" id="app_add_new_answer_hid_id" name="app_add_new_answer_hid_name" value="">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END ADD ANSWER MODAL-->
+<!-- MODIFY ANSWER MODAL-->
+<div id="modal_mod_answer" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Modify existing change management answer</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="answer_mod_form_post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Answer</h6>
+                    <p>Modify answer </p>
+                    <hr>
+                    <fieldset class="content-group">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Answer</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="answer_mod_mod_inp_name" id="answer_mod_mod_inp_id">
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_id_area" name="app_functional_site" value="mod_answer_modal">
+                        <input type="hidden" id="answer_mod_mod_hid_id" name="answer_mod_mod_hid_name" value="">
+                        <input type="hidden" id="app_mod_answer_question_hid_id" name="app_mod_answer_question_hid_name" value="">
+                    </fieldset>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END MODIFY ANSWER MODAL-->
+<!-- DELETE ANSWER MODAL-->
+<div id="modal_del_answer" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Are you sure you want to delete this answer?</h5>
+            </div>
+            <form class="form-horizontal" method="POST" name="answer_del_form_post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h6 class="text-semibold">Answer</h6>
+                    <p>Delete Answer </p>
+                    <hr>
+                    <fieldset class="content-group">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Answer</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="answer_mod_del_inp_name" id="answer_mod_del_inp_id" disabled>
+                            </div>
+                        </div>
+                        <input type="hidden" id="app_id_area" name="app_functional_site" value="del_answer_modal">
+                        <input type="hidden" id="answer_mod_del_hid_id" name="answer_mod_del_hid_name" value="">
+                        <input type="hidden" id="app_del_answer_question_hid_id" name="app_del_answer_question_hid_name" value="">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn bg-purple-400">Submit</i></button>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- END DELETE ANSWER MODAL-->
+{% endblock %} {% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/pages/form_inputs.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/form_layouts.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/row_reorder.min.js' %}"></script>
+
+<script type="text/javascript">
+
+
+var atable = $('#atable').DataTable({
+
+    rowReorder: true,
+    paging: false,
+    info: false,
+    searching: false,
+    columnDefs: [
+    { "visible": false, "targets": 3 }
+  ]
+
+});
+
+
+atable.on( 'row-reorder', function ( e, diff, edit ) {
+
+
+$("#answer_commit_rank_btn_id").prop("disabled", false);
+
+});
+//Row reorder doco
+//https://datatables.net/extensions/rowreorder/examples/initialisation/events.html
+
+
+function answer_commit_rank() {
+
+var atable_data = []
+
+
+atable.data().each(function (data){
+var dict = {};
+dict.answer_id = data[3];
+dict.answer_rank = data[0];
+atable_data.push(dict);
+});
+
+    
+
+
+var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'qaview' %}",
+        data: {
+            'app_functional_site':'answer_ranking_commit',
+            'atable': JSON.stringify(atable_data)
+        }
+
+    });
+
+}
+
+var qtable = $('#qtable').DataTable({
+
+    rowReorder: true,
+    paging: false,
+    info: false,
+    searching: false,
+    columnDefs: [
+    { "visible": false, "targets": 3 }]
+
+});
+
+qtable.on( 'row-reorder', function ( e, diff, edit ) {
+
+
+$("#commit_ranking_btn_id").prop("disabled", false);
+
+});
+
+function question_commit_rank() {
+
+
+var qtable_data = []
+
+
+qtable.data().each(function (data){
+var dict = {};
+dict.question_id = data[3];
+dict.question_rank = data[0];
+qtable_data.push(dict);
+});
+
+var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'qaview' %}",
+        data: {
+            'app_functional_site':'question_ranking_commit',
+            'qtable': JSON.stringify(qtable_data)
+        }
+
+    });
+
+}
+
+
+/** 
+Q - Code Output
+**/
+
+
+$('#qtype').on('change', function() {
+    $('#qquestion').html('');
+    atable.clear().draw();
+    switch (parseInt($('#qtype').val())) {
+
+        {% autoescape off %} 
+        {% for items in questions %} 
+        {{ items.code }} 
+        {% endfor %} 
+        {% endautoescape %}
+    }
+
+    switch (parseInt($('#qtype').val())) {
+
+        {% autoescape off %}
+        {% for items in alevel %} 
+        {{ items.code }}
+        {% endfor %}
+        {% endautoescape %}
+    }
+
+
+});
+
+$('#qquestion').on('click', function() {
+    $('#qdesc').val('');
+    atable.clear().draw();
+    vchange(parseInt($('#qquestion').val()));
+    rchange(parseInt($('#qquestion').val()));
+
+    //$("#changechkd").prop("checked", true);
+
+    $("#answer_mod_new_btn").prop("disabled", false);
+
+    $("#modal_mod_q_btn").prop("disabled", false);
+    $("#modal_del_q_btn").prop("disabled", false);
+
+});
+
+
+$('#qquestion').on('change', function() {
+    $('#qdesc').val('');
+    atable.clear().draw();
+    vchange(parseInt($('#qquestion').val()));
+    rchange(parseInt($('#qquestion').val()));
+
+
+
+
+});
+
+
+$('#qmodtype').on('change', function() {
+
+    mchange(parseInt($('#qmodtype').val()));
+
+});
+
+$('#accordian_question_ranking_id').on('click', function() {
+    qtable.clear().draw();
+    // Add questions to accordian
+    {% autoescape off %}
+    {% for items in qtable %} 
+    {{ items.code }} 
+    {% endfor %} 
+    {% endautoescape %}
+
+
+
+});
+
+
+
+
+
+function vchange(qitem) {
+
+
+    switch (qitem) {
+
+        {% autoescape off %} 
+        {% for items in qdesc %} 
+        {{ items.code }} 
+        {% endfor %} 
+        {% endautoescape %}
+
+    }
+
+}
+
+function rchange(qitem) {
+
+    switch (qitem) {
+
+        {% autoescape off %} 
+        {% for items in answers %} 
+        {{ items.code }} 
+        {% endfor %} 
+        {% endautoescape %}
+
+    }
+
+}
+
+function mchange(qitem) {
+
+
+    switch (qitem) {
+
+        {% autoescape off %} 
+        {% for items in mlevel %} 
+        {{ items.code }} 
+        {% endfor %} 
+        {% endautoescape %}
+
+    }
+
+}
+
+//cbtypecheck
+$('#typecheck').on('change', function() {
+
+    //var selected_value = $("input[name='radiotypecheck']:checked").val();
+    //var selected_value = $("input[name='cbtypecheck']:checked").val();
+
+    //if (selected_value == "2") {
+
+    if ($("#cbtypecheck").is(':checked')) {
+
+
+        $('#qtypeinput').replaceWith('<div class="col-lg-10" id="qtypeinput"><input type="text" name="mod_add_existing_type" class="form-control" id="qmodtype"></div>');
+        $("#qtypelevel").prop("disabled", false);
+
+    } else { 
+
+        var htmlstr = `<div class="col-lg-10" id="qtypeinput">
+                       <select name="mod_add_existing_type" class="form-control" id="qmodtype">
+                       {% for items in qtype %}
+                       <option value="{{ items.id }}">{{ items.question_type }}</option>
+                       {% endfor %}
+                       </select></div>`;
+
+        $('#qtypeinput').replaceWith(htmlstr);
+
+        $("#qtypelevel").prop("disabled", true);
+
+
+    }
+
+
+
+
+});
+
+
+// Question MODALS
+$('#modal_mod_question').on('show.bs.modal', function(event) {
+
+    question_modordel();
+
+
+});
+
+$('#modal_del_question').on('show.bs.modal', function(event) {
+
+    question_modordel();
+
+
+});
+
+
+function question_modordel() {
+
+    var qques = $("#qquestion option:selected").text();
+    var qopval = $("#qquestion option:selected").val();
+
+    console.log(qopval);
+    var qdesc = $('#qdesc').val();
+    console.log(qdesc);
+
+    $("input[type=text][name=modal_mod_question_text]").val(qques);
+    //$("input[type=text][name=mod_mod_question_input_name").val(qques);
+    $("textarea[name=modal_mod_question_desc]").text(qdesc);
+
+    $("input[type=text][name=modal_del_question_text]").val(qques);
+    $("textarea[name=modal_del_question_desc]").text(qdesc);
+
+    $("input[type=hidden][name=modal_question_del_id]").val(qopval);
+    $("input[type=hidden][name=app_mod_mod_hid_name]").val(qopval);
+
+    $("qid").val(qopval);
+
+}
+
+
+// Answer MODALS
+
+
+$('#modal_add_answer').on('show.bs.modal', function(event) {
+
+var qques_answer_id = $('#qquestion').val();
+
+console.log(qques_answer_id);
+
+    $('#app_add_new_answer_hid_id').val(qques_answer_id);
+
+
+});
+
+$('#modal_mod_answer').on('show.bs.modal', function(event) {
+
+
+
+    var qques_answer_id = $('#qquestion').val();
+
+    var button = $(event.relatedTarget);
+
+    var answertxt = button.data('answertxt');
+    console.log(answertxt);
+    var pid = button.data('pid');
+    console.log(pid);
+
+
+    $("input[type=hidden][name=answer_mod_mod_hid_name]").val(pid);
+    $("input[type=text][name=answer_mod_mod_inp_name]").val(answertxt);
+    $('#app_mod_answer_question_hid_id').val(qques_answer_id);
+
+});
+
+
+$('#modal_del_answer').on('show.bs.modal', function(event) {
+
+
+
+    var qques_answer_id = $('#qquestion').val();
+
+    var button = $(event.relatedTarget);
+
+    var answertxt = button.data('answertxt');
+    console.log(answertxt);
+    var pid = button.data('pid');
+    console.log(pid);
+
+
+    $("input[type=hidden][name=answer_mod_del_hid_name]").val(pid);
+    $("input[type=text][name=answer_mod_del_inp_name]").val(answertxt);
+    $('#app_del_answer_question_hid_id').val(qques_answer_id);
+
+});
+
+
+
+
+//{% if messages %}
+//<ul class="messages">
+//    {% for message in messages %}
+//    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+//    {% endfor %}
+//</ul>
+//{% endif %}
+
+
+
+//var geo = qtable.rows().data().map(function(data){return data.Rank;});
+
+
+//console.log(geo);
+</script>
+{% endblock %}

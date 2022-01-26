@@ -1,0 +1,157 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Heatmap{% endblock %} 
+{% block custcss %} 
+<style>
+ .panel--dash--correction {
+  padding-bottom: 0cm;
+}  
+
+.content--group--correction {
+    margin-bottom:  0;
+} 
+
+</style>
+
+{% endblock %} {% block main_content %}
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="panel panel-flat" id="dash_panel">
+            <div class="panel-heading">
+                <h5 class="panel-title">Level Scores</h5>
+            </div>
+            <div id="render_dash">
+                <!--div class="panel-body panel--dash--correction" style="overflow-x: scroll;" id="chart_display">
+                    <div class="row" id="chart_display_row" ></div>
+            </div-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/charts/plotly/plotly-latest.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/sliders/ion_rangeslider.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+
+<!--script type="text/javascript" src="{% static '/assets/js/pages/extra_sliders_ion.js' %}"></script-->
+<script type="text/javascript">
+
+
+    {% autoescape off %}
+    var xValues = {{ xValues }};
+    var yValues = {{ yValues }};
+    var zValues = {{ zValues }};
+    var cwidth = {{ cwidth }};
+    var cheight = {{ cheight }};
+    var bu_label_width = 100;
+    {% endautoescape %}
+
+$(document).ready(function() { 
+
+
+heatmap_plot(xValues,yValues,zValues,cwidth,cheight,bu_label_width);
+
+
+
+
+
+});
+    
+    function heatmap_plot(xValues,yValues,zValues,cwidth,cheight,lmargin) {
+    
+    
+        //console.log(data.xValues);
+    
+        var htmlstr = ` 
+<div class="row" id="render_heatmap">
+
+                            <div id="chart" class="responsive-plot"></div>
+                        </div>`;
+    
+        //$('#chart_display_row').replaceWith(htmlstr);
+        $('#render_dash').replaceWith(htmlstr);
+
+        var text_labels = zValues.map((row, i) => row.map((item, j) => {
+        return `blah: ${i}<br>bloo: ${j} <br>Value: ${item.toFixed(4)}` }));
+
+
+        var colorscaleValue = [
+            [0, '#3D9970'],
+            [1, '#001f3f']
+        ];
+
+        var data = [{
+            x: xValues,
+            y: yValues,
+            z: zValues,
+            type: 'heatmap',
+            //text: text_labels,
+            //text: text_labels,
+            //hoverinfo: 'text',
+            colorscale: colorscaleValue,
+            showscale: true
+        }];
+    
+        var layout = {
+            //title: 'Annotated Heatmap',
+           // annotations: [],
+            autosize: false,
+            width: cwidth,
+            height: cheight,
+
+            margin: {l:lmargin},
+            xaxis: {
+                ticks: '',
+                side: 'top'
+            },
+            yaxis: {
+                ticks: '',
+                ticksuffix: ' ',
+                "categoryorder": "array",
+                "categoryarray": yValues
+            }
+        };
+    
+
+    
+        
+       Plotly.newPlot('chart', data, layout, { displayModeBar: false });
+
+
+    
+    }
+
+
+
+// var d3 = Plotly.d3;
+// var WIDTH_IN_PERCENT_OF_PARENT = 80,
+//     HEIGHT_IN_PERCENT_OF_PARENT = 50;
+// var gd3 = d3.select("div[id='Green Line E_reveal']")
+//     .style({
+//         width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+//         'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+//         height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+//         'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+//     });
+// var Green_Line_E = gd3.node();
+// Plotly.plot(Green_Line_E, data, layout, {showLink: false});
+
+// window.addEventListener('resize', function() { Plotly.Plots.resize('blue_line'); });
+
+
+
+
+
+</script>
+{% endblock %}

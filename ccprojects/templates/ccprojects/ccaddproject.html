@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block title %}AddProject{% endblock %} {% block main_content%}
+<!-- 2 columns form -->
+<form method="POST">
+    {% csrf_token %}
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">Add Project</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li>
+                        <a data-action="collapse"></a>
+                    </li>
+                    <li>
+                        <a data-action="reload"></a>
+                    </li>
+                    <li>
+                        <a data-action="close"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <fieldset>
+                        <legend class="text-semibold"><i class="icon-reading position-left"></i>Project Details</legend>
+                        <div class="form-group">
+                            <label>Project Name:</label>
+                            {{ form.projectname }}
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            {{ form.projectdesc }}
+                        </div>
+                        <div class="form-group">
+                            <label>Project Benefit:</label>
+                            {{ form.benefitdesc }}
+                        </div>
+                        <div class="form-group">
+                            <label>Customer Impact:</label>
+                            {{ form.customerimpact }}
+                        </div>
+                        <div class="form-group">
+                            <label>Driver:</label>
+                            {{ form.driver }}
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="text-right row">
+                <button type="submit" class="btn btn-link" name="cancelbtn">Cancel</button>
+                <button type="submit" class="btn bg-purple-400" name="editprojectbtn">Save and Edit</button>
+                <button type="submit" class="btn bg-purple-400" name="addprojectbtn">Save <i class="icon-arrow-right14 position-right"></i></button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- /2 columns form -->
+{% endblock %}

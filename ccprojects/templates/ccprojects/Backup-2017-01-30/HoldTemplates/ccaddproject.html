@@ -1,0 +1,298 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+
+    <title>Add Projects</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <!--external css-->
+    <link href="{% static 'node_modules/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+        
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/table-responsive.css' %}" rel="stylesheet" type="text/css">
+    
+
+  </head>
+
+  <body>
+
+  <section id="container" >
+      <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+      <!--header start-->
+      <header class="header black-bg">
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
+            <!--logo start-->
+            <a href="{% url 'dashboard' %}" class="logo"><b>Change Compass</b></a>
+            <!--logo end-->
+            <div class="nav notify-row" id="top_menu">
+              
+            </div>
+            <div class="top-menu">
+            	<ul class="nav pull-right top-menu"> <!--ISSUE This will need to change when I move dashboard-->
+                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
+            	</ul>
+            </div>
+        </header>
+      <!--header end-->
+      
+      <!-- **********************************************************************************************************************************************************
+      MAIN SIDEBAR MENU
+      *********************************************************************************************************************************************************** -->
+      <!--sidebar start-->
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  <p class="centered"><a href="{% url 'dashboard' %}"><img src="{% static 'img/ccompassico5.svg' %}" class="img-circle" width="60"></a></p>
+              	  <h5 class="centered">{{ user.username|capfirst}}</h5> 
+
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-book"></i>
+                          <span>Manage Projects</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">Update</a></li> <!-- This will point to ccprojects app -->
+                          <li><a  href="#">Delete</a></li>
+                      </ul>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-bar-chart-o"></i>
+                          <span>Reports</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+                  
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-tasks"></i>
+                          <span>Tasks</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+                  
+                  <li class="sub-menu">
+                      <a>
+                          <i class="fa fa-cogs"></i>
+                          <span>Settings</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                          <li><a  href="#">...</a></li>
+                      </ul>
+                  </li>
+
+
+
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+      <!--sidebar end-->
+      
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper">
+              
+ 
+        <div class="row mt">
+          		<div class="col-lg-12">
+                  <div class="form-panel">
+                  	  <h4 class="mb"><i class="fa fa-angle-right"></i> Project Details</h4>
+                      
+                      <form class="form-horizontal style-form" method="POST">
+						  {% csrf_token %}
+                          <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Project Name</label>
+                              <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="projectname" name="projectname" placeholder="Project Name" >
+                              </div>
+                          </div>
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Description</label>
+                              <div class="col-sm-10">
+                                  <textarea class="form-control" rows="6" id="projectdesc" name="projectdesc" placeholder="Detailed description of the project." ></textarea>
+                              </div>
+                          </div>
+                          
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Customer Impact</label>
+                              <div class="col-sm-10">
+                            <textarea class="form-control" rows="6" id="customerimpact" name="customerimpact" placeholder="Statement of impact to customer." ></textarea>
+                              </div>
+                          </div> 
+                          
+                           <div class="form-group">
+                              <label class="col-sm-2 col-sm-2 control-label">Driver</label>
+                              <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="driver" name="driver" placeholder="Who is driving the project?" >
+                              </div>
+                          </div> 
+                          
+						<hr>
+						<h4 class="mb"><i class="fa fa-angle-right"></i> Project Information</h4>
+                        <label class="col-sm-2 col-sm-2 control-label">Benefit</label>
+						<select class="form-control" id="health">
+						{% for benefit in benefitoptions %}
+						  <option>{{ benefit.benefit }}</option>
+						{% endfor %}
+						</select>
+                        
+						<label class="col-sm-2 col-sm-2 control-label">Project Health</label>
+						<select class="form-control" id="health">
+						{% for health in healthoptions %}
+						  <option>{{ health.project_health }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Change Size</label>
+						<select class="form-control" id="changesize" name="changesize">
+ 						{% for changesize in changeoptions %}
+						  <option>{{ changesize.change_size }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Customer Volume</label>
+						<select class="form-control" id="customervolume" name="customervolume">
+						{% for volume in voloptions %}
+							<option>{{ volume.customer_volume }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Customer Care</label>
+						<select class="form-control" id="customercare" name="customercare">
+							{% for care in careoptions %}
+							<option>{{ care.customer_care }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Change Type</label>
+						<select class="form-control" id="changetype" name="changetype">
+							{% for changetype in changetypeoptions %}
+							<option>{{ changetype.change_type }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Project Status</label>
+						<select class="form-control" id="projectstatus" name="projectstatus">
+							{% for status in statusoptions %}
+							<option>{{ status.project_status }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Group Category</label>
+						<select class="form-control" id="groupcategory" name="groupcategory">
+                        {% for groupcategory in groupcategoryoptions %}
+							<option>{{ groupcategory.category_group }}</option>
+						{% endfor %}
+						</select>
+						
+						<label class="col-sm-2 col-sm-2 control-label">Confirmed</label>
+						<select class="form-control" id="confirmed" name="confirmed">
+						{% for confirmed in confirmedoptions %}
+							<option>{{ confirmed.confirmed }}</option>
+						{% endfor %}
+						</select>
+                        
+                        <label class="col-sm-2 col-sm-2 control-label">Impact Level</label>
+						<select class="form-control" id="impactlevel" name="impactlevel">
+						{% for impact in impactoptions %}
+							<option>{{ impact.impact_level }}</option>
+						{% endfor %}
+						</select>
+                        
+                        <label class="col-sm-2 col-sm-2 control-label">Impact Type</label>
+						<select class="form-control" id="impacttype" name="impacttype">
+						{% for type in typeoptions %}
+							<option>{{ type.impact_type }}</option>
+						{% endfor %}
+						</select>
+                        
+                        <label class="col-sm-2 col-sm-2 control-label">Project Level</label>
+						<select class="form-control" id="projectlevel" name="projectlevel">
+						{% for level in leveloptions %}
+							<option>{{ level.project_level }}</option>
+						{% endfor %}
+						</select>
+						
+
+
+          	
+          	<div class="row mt">
+
+          	      			<div class="col-lg-6 col-md-6 col-sm-12">
+      				
+      			
+      					<h4></h4>
+      					
+      					<button class="btn btn-success" type="submit" name="addprojectbtn">Add Project</button>
+
+						<button class="btn btn-danger" type="submit" name="cancelbtn">Cancel</button>
+      	
+      				</div>
+          	
+          	
+          	</div
+            
+                               </div><!-- /form-panel -->
+          		</div><!-- /col-lg-12 -->
+          	</div><!-- /row -->
+          	 
+			</form>
+
+		</section><! --/wrapper -->
+      </section><!-- /MAIN CONTENT -->
+
+      <!--main content end-->
+      <!--footer start-->
+      <footer class="site-footer">
+          <div class="text-center">
+              Change Compass - 2016
+              <a href="#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+      <!--footer end-->
+  </section>
+
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap3/dist/js/bootstrap.min.js' %}"></script>
+    <script class="include" type="text/javascript" src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+    <script src="{% static 'js/jquery.nicescroll.js' %}" type="text/javascript"></script>
+
+
+    <!--common script for all pages-->
+    <script src="{% static 'js/common-scripts.js' %}"></script>
+ 
+
+  </body>
+</html>

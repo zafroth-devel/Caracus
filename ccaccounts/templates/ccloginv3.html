@@ -1,0 +1,122 @@
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>Hinyango Login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!--external css-->
+    <link href="{% static 'node_modules/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+        
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/icons/icomoon/styles.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/core.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/colors.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/custom/flexc.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'dist/switchery.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/ccmargin.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/components.css' %}" rel="stylesheet" type="text/css">
+    <!--link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon"-->
+
+
+  </head>
+
+  <body>
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+
+
+	  <div id="login-page">
+	  	<div class="container">
+	  	
+		      <form class="form-login" name="LoginForm" method="post">
+                  {% csrf_token %}
+		        <h2 class="form-login-heading">Hinyango</h2>
+		        <div class="login-wrap">
+		            <!--input type="text" class="form-control" id="username" name="username" placeholder="User ID" autofocus-->
+                    {{ form.username }}
+		            <br>
+		            <!--input type="password" class="form-control" id="password" name="password" placeholder="Password"-->
+                    
+                    {{ form.password }}
+		            <label class="checkbox">
+		                <span class="pull-right">
+		                    <!--a href="#"> Forgot Password?</a-->
+		                </span>
+		            </label>
+		            <!--button class="btn btn-theme btn-block" type="submit" value="login"><i class="fa fa-lock"></i>LOGIN</button-->
+                    <button class="btn btn-theme btn-block" type="submit" value="login" /><i class="fa fa-lock"></i>LOGIN</button>
+
+
+                    <input type="hidden" name="next" value="{% url 'login_redirect' %}" />
+                    
+
+
+		            <hr class="hr-tingy">
+
+                    {% if form.errors %}
+                            <div id="messages">
+
+                                    <div class="login-social-link centered" style="color:red;">
+                                        Your username or password didn't match!
+                                    </div>
+        
+                            </div>
+                    {% endif %}
+                    
+		        </div>
+                
+		      </form>	  	
+	  	
+	  	</div>
+            <!--div class="background-image-fixed cover-image" style="background-image : url('{% static "assets/images/backgrounds/purple-background-images-8.jpg" %}')"></div-->
+            <!--div class="background-image-fixed cover-image" style="background-image : url('{% static "assets/images/backgrounds/purple-background-images-8.jpg" %}')"></div-->
+
+	  </div>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    
+    <script type="text/javascript" src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'node_modules/bootstrap3/dist/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/notifications/pnotify.min.js' %}"></script>
+    <script>
+             new PNotify({title: 'Warning',
+                         text: 'This site uses cookies. Do not login if you do not consent to the use of cookies.',
+                         type: 'info',
+                         icon: 'glyphicon glyphicon-warning-sign',
+                         delay: 20000});
+
+
+    </script>
+    <script>
+      var geo = Intl.DateTimeFormat().resolvedOptions().timeZone
+      console.log(geo);
+    </script>
+
+    <!--BACKSTRETCH-->
+    <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
+    <!--script type="text/javascript" src="{% static 'js/jquery.backstretch.min.js' %}"></script>
+    <script>
+        $.backstretch("{% static 'assets/images/backgrounds/purple-background-images-8.jpg' %}", {speed: 0});
+    </script-->
+
+  </body>
+</html>

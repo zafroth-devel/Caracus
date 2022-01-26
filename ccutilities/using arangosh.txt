@@ -1,0 +1,18 @@
+sudo service supervisor start
+sudo /etc/init.d/celeryd start
+sudo /etc/init.d/celerybeat start
+sudo service nginx start
+
+
+arangosh  --server.endpoint tcp://127.0.0.1:8529 --server.username root --server.database TDB --server.authentication true
+
+
+
+
+db._query('FOR document in mwidgets_businessUnit FILTER length(document.change_data) > 0 LET alteredList = (FOR element IN document.change_data LET newItem = (MERGE(element, { sponsor: "101" })) RETURN newItem) UPDATE document WITH { change_data:  alteredList } IN mwidgets_businessUnit').toArray()
+
+
+
+db._query('for bu in mwidgets_businessUnit FILTER bu.name == '101' return bu').toArray()
+
+arangosh  --server.endpoint tcp://127.0.0.1:8529 --server.username root --server.database TDB --server.authentication true

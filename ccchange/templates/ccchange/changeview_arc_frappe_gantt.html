@@ -1,0 +1,128 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Change{% endblock %} {% block main_content%} 
+{% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static 'assets/css/gantt/frappe_theme.css' %}" media="screen"-->
+
+<!--link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'assets/css/gantt/index.css' %}" rel="stylesheet" type="text/css"-->
+
+{% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">View Change Project - {{ project_id }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="font-size: 14px;">
+        <div style="overflow-x: scroll; overflow-y: hidden;">
+            <svg id="gantt-1"></svg>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/gantt/moment.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/gantt/snap.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/gantt/frappe-gantt.js' %}"></script>
+<script type="text/javascript">
+/**var names = [
+    ["Redesign website", [0, 7]],
+    ["Write new content", [1, 4]],
+    ["Apply new styles", [3, 6]],
+    ["Review", [7, 7]],
+    ["Deploy", [8, 9]],
+    ["Flat", [6, 10]],
+    ["Testing", [3, 11]],
+    ["Working it out", [3, 23]],
+    ["No problem", [2, 5]],
+    ["No Idea", [1, 9]],
+    ["Not Linked", [3, 7]],
+    ["Some deps", [6, 9]],
+];
+
+var tasks = names.map(function(name, i) {
+    var today = new Date();
+    var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    start.setDate(today.getDate() + name[1][0]);
+    end.setDate(today.getDate() + name[1][1]);
+    return {
+        start: start,
+        end: end,
+        name: name[0],
+        id: "Task " + i,
+        progress: 100 //parseInt(Math.random() * 100, 10)
+    }
+});
+**/
+
+var tasks = [
+  {
+    id: 'Task 1',
+    name: 'Redesign website',
+    start: '2016-12-28',
+    end: '2016-12-31',
+    progress: 100,
+    //dependencies: 'Task 1, Task 3'
+  },
+    {
+    id: 'Task 2',
+    name: 'Blah',
+    start: '2019-11-28',
+    end: '2019-11-31',
+    progress: 100,
+    //dependencies: 
+  },
+      {
+    id: 'Task 3',
+    name: 'Blah',
+    start: '2019-11-28',
+    end: '2019-11-31',
+    progress: 100,
+    //dependencies: 'Task 2, Task 3'
+  },
+]
+
+
+
+
+//tasks[1].dependencies = "Task 0"
+//tasks[2].dependencies = "Task 1"
+//tasks[3].dependencies = "Task 2"
+//tasks[5].dependencies = "Task 4"
+
+var gantt1 = new Gantt("#gantt-1", tasks, {
+    on_click: function(task) {
+        console.log(task);
+    },
+    on_date_change: function(task, start, end) {
+        console.log(task, start, end);
+    },
+    custom_popup_html: function(task) {
+        const end_date = task._end.format('MMM D');
+        html_str = `<div class="details-container">
+          <h5>${task.name}</h5>
+          <p>Expected to finish by ${end_date}</p>
+          <button type="submit" name="deletebtn">Delete</button>
+          </div>
+        </div>`;
+        return html_str;
+    }
+})
+</script>
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Add new user{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Remove User</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag}} {{ field }}
+                            
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="text-right row">
+                <a class="btn btn-link" name="cancelbtn" href="{% url 'viewproject' %}">Cancel</a>
+                <button type="submit" class="btn bg-purple-400" name="deluser">Submit</button>
+            </div>
+        </form>
+    </div>
+    {% endblock %}

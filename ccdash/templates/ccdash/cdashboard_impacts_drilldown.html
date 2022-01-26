@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Dashboard{% endblock %} 
+{% block custcss %} 
+
+
+{% endblock %} {% block main_content %}
+
+
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Contributing Impacts List - Level : {{ view.kwargs.level }} Date : {{ view.kwargs.day }}-{{ view.kwargs.month }}-{{ view.kwargs.year }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <table id="myTable" class="table datatable-responsive table-bordered table-striped table-hover alpha-slate">
+        <thead>
+            <tr class="bg-slate">
+                <th>Id</th>
+                <th>Impact Name</th>
+                <th>Impact Type</th>
+                <th>Business Unit Name</th>
+                <th>Project</th>
+                <th>Resourcing</th>
+                <th>Required</th>
+                <th>Score</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for itm in impactdata %}
+            <tr>
+                <td>{{ itm.change_id }}</td>
+                <td>{{ itm.impact_name }}</td>
+                <td>{{ itm.impact_type }}</td>
+                <td>{{ itm.business_unit }}</td>
+                <td>{{ itm.project }}</td>
+                <td>{{ itm.resourcing }}</td>
+                <td>{{ itm.required }}</td>
+                <td>{{ itm.score }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+</table>
+</div>
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+
+{% endblock %}

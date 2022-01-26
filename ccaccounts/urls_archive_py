@@ -1,0 +1,19 @@
+from django.conf.urls import include, url
+from django.contrib import admin
+
+from ccdash.views import DashboardView
+
+from .views import (
+    AccountRegistrationView, LogoutView,PasswordRecoveryView,
+    SettingsView,login_user)
+
+# APP --> ACCOUNTS
+
+urlpatterns = [
+    url(r'^register/$',AccountRegistrationView.as_view(),name='register'),
+    #url(r'^login/$',LoginView.as_view(),name='login'),
+    url(r'^login/$',login_user,name='login'),
+    url(r'^logout/$',LogoutView.as_view(),name='logout'),
+    url(r'^password_recovery/$',PasswordRecoveryView.as_view(), name='password_recovery'),
+    url(r'^settings/$',SettingsView.as_view(),name='settings'),
+]

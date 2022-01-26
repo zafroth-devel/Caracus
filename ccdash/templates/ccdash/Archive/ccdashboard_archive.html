@@ -1,0 +1,1091 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+    {% block custcss %}
+<!--TEMPORARY-->
+ <style>
+      rect.bordered {
+        stroke: #E6E6E6;
+        stroke-width:2px;   
+      }
+
+      text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+      }
+
+      text.axis-workweek {
+        fill: #000;
+      }
+
+      text.axis-worktime {
+        fill: #000;
+      }
+
+    div.tooltip { 
+    position: absolute;          
+    width: 210px;          
+    height: 50px;         
+    padding: 2px;  
+    font: 15px sans-serif; 
+    color: #000; 
+    background: lightsteelblue; 
+    border: 1px;    
+    border-radius: 2px;     
+    pointer-events: none;     
+}
+
+    div.clicktip { 
+    position: absolute;          
+    width: 210px;          
+    height: 50px;         
+    padding: 2px;  
+    font: 15px sans-serif; 
+    color: #000; 
+    background: #41b6c4; 
+    border: 1px;    
+    border-radius: 2px;     
+    pointer-events: none;     
+}
+
+    div.toolform { 
+    font: 45px sans-serif; 
+    color: #000;  
+}
+
+
+
+    </style>
+
+
+    {% endblock %}
+
+
+
+
+
+
+					{% block main_content%}
+
+
+		       
+		<div class="row">
+
+				<!--div class="col-md-7"--> 
+
+
+					<!-- Simple interaction -->
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h5 class="panel-title">Change Heatmap</h5>
+							<div class="heading-elements">
+								<ul class="icons-list">
+			                		<li><a data-action="collapse"></a></li>
+			                		<li><a data-action="reload"></a></li>
+			                		<li><a data-action="close"></a></li>
+			                	</ul>
+		                	</div>
+						</div>
+
+						<div class="panel-body" id="chart_container">
+
+                            <!-- CHART PLACEHOLDER -->
+                            <div id="chart"></div>
+                            <div id="dataset-picker"></div>
+
+						</div>
+					</div>
+
+
+
+
+
+		</div>
+
+
+
+					{% endblock %}
+
+     				<!--Parent core js override-->
+
+
+	{% block chartcode%}
+
+<script type="text/javascript" src="{% static 'assets/js/plugins/visualization/d3/d3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/visualization/d3/d3_tooltip.js' %}"></script>
+
+
+<script>
+
+function displaychart() {
+
+      var data1 = 
+[{'xhier':1,'ysched':1,'value':1.42593936458576},
+{'xhier':1,'ysched':2,'value':1.77218811111501},
+{'xhier':1,'ysched':3,'value':1.00188307461828},
+{'xhier':1,'ysched':4,'value':2.02861906830823},
+{'xhier':1,'ysched':5,'value':1.77274031840155},
+{'xhier':1,'ysched':6,'value':1.74094473681603},
+{'xhier':1,'ysched':7,'value':1.78788253777538},
+{'xhier':1,'ysched':8,'value':2.12342836118716},
+{'xhier':1,'ysched':9,'value':1.55146844734736},
+{'xhier':1,'ysched':10,'value':1.5521291659725},
+{'xhier':1,'ysched':11,'value':1.19654073748505},
+{'xhier':1,'ysched':12,'value':1.44862314774134},
+{'xhier':1,'ysched':13,'value':2.4295850930954},
+{'xhier':1,'ysched':14,'value':1.69553886462614},
+{'xhier':1,'ysched':15,'value':2.10445027365112},
+{'xhier':1,'ysched':16,'value':1.87228819301278},
+{'xhier':1,'ysched':17,'value':1.51885555094605},
+{'xhier':1,'ysched':18,'value':2.11299908846827},
+{'xhier':1,'ysched':19,'value':2.06263814617092},
+{'xhier':1,'ysched':20,'value':2.06888771013098},
+{'xhier':1,'ysched':21,'value':2.06675124785054},
+{'xhier':1,'ysched':22,'value':1.67340665172446},
+{'xhier':1,'ysched':23,'value':2.25408987402565},
+{'xhier':1,'ysched':24,'value':1.85006578097708},
+{'xhier':1,'ysched':25,'value':1.71017811043925},
+{'xhier':1,'ysched':26,'value':2.03273526877985},
+{'xhier':1,'ysched':27,'value':1.45608939846797},
+{'xhier':1,'ysched':28,'value':1.3742143200982},
+{'xhier':1,'ysched':29,'value':1.83680082858786},
+{'xhier':1,'ysched':30,'value':2.13336401606454},
+{'xhier':1,'ysched':31,'value':1.74782885454475},
+{'xhier':2,'ysched':1,'value':1.19778459363434},
+{'xhier':2,'ysched':2,'value':1.96823320090796},
+{'xhier':2,'ysched':3,'value':1.38893276671786},
+{'xhier':2,'ysched':4,'value':1.55068551481114},
+{'xhier':2,'ysched':5,'value':1.78496590935602},
+{'xhier':2,'ysched':6,'value':1.48121968737208},
+{'xhier':2,'ysched':7,'value':1.4814125908452},
+{'xhier':2,'ysched':8,'value':2.08593699014727},
+{'xhier':2,'ysched':9,'value':1.88065221177445},
+{'xhier':2,'ysched':10,'value':1.56570177987053},
+{'xhier':2,'ysched':11,'value':1.68380409007514},
+{'xhier':2,'ysched':12,'value':1.63397625571789},
+{'xhier':2,'ysched':13,'value':1.75424256798716},
+{'xhier':2,'ysched':14,'value':1.75893641777803},
+{'xhier':2,'ysched':15,'value':1.64758987113829},
+{'xhier':2,'ysched':16,'value':1.89972654452074},
+{'xhier':2,'ysched':17,'value':1.73859658361703},
+{'xhier':2,'ysched':18,'value':1.83779321454758},
+{'xhier':2,'ysched':19,'value':2.06064135836107},
+{'xhier':2,'ysched':20,'value':1.69490737570696},
+{'xhier':2,'ysched':21,'value':1.04414207825762},
+{'xhier':2,'ysched':22,'value':1.23814341712896},
+{'xhier':2,'ysched':23,'value':1.9870630177005},
+{'xhier':2,'ysched':24,'value':1.52615919159656},
+{'xhier':2,'ysched':25,'value':1.317551026864},
+{'xhier':2,'ysched':26,'value':1.45950900193752},
+{'xhier':2,'ysched':27,'value':1.61730596339624},
+{'xhier':2,'ysched':28,'value':1.26344969815008},
+{'xhier':2,'ysched':29,'value':1.97489987285271},
+{'xhier':2,'ysched':30,'value':2.24171413839935},
+{'xhier':2,'ysched':31,'value':1.49776482053657},
+{'xhier':3,'ysched':1,'value':1.6749334160918},
+{'xhier':3,'ysched':2,'value':1.97164662151102},
+{'xhier':3,'ysched':3,'value':1.84722817537366},
+{'xhier':3,'ysched':4,'value':1.80101412935267},
+{'xhier':3,'ysched':5,'value':1.72396276809224},
+{'xhier':3,'ysched':6,'value':1.2878866411168},
+{'xhier':3,'ysched':7,'value':2.06053334729014},
+{'xhier':3,'ysched':8,'value':1.72445422842849},
+{'xhier':3,'ysched':9,'value':1.77934279514276},
+{'xhier':3,'ysched':10,'value':1.6877606291387},
+{'xhier':3,'ysched':11,'value':1.53950130259867},
+{'xhier':3,'ysched':12,'value':1.46694843234058},
+{'xhier':3,'ysched':13,'value':2.22517977312298},
+{'xhier':3,'ysched':14,'value':2.08099287623394},
+{'xhier':3,'ysched':15,'value':1.8198427541036},
+{'xhier':3,'ysched':16,'value':1.48974889063886},
+{'xhier':3,'ysched':17,'value':1.95262917458602},
+{'xhier':3,'ysched':18,'value':2.27042545139475},
+{'xhier':3,'ysched':19,'value':1.72639280879562},
+{'xhier':3,'ysched':20,'value':1.90524605282534},
+{'xhier':3,'ysched':21,'value':1.36315061564005},
+{'xhier':3,'ysched':22,'value':1.72410280368341},
+{'xhier':3,'ysched':23,'value':1.70060542580811},
+{'xhier':3,'ysched':24,'value':1.81610706426409},
+{'xhier':3,'ysched':25,'value':1.73583490470035},
+{'xhier':3,'ysched':26,'value':2.12992289264448},
+{'xhier':3,'ysched':27,'value':1.70366744110123},
+{'xhier':3,'ysched':28,'value':1.88043825361821},
+{'xhier':3,'ysched':29,'value':1.22372143888311},
+{'xhier':3,'ysched':30,'value':1.20938103049211},
+{'xhier':3,'ysched':31,'value':1.71516526695823},
+{'xhier':4,'ysched':1,'value':1.86936779786095},
+{'xhier':4,'ysched':2,'value':1.85550755701378},
+{'xhier':4,'ysched':3,'value':2.00848805224695},
+{'xhier':4,'ysched':4,'value':1.75539348009978},
+{'xhier':4,'ysched':5,'value':1.79252621845185},
+{'xhier':4,'ysched':6,'value':1.35600215223425},
+{'xhier':4,'ysched':7,'value':2.05525594842505},
+{'xhier':4,'ysched':8,'value':1.78821117467997},
+{'xhier':4,'ysched':9,'value':1.59458179732726},
+{'xhier':4,'ysched':10,'value':1.31371572913218},
+{'xhier':4,'ysched':11,'value':1.41597623696298},
+{'xhier':4,'ysched':12,'value':1.21671708759684},
+{'xhier':4,'ysched':13,'value':1.81680710641163},
+{'xhier':4,'ysched':14,'value':1.74645159005213},
+{'xhier':4,'ysched':15,'value':1.65267817939752},
+{'xhier':4,'ysched':16,'value':1.22563357450719},
+{'xhier':4,'ysched':17,'value':1.50674539918983},
+{'xhier':4,'ysched':18,'value':1.67976796492267},
+{'xhier':4,'ysched':19,'value':1.98169966644021},
+{'xhier':4,'ysched':20,'value':2.11636097581755},
+{'xhier':4,'ysched':21,'value':1.8034017839467},
+{'xhier':4,'ysched':22,'value':1.85959365941158},
+{'xhier':4,'ysched':23,'value':1.33952937435553},
+{'xhier':4,'ysched':24,'value':2.12628225596059},
+{'xhier':4,'ysched':25,'value':1.83938456190713},
+{'xhier':4,'ysched':26,'value':1.84081706643198},
+{'xhier':4,'ysched':27,'value':1.22435841138684},
+{'xhier':4,'ysched':28,'value':1.83984003669534},
+{'xhier':4,'ysched':29,'value':1.35934981764278},
+{'xhier':4,'ysched':30,'value':2.41450596270362},
+{'xhier':4,'ysched':31,'value':2.10104761325238},
+{'xhier':5,'ysched':1,'value':1.53863899321322},
+{'xhier':5,'ysched':2,'value':1.60158822337236},
+{'xhier':5,'ysched':3,'value':2.01655409790991},
+{'xhier':5,'ysched':4,'value':1.80136547700042},
+{'xhier':5,'ysched':5,'value':1.69970592537679},
+{'xhier':5,'ysched':6,'value':1.95189215871868},
+{'xhier':5,'ysched':7,'value':1.55127501937157},
+{'xhier':5,'ysched':8,'value':1.64834258065861},
+{'xhier':5,'ysched':9,'value':1.42447123561873},
+{'xhier':5,'ysched':10,'value':1.9333413201692},
+{'xhier':5,'ysched':11,'value':1.66099773333059},
+{'xhier':5,'ysched':12,'value':2.23081322102275},
+{'xhier':5,'ysched':13,'value':2.22100604455622},
+{'xhier':5,'ysched':14,'value':1.71159269017551},
+{'xhier':5,'ysched':15,'value':2.09936705470007},
+{'xhier':5,'ysched':16,'value':2.08994937347631},
+{'xhier':5,'ysched':17,'value':2.00950400723042},
+{'xhier':5,'ysched':18,'value':1.82405450029915},
+{'xhier':5,'ysched':19,'value':1.26221888439256},
+{'xhier':5,'ysched':20,'value':1.73022021173371},
+{'xhier':5,'ysched':21,'value':1.71622083080827},
+{'xhier':5,'ysched':22,'value':2.08516103588429},
+{'xhier':5,'ysched':23,'value':1.26990808768448},
+{'xhier':5,'ysched':24,'value':1.4193070707989},
+{'xhier':5,'ysched':25,'value':1.59056354508433},
+{'xhier':5,'ysched':26,'value':1.59561503061642},
+{'xhier':5,'ysched':27,'value':1.39399348869419},
+{'xhier':5,'ysched':28,'value':1.75767548491641},
+{'xhier':5,'ysched':29,'value':1.73099653465487},
+{'xhier':5,'ysched':30,'value':1.09909066664948},
+{'xhier':5,'ysched':31,'value':1.43357150957786},
+{'xhier':6,'ysched':1,'value':1.69143255060192},
+{'xhier':6,'ysched':2,'value':1.76657953048971},
+{'xhier':6,'ysched':3,'value':1.59109697147566},
+{'xhier':6,'ysched':4,'value':1.67991900944417},
+{'xhier':6,'ysched':5,'value':1.7093416741134},
+{'xhier':6,'ysched':6,'value':2.01498101258613},
+{'xhier':6,'ysched':7,'value':2.18053911715449},
+{'xhier':6,'ysched':8,'value':1.61261699160635},
+{'xhier':6,'ysched':9,'value':2.0992307010183},
+{'xhier':6,'ysched':10,'value':1.59133393854449},
+{'xhier':6,'ysched':11,'value':1.49071475602878},
+{'xhier':6,'ysched':12,'value':1.8148152392278},
+{'xhier':6,'ysched':13,'value':1.91048611168883},
+{'xhier':6,'ysched':14,'value':1.9322792993262},
+{'xhier':6,'ysched':15,'value':1.59491656499505},
+{'xhier':6,'ysched':16,'value':2.07356658756734},
+{'xhier':6,'ysched':17,'value':1.5987195569636},
+{'xhier':6,'ysched':18,'value':1.48920240602052},
+{'xhier':6,'ysched':19,'value':2.07307708857984},
+{'xhier':6,'ysched':20,'value':1.46080338201974},
+{'xhier':6,'ysched':21,'value':2.15152458411028},
+{'xhier':6,'ysched':22,'value':1.38757856720631},
+{'xhier':6,'ysched':23,'value':1.61109951203998},
+{'xhier':6,'ysched':24,'value':2.15177587963285},
+{'xhier':6,'ysched':25,'value':1.19388990626479},
+{'xhier':6,'ysched':26,'value':2.19731466061976},
+{'xhier':6,'ysched':27,'value':1.98529771515372},
+{'xhier':6,'ysched':28,'value':1.7973767179118},
+{'xhier':6,'ysched':29,'value':1.53712786795365},
+{'xhier':6,'ysched':30,'value':2.18174370634438},
+{'xhier':6,'ysched':31,'value':1.88659094567369},
+{'xhier':7,'ysched':1,'value':1.88517572873186},
+{'xhier':7,'ysched':2,'value':1.75545527792416},
+{'xhier':7,'ysched':3,'value':1.51206185089389},
+{'xhier':7,'ysched':4,'value':2.17863624655211},
+{'xhier':7,'ysched':5,'value':1.63196439102567},
+{'xhier':7,'ysched':6,'value':1.82774147181051},
+{'xhier':7,'ysched':7,'value':1.58515576837847},
+{'xhier':7,'ysched':8,'value':1.45694919050608},
+{'xhier':7,'ysched':9,'value':1.79482534495597},
+{'xhier':7,'ysched':10,'value':1.50688879553691},
+{'xhier':7,'ysched':11,'value':1.92532984667565},
+{'xhier':7,'ysched':12,'value':1.86941731459252},
+{'xhier':7,'ysched':13,'value':1.70734106242108},
+{'xhier':7,'ysched':14,'value':1.90155961352813},
+{'xhier':7,'ysched':15,'value':1.5514719255315},
+{'xhier':7,'ysched':16,'value':1.85142003590513},
+{'xhier':7,'ysched':17,'value':1.47256232723183},
+{'xhier':7,'ysched':18,'value':1.55998697957521},
+{'xhier':7,'ysched':19,'value':1.70105739925062},
+{'xhier':7,'ysched':20,'value':2.05480112596014},
+{'xhier':7,'ysched':21,'value':1.97316990696701},
+{'xhier':7,'ysched':22,'value':1.77941330647431},
+{'xhier':7,'ysched':23,'value':1.63979587198327},
+{'xhier':7,'ysched':24,'value':1.7450780986783},
+{'xhier':7,'ysched':25,'value':1.77466323900466},
+{'xhier':7,'ysched':26,'value':1.47675633971932},
+{'xhier':7,'ysched':27,'value':1.56716059970135},
+{'xhier':7,'ysched':28,'value':1.94181691428354},
+{'xhier':7,'ysched':29,'value':1.74373993274144},
+{'xhier':7,'ysched':30,'value':1.31720972104629},
+{'xhier':7,'ysched':31,'value':1.48317395259451},
+{'xhier':8,'ysched':1,'value':1.63184654320342},
+{'xhier':8,'ysched':2,'value':1.52859837699196},
+{'xhier':8,'ysched':3,'value':1.58339976837644},
+{'xhier':8,'ysched':4,'value':1.66375029782151},
+{'xhier':8,'ysched':5,'value':1.8950807421653},
+{'xhier':8,'ysched':6,'value':2.22239746699155},
+{'xhier':8,'ysched':7,'value':1.19049066416082},
+{'xhier':8,'ysched':8,'value':1.38151159896468},
+{'xhier':8,'ysched':9,'value':2.15318161282263},
+{'xhier':8,'ysched':10,'value':1.20068848500183},
+{'xhier':8,'ysched':11,'value':1.78606767068324},
+{'xhier':8,'ysched':12,'value':1.43949018114983},
+{'xhier':8,'ysched':13,'value':1.42088418080537},
+{'xhier':8,'ysched':14,'value':1.29110702769559},
+{'xhier':8,'ysched':15,'value':1.31175106410275},
+{'xhier':8,'ysched':16,'value':1.49115113074663},
+{'xhier':8,'ysched':17,'value':2.16281877309923},
+{'xhier':8,'ysched':18,'value':2.20896680792268},
+{'xhier':8,'ysched':19,'value':2.04792753102238},
+{'xhier':8,'ysched':20,'value':1.87613769030768},
+{'xhier':8,'ysched':21,'value':1.66506015778232},
+{'xhier':8,'ysched':22,'value':1.3632311674703},
+{'xhier':8,'ysched':23,'value':1.44553742276995},
+{'xhier':8,'ysched':24,'value':1.72738860564818},
+{'xhier':8,'ysched':25,'value':1.42593787600258},
+{'xhier':8,'ysched':26,'value':1.594795862218},
+{'xhier':8,'ysched':27,'value':1.57600452996348},
+{'xhier':8,'ysched':28,'value':1.75338672659499},
+{'xhier':8,'ysched':29,'value':2.00025641127222},
+{'xhier':8,'ysched':30,'value':1.56899100434817},
+{'xhier':8,'ysched':31,'value':1.30427412942522},
+{'xhier':9,'ysched':1,'value':2.36153777625423},
+{'xhier':9,'ysched':2,'value':1.65271113804991},
+{'xhier':9,'ysched':3,'value':1.1812626167674},
+{'xhier':9,'ysched':4,'value':1.58014856622474},
+{'xhier':9,'ysched':5,'value':1.55622149403846},
+{'xhier':9,'ysched':6,'value':1.6829037119195},
+{'xhier':9,'ysched':7,'value':2.27106661855101},
+{'xhier':9,'ysched':8,'value':1.69094499332219},
+{'xhier':9,'ysched':9,'value':1.70675892734616},
+{'xhier':9,'ysched':10,'value':1.56626499736904},
+{'xhier':9,'ysched':11,'value':2.31936763345501},
+{'xhier':9,'ysched':12,'value':1.27047812860148},
+{'xhier':9,'ysched':13,'value':1.08331945810713},
+{'xhier':9,'ysched':14,'value':1.81566673673949},
+{'xhier':9,'ysched':15,'value':1.701910775988},
+{'xhier':9,'ysched':16,'value':1.80958980890135},
+{'xhier':9,'ysched':17,'value':1.42101515946343},
+{'xhier':9,'ysched':18,'value':1.66259485207539},
+{'xhier':9,'ysched':19,'value':1.76137397042822},
+{'xhier':9,'ysched':20,'value':2.28344410266322},
+{'xhier':9,'ysched':21,'value':1.58413054650472},
+{'xhier':9,'ysched':22,'value':1.32712525433967},
+{'xhier':9,'ysched':23,'value':1.52479715456419},
+{'xhier':9,'ysched':24,'value':1.83788452448973},
+{'xhier':9,'ysched':25,'value':1.86346911765459},
+{'xhier':9,'ysched':26,'value':1.49133240688276},
+{'xhier':9,'ysched':27,'value':1.67071197782705},
+{'xhier':9,'ysched':28,'value':1.43157864144896},
+{'xhier':9,'ysched':29,'value':1.6583266601696},
+{'xhier':9,'ysched':30,'value':1.91120221538005},
+{'xhier':9,'ysched':31,'value':1.54967063065294},
+{'xhier':10,'ysched':1,'value':1.43798218803675},
+{'xhier':10,'ysched':2,'value':1.2533695523717},
+{'xhier':10,'ysched':3,'value':1.81304539505619},
+{'xhier':10,'ysched':4,'value':1.12279689005408},
+{'xhier':10,'ysched':5,'value':1.51386498227701},
+{'xhier':10,'ysched':6,'value':1.84104488442908},
+{'xhier':10,'ysched':7,'value':1.84702140057227},
+{'xhier':10,'ysched':8,'value':1.69845632439074},
+{'xhier':10,'ysched':9,'value':1.2561519209818},
+{'xhier':10,'ysched':10,'value':1.71027754052502},
+{'xhier':10,'ysched':11,'value':1.45605014237721},
+{'xhier':10,'ysched':12,'value':1.60382698763079},
+{'xhier':10,'ysched':13,'value':1.48828530390228},
+{'xhier':10,'ysched':14,'value':2.06360291071329},
+{'xhier':10,'ysched':15,'value':1.88646813310707},
+{'xhier':10,'ysched':16,'value':0.902294659710247},
+{'xhier':10,'ysched':17,'value':1.33642659347044},
+{'xhier':10,'ysched':18,'value':1.44048587291727},
+{'xhier':10,'ysched':19,'value':1.89221159777976},
+{'xhier':10,'ysched':20,'value':1.4583244936304},
+{'xhier':10,'ysched':21,'value':1.59153631985366},
+{'xhier':10,'ysched':22,'value':1.8733062383572},
+{'xhier':10,'ysched':23,'value':1.1780523759161},
+{'xhier':10,'ysched':24,'value':2.30767780140275},
+{'xhier':10,'ysched':25,'value':1.87640293113113},
+{'xhier':10,'ysched':26,'value':1.4745132036539},
+{'xhier':10,'ysched':27,'value':0.99253519108026},
+{'xhier':10,'ysched':28,'value':1.60909706048808},
+{'xhier':10,'ysched':29,'value':1.81070718552342},
+{'xhier':10,'ysched':30,'value':1.18046348677936},
+{'xhier':10,'ysched':31,'value':2.17910829167598},
+{'xhier':11,'ysched':1,'value':1.87680635311764},
+{'xhier':11,'ysched':2,'value':2.00593285560462},
+{'xhier':11,'ysched':3,'value':2.25929779187995},
+{'xhier':11,'ysched':4,'value':1.57344790540613},
+{'xhier':11,'ysched':5,'value':2.09272661700255},
+{'xhier':11,'ysched':6,'value':1.41579689329864},
+{'xhier':11,'ysched':7,'value':1.92344882610576},
+{'xhier':11,'ysched':8,'value':1.8106783320109},
+{'xhier':11,'ysched':9,'value':1.98483750165547},
+{'xhier':11,'ysched':10,'value':1.4446269625462},
+{'xhier':11,'ysched':11,'value':1.9301076222791},
+{'xhier':11,'ysched':12,'value':2.07700653036061},
+{'xhier':11,'ysched':13,'value':1.18439698096507},
+{'xhier':11,'ysched':14,'value':1.41090357050079},
+{'xhier':11,'ysched':15,'value':1.45977239115179},
+{'xhier':11,'ysched':16,'value':1.82928253091917},
+{'xhier':11,'ysched':17,'value':2.11406957859797},
+{'xhier':11,'ysched':18,'value':1.55365369451401},
+{'xhier':11,'ysched':19,'value':1.77009482469188},
+{'xhier':11,'ysched':20,'value':1.69947022719079},
+{'xhier':11,'ysched':21,'value':1.60867541768943},
+{'xhier':11,'ysched':22,'value':2.06516945717846},
+{'xhier':11,'ysched':23,'value':1.82094700149371},
+{'xhier':11,'ysched':24,'value':1.4838622670232},
+{'xhier':11,'ysched':25,'value':1.86573888467089},
+{'xhier':11,'ysched':26,'value':2.0372179298668},
+{'xhier':11,'ysched':27,'value':2.13811805197925},
+{'xhier':11,'ysched':28,'value':1.54960343519},
+{'xhier':11,'ysched':29,'value':1.2188067041236},
+{'xhier':11,'ysched':30,'value':1.88164410720977},
+{'xhier':11,'ysched':31,'value':1.291025896047},
+{'xhier':12,'ysched':1,'value':1.99288402353596},
+{'xhier':12,'ysched':2,'value':2.18793241614513},
+{'xhier':12,'ysched':3,'value':1.70406852336131},
+{'xhier':12,'ysched':4,'value':1.40519797789604},
+{'xhier':12,'ysched':5,'value':1.55130403117853},
+{'xhier':12,'ysched':6,'value':1.29265626056722},
+{'xhier':12,'ysched':7,'value':1.85931022679914},
+{'xhier':12,'ysched':8,'value':1.70543135139588},
+{'xhier':12,'ysched':9,'value':1.8720923636848},
+{'xhier':12,'ysched':10,'value':1.54618551728286},
+{'xhier':12,'ysched':11,'value':1.15205578715162},
+{'xhier':12,'ysched':12,'value':1.3860074133348},
+{'xhier':12,'ysched':13,'value':1.83619061725603},
+{'xhier':12,'ysched':14,'value':1.68935639235439},
+{'xhier':12,'ysched':15,'value':1.66856799308912},
+{'xhier':12,'ysched':16,'value':1.52337695319274},
+{'xhier':12,'ysched':17,'value':1.54304566326791},
+{'xhier':12,'ysched':18,'value':1.59485818816607},
+{'xhier':12,'ysched':19,'value':1.88358065593944},
+{'xhier':12,'ysched':20,'value':2.1339271015537},
+{'xhier':12,'ysched':21,'value':1.77340168855453},
+{'xhier':12,'ysched':22,'value':1.26236913851384},
+{'xhier':12,'ysched':23,'value':1.13297469824246},
+{'xhier':12,'ysched':24,'value':2.02016279277677},
+{'xhier':12,'ysched':25,'value':1.96980194544294},
+{'xhier':12,'ysched':26,'value':1.52128805858192},
+{'xhier':12,'ysched':27,'value':1.71754924425233},
+{'xhier':12,'ysched':28,'value':1.78834360996604},
+{'xhier':12,'ysched':29,'value':1.44189080441022},
+{'xhier':12,'ysched':30,'value':2.21275301113392},
+{'xhier':12,'ysched':31,'value':1.50364048877282}
+];
+
+var data2 = 
+[{'xhier':1,'ysched':1,'value':10},
+{'xhier':1,'ysched':2,'value':12},
+{'xhier':1,'ysched':3,'value':4},
+{'xhier':1,'ysched':4,'value':53},
+{'xhier':1,'ysched':5,'value':54},
+{'xhier':1,'ysched':6,'value':5},
+{'xhier':1,'ysched':7,'value':6},
+{'xhier':1,'ysched':8,'value':3},
+{'xhier':1,'ysched':9,'value':4},
+{'xhier':1,'ysched':10,'value':8},
+{'xhier':1,'ysched':11,'value':9},
+{'xhier':1,'ysched':12,'value':23},
+{'xhier':1,'ysched':13,'value':45},
+{'xhier':1,'ysched':14,'value':55},
+{'xhier':1,'ysched':15,'value':55},
+{'xhier':1,'ysched':16,'value':34},
+{'xhier':1,'ysched':17,'value':34},
+{'xhier':1,'ysched':18,'value':5},
+{'xhier':1,'ysched':19,'value':1},
+{'xhier':1,'ysched':20,'value':9},
+{'xhier':1,'ysched':21,'value':8},
+{'xhier':1,'ysched':22,'value':5},
+{'xhier':1,'ysched':23,'value':3},
+{'xhier':1,'ysched':24,'value':4},
+{'xhier':1,'ysched':25,'value':55},
+{'xhier':1,'ysched':26,'value':6},
+{'xhier':1,'ysched':27,'value':77},
+{'xhier':1,'ysched':28,'value':5},
+{'xhier':1,'ysched':29,'value':9},
+{'xhier':1,'ysched':30,'value':23},
+{'xhier':1,'ysched':31,'value':9},
+{'xhier':2,'ysched':1,'value':8},
+{'xhier':2,'ysched':2,'value':5},
+{'xhier':2,'ysched':3,'value':3},
+{'xhier':2,'ysched':4,'value':4},
+{'xhier':2,'ysched':5,'value':55},
+{'xhier':2,'ysched':6,'value':6},
+{'xhier':2,'ysched':7,'value':77},
+{'xhier':2,'ysched':8,'value':5},
+{'xhier':2,'ysched':9,'value':9},
+{'xhier':2,'ysched':10,'value':23},
+{'xhier':2,'ysched':11,'value':1},
+{'xhier':2,'ysched':12,'value':9},
+{'xhier':2,'ysched':13,'value':8},
+{'xhier':2,'ysched':14,'value':5},
+{'xhier':2,'ysched':15,'value':3},
+{'xhier':2,'ysched':16,'value':4},
+{'xhier':2,'ysched':17,'value':55},
+{'xhier':2,'ysched':18,'value':6},
+{'xhier':2,'ysched':19,'value':77},
+{'xhier':2,'ysched':20,'value':5},
+{'xhier':2,'ysched':21,'value':9},
+{'xhier':2,'ysched':22,'value':23},
+{'xhier':2,'ysched':23,'value':5},
+{'xhier':2,'ysched':24,'value':1},
+{'xhier':2,'ysched':25,'value':9},
+{'xhier':2,'ysched':26,'value':8},
+{'xhier':2,'ysched':27,'value':5},
+{'xhier':2,'ysched':28,'value':3},
+{'xhier':2,'ysched':29,'value':4},
+{'xhier':2,'ysched':30,'value':55},
+{'xhier':2,'ysched':31,'value':6},
+{'xhier':3,'ysched':1,'value':77},
+{'xhier':3,'ysched':2,'value':5},
+{'xhier':3,'ysched':3,'value':9},
+{'xhier':3,'ysched':4,'value':23},
+{'xhier':3,'ysched':5,'value':5},
+{'xhier':3,'ysched':6,'value':18},
+{'xhier':3,'ysched':7,'value':8},
+{'xhier':3,'ysched':8,'value':9},
+{'xhier':3,'ysched':9,'value':12},
+{'xhier':3,'ysched':10,'value':112},
+{'xhier':3,'ysched':11,'value':34},
+{'xhier':3,'ysched':12,'value':4},
+{'xhier':3,'ysched':13,'value':13},
+{'xhier':3,'ysched':14,'value':9},
+{'xhier':3,'ysched':15,'value':10},
+{'xhier':3,'ysched':16,'value':12},
+{'xhier':3,'ysched':17,'value':4},
+{'xhier':3,'ysched':18,'value':53},
+{'xhier':3,'ysched':19,'value':54},
+{'xhier':3,'ysched':20,'value':5},
+{'xhier':3,'ysched':21,'value':6},
+{'xhier':3,'ysched':22,'value':3},
+{'xhier':3,'ysched':23,'value':4},
+{'xhier':3,'ysched':24,'value':8},
+{'xhier':3,'ysched':25,'value':9},
+{'xhier':3,'ysched':26,'value':23},
+{'xhier':3,'ysched':27,'value':45},
+{'xhier':3,'ysched':28,'value':55},
+{'xhier':3,'ysched':29,'value':55},
+{'xhier':3,'ysched':30,'value':34},
+{'xhier':3,'ysched':31,'value':34},
+{'xhier':4,'ysched':1,'value':5},
+{'xhier':4,'ysched':2,'value':1},
+{'xhier':4,'ysched':3,'value':9},
+{'xhier':4,'ysched':4,'value':8},
+{'xhier':4,'ysched':5,'value':5},
+{'xhier':4,'ysched':6,'value':3},
+{'xhier':4,'ysched':7,'value':4},
+{'xhier':4,'ysched':8,'value':55},
+{'xhier':4,'ysched':9,'value':6},
+{'xhier':4,'ysched':10,'value':77},
+{'xhier':4,'ysched':11,'value':5},
+{'xhier':4,'ysched':12,'value':9},
+{'xhier':4,'ysched':13,'value':23},
+{'xhier':4,'ysched':14,'value':9},
+{'xhier':4,'ysched':15,'value':8},
+{'xhier':4,'ysched':16,'value':5},
+{'xhier':4,'ysched':17,'value':3},
+{'xhier':4,'ysched':18,'value':4},
+{'xhier':4,'ysched':19,'value':55},
+{'xhier':4,'ysched':20,'value':6},
+{'xhier':4,'ysched':21,'value':77},
+{'xhier':4,'ysched':22,'value':5},
+{'xhier':4,'ysched':23,'value':9},
+{'xhier':4,'ysched':24,'value':23},
+{'xhier':4,'ysched':25,'value':1},
+{'xhier':4,'ysched':26,'value':9},
+{'xhier':4,'ysched':27,'value':8},
+{'xhier':4,'ysched':28,'value':5},
+{'xhier':4,'ysched':29,'value':3},
+{'xhier':4,'ysched':30,'value':4},
+{'xhier':4,'ysched':31,'value':55},
+{'xhier':5,'ysched':1,'value':6},
+{'xhier':5,'ysched':2,'value':77},
+{'xhier':5,'ysched':3,'value':5},
+{'xhier':5,'ysched':4,'value':9},
+{'xhier':5,'ysched':5,'value':23},
+{'xhier':5,'ysched':6,'value':5},
+{'xhier':5,'ysched':7,'value':1},
+{'xhier':5,'ysched':8,'value':9},
+{'xhier':5,'ysched':9,'value':8},
+{'xhier':5,'ysched':10,'value':5},
+{'xhier':5,'ysched':11,'value':3},
+{'xhier':5,'ysched':12,'value':4},
+{'xhier':5,'ysched':13,'value':55},
+{'xhier':5,'ysched':14,'value':6},
+{'xhier':5,'ysched':15,'value':77},
+{'xhier':5,'ysched':16,'value':5},
+{'xhier':5,'ysched':17,'value':9},
+{'xhier':5,'ysched':18,'value':23},
+{'xhier':5,'ysched':19,'value':5},
+{'xhier':5,'ysched':20,'value':18},
+{'xhier':5,'ysched':21,'value':10},
+{'xhier':5,'ysched':22,'value':12},
+{'xhier':5,'ysched':23,'value':4},
+{'xhier':5,'ysched':24,'value':53},
+{'xhier':5,'ysched':25,'value':54},
+{'xhier':5,'ysched':26,'value':5},
+{'xhier':5,'ysched':27,'value':6},
+{'xhier':5,'ysched':28,'value':3},
+{'xhier':5,'ysched':29,'value':4},
+{'xhier':5,'ysched':30,'value':8},
+{'xhier':5,'ysched':31,'value':9},
+{'xhier':6,'ysched':1,'value':23},
+{'xhier':6,'ysched':2,'value':45},
+{'xhier':6,'ysched':3,'value':55},
+{'xhier':6,'ysched':4,'value':55},
+{'xhier':6,'ysched':5,'value':34},
+{'xhier':6,'ysched':6,'value':34},
+{'xhier':6,'ysched':7,'value':5},
+{'xhier':6,'ysched':8,'value':1},
+{'xhier':6,'ysched':9,'value':9},
+{'xhier':6,'ysched':10,'value':8},
+{'xhier':6,'ysched':11,'value':5},
+{'xhier':6,'ysched':12,'value':3},
+{'xhier':6,'ysched':13,'value':4},
+{'xhier':6,'ysched':14,'value':55},
+{'xhier':6,'ysched':15,'value':6},
+{'xhier':6,'ysched':16,'value':77},
+{'xhier':6,'ysched':17,'value':5},
+{'xhier':6,'ysched':18,'value':9},
+{'xhier':6,'ysched':19,'value':23},
+{'xhier':6,'ysched':20,'value':9},
+{'xhier':6,'ysched':21,'value':8},
+{'xhier':6,'ysched':22,'value':5},
+{'xhier':6,'ysched':23,'value':3},
+{'xhier':6,'ysched':24,'value':4},
+{'xhier':6,'ysched':25,'value':55},
+{'xhier':6,'ysched':26,'value':6},
+{'xhier':6,'ysched':27,'value':77},
+{'xhier':6,'ysched':28,'value':5},
+{'xhier':6,'ysched':29,'value':9},
+{'xhier':6,'ysched':30,'value':23},
+{'xhier':6,'ysched':31,'value':1},
+{'xhier':7,'ysched':1,'value':9},
+{'xhier':7,'ysched':2,'value':8},
+{'xhier':7,'ysched':3,'value':5},
+{'xhier':7,'ysched':4,'value':3},
+{'xhier':7,'ysched':5,'value':4},
+{'xhier':7,'ysched':6,'value':55},
+{'xhier':7,'ysched':7,'value':6},
+{'xhier':7,'ysched':8,'value':77},
+{'xhier':7,'ysched':9,'value':5},
+{'xhier':7,'ysched':10,'value':9},
+{'xhier':7,'ysched':11,'value':23},
+{'xhier':7,'ysched':12,'value':5},
+{'xhier':7,'ysched':13,'value':10},
+{'xhier':7,'ysched':14,'value':12},
+{'xhier':7,'ysched':15,'value':4},
+{'xhier':7,'ysched':16,'value':53},
+{'xhier':7,'ysched':17,'value':54},
+{'xhier':7,'ysched':18,'value':5},
+{'xhier':7,'ysched':19,'value':6},
+{'xhier':7,'ysched':20,'value':3},
+{'xhier':7,'ysched':21,'value':4},
+{'xhier':7,'ysched':22,'value':8},
+{'xhier':7,'ysched':23,'value':9},
+{'xhier':7,'ysched':24,'value':23},
+{'xhier':7,'ysched':25,'value':45},
+{'xhier':7,'ysched':26,'value':55},
+{'xhier':7,'ysched':27,'value':55},
+{'xhier':7,'ysched':28,'value':34},
+{'xhier':7,'ysched':29,'value':34},
+{'xhier':7,'ysched':30,'value':5},
+{'xhier':7,'ysched':31,'value':1},
+{'xhier':8,'ysched':1,'value':9},
+{'xhier':8,'ysched':2,'value':8},
+{'xhier':8,'ysched':3,'value':5},
+{'xhier':8,'ysched':4,'value':3},
+{'xhier':8,'ysched':5,'value':4},
+{'xhier':8,'ysched':6,'value':55},
+{'xhier':8,'ysched':7,'value':6},
+{'xhier':8,'ysched':8,'value':77},
+{'xhier':8,'ysched':9,'value':5},
+{'xhier':8,'ysched':10,'value':9},
+{'xhier':8,'ysched':11,'value':23},
+{'xhier':8,'ysched':12,'value':9},
+{'xhier':8,'ysched':13,'value':8},
+{'xhier':8,'ysched':14,'value':5},
+{'xhier':8,'ysched':15,'value':3},
+{'xhier':8,'ysched':16,'value':4},
+{'xhier':8,'ysched':17,'value':55},
+{'xhier':8,'ysched':18,'value':6},
+{'xhier':8,'ysched':19,'value':77},
+{'xhier':8,'ysched':20,'value':5},
+{'xhier':8,'ysched':21,'value':9},
+{'xhier':8,'ysched':22,'value':23},
+{'xhier':8,'ysched':23,'value':1},
+{'xhier':8,'ysched':24,'value':9},
+{'xhier':8,'ysched':25,'value':8},
+{'xhier':8,'ysched':26,'value':5},
+{'xhier':8,'ysched':27,'value':3},
+{'xhier':8,'ysched':28,'value':4},
+{'xhier':8,'ysched':29,'value':55},
+{'xhier':8,'ysched':30,'value':6},
+{'xhier':8,'ysched':31,'value':77},
+{'xhier':9,'ysched':1,'value':5},
+{'xhier':9,'ysched':2,'value':9},
+{'xhier':9,'ysched':3,'value':23},
+{'xhier':9,'ysched':4,'value':5},
+{'xhier':9,'ysched':5,'value':1},
+{'xhier':9,'ysched':6,'value':9},
+{'xhier':9,'ysched':7,'value':8},
+{'xhier':9,'ysched':8,'value':5},
+{'xhier':9,'ysched':9,'value':3},
+{'xhier':9,'ysched':10,'value':4},
+{'xhier':9,'ysched':11,'value':55},
+{'xhier':9,'ysched':12,'value':6},
+{'xhier':9,'ysched':13,'value':77},
+{'xhier':9,'ysched':14,'value':5},
+{'xhier':9,'ysched':15,'value':9},
+{'xhier':9,'ysched':16,'value':23},
+{'xhier':9,'ysched':17,'value':5},
+{'xhier':9,'ysched':18,'value':18},
+{'xhier':9,'ysched':19,'value':8},
+{'xhier':9,'ysched':20,'value':9},
+{'xhier':9,'ysched':21,'value':12},
+{'xhier':9,'ysched':22,'value':112},
+{'xhier':9,'ysched':23,'value':34},
+{'xhier':9,'ysched':24,'value':4},
+{'xhier':9,'ysched':25,'value':13},
+{'xhier':9,'ysched':26,'value':9},
+{'xhier':9,'ysched':27,'value':33},
+{'xhier':9,'ysched':28,'value':10},
+{'xhier':9,'ysched':29,'value':12},
+{'xhier':9,'ysched':30,'value':4},
+{'xhier':9,'ysched':31,'value':53},
+{'xhier':10,'ysched':1,'value':54},
+{'xhier':10,'ysched':2,'value':5},
+{'xhier':10,'ysched':3,'value':6},
+{'xhier':10,'ysched':4,'value':3},
+{'xhier':10,'ysched':5,'value':4},
+{'xhier':10,'ysched':6,'value':8},
+{'xhier':10,'ysched':7,'value':9},
+{'xhier':10,'ysched':8,'value':23},
+{'xhier':10,'ysched':9,'value':45},
+{'xhier':10,'ysched':10,'value':55},
+{'xhier':10,'ysched':11,'value':55},
+{'xhier':10,'ysched':12,'value':34},
+{'xhier':10,'ysched':13,'value':34},
+{'xhier':10,'ysched':14,'value':5},
+{'xhier':10,'ysched':15,'value':1},
+{'xhier':10,'ysched':16,'value':9},
+{'xhier':10,'ysched':17,'value':8},
+{'xhier':10,'ysched':18,'value':5},
+{'xhier':10,'ysched':19,'value':3},
+{'xhier':10,'ysched':20,'value':4},
+{'xhier':10,'ysched':21,'value':55},
+{'xhier':10,'ysched':22,'value':6},
+{'xhier':10,'ysched':23,'value':77},
+{'xhier':10,'ysched':24,'value':5},
+{'xhier':10,'ysched':25,'value':9},
+{'xhier':10,'ysched':26,'value':23},
+{'xhier':10,'ysched':27,'value':9},
+{'xhier':10,'ysched':28,'value':8},
+{'xhier':10,'ysched':29,'value':5},
+{'xhier':10,'ysched':30,'value':10},
+{'xhier':10,'ysched':31,'value':12},
+{'xhier':11,'ysched':1,'value':4},
+{'xhier':11,'ysched':2,'value':53},
+{'xhier':11,'ysched':3,'value':54},
+{'xhier':11,'ysched':4,'value':5},
+{'xhier':11,'ysched':5,'value':6},
+{'xhier':11,'ysched':6,'value':3},
+{'xhier':11,'ysched':7,'value':4},
+{'xhier':11,'ysched':8,'value':8},
+{'xhier':11,'ysched':9,'value':9},
+{'xhier':11,'ysched':10,'value':23},
+{'xhier':11,'ysched':11,'value':45},
+{'xhier':11,'ysched':12,'value':55},
+{'xhier':11,'ysched':13,'value':55},
+{'xhier':11,'ysched':14,'value':34},
+{'xhier':11,'ysched':15,'value':34},
+{'xhier':11,'ysched':16,'value':5},
+{'xhier':11,'ysched':17,'value':1},
+{'xhier':11,'ysched':18,'value':9},
+{'xhier':11,'ysched':19,'value':8},
+{'xhier':11,'ysched':20,'value':5},
+{'xhier':11,'ysched':21,'value':3},
+{'xhier':11,'ysched':22,'value':4},
+{'xhier':11,'ysched':23,'value':55},
+{'xhier':11,'ysched':24,'value':6},
+{'xhier':11,'ysched':25,'value':77},
+{'xhier':11,'ysched':26,'value':5},
+{'xhier':11,'ysched':27,'value':9},
+{'xhier':11,'ysched':28,'value':23},
+{'xhier':11,'ysched':29,'value':9},
+{'xhier':11,'ysched':30,'value':8},
+{'xhier':11,'ysched':31,'value':5},
+{'xhier':12,'ysched':1,'value':3},
+{'xhier':12,'ysched':2,'value':4},
+{'xhier':12,'ysched':3,'value':55},
+{'xhier':12,'ysched':4,'value':6},
+{'xhier':12,'ysched':5,'value':77},
+{'xhier':12,'ysched':6,'value':5},
+{'xhier':12,'ysched':7,'value':9},
+{'xhier':12,'ysched':8,'value':23},
+{'xhier':12,'ysched':9,'value':1},
+{'xhier':12,'ysched':10,'value':9},
+{'xhier':12,'ysched':11,'value':8},
+{'xhier':12,'ysched':12,'value':5},
+{'xhier':12,'ysched':13,'value':3},
+{'xhier':12,'ysched':14,'value':4},
+{'xhier':12,'ysched':15,'value':55},
+{'xhier':12,'ysched':16,'value':6},
+{'xhier':12,'ysched':17,'value':77},
+{'xhier':12,'ysched':18,'value':5},
+{'xhier':12,'ysched':19,'value':9},
+{'xhier':12,'ysched':20,'value':23},
+{'xhier':12,'ysched':21,'value':5},
+{'xhier':12,'ysched':22,'value':1},
+{'xhier':12,'ysched':23,'value':9},
+{'xhier':12,'ysched':24,'value':8},
+{'xhier':12,'ysched':25,'value':5},
+{'xhier':12,'ysched':26,'value':3},
+{'xhier':12,'ysched':27,'value':4},
+{'xhier':12,'ysched':28,'value':55},
+{'xhier':12,'ysched':29,'value':6},
+{'xhier':12,'ysched':30,'value':77},
+{'xhier':12,'ysched':31,'value':5}
+];
+
+      //Panel Height
+      var pheight = $(window).height();
+      console.log(pheight);
+      //Panel Width
+      var pwidth = $("#chart_container").width();
+      console.log(pwidth);
+
+      var chartDiv = document.getElementById("chart");
+
+      var width = chartDiv.clientWidth;
+      console.log(width);
+      var height = chartDiv.clientHeight;
+      console.log(height);
+
+      
+      var margin = { top: 50, right: 0, bottom: 100, left: 30 },
+          //width = 960 - margin.left - margin.right,
+          width = pwidth - margin.left - margin.right,
+          //height = 430 - margin.top - margin.bottom,
+          height = pheight - margin.top - margin.bottom,
+          gridSize = Math.floor(width / 31),                                                                
+          weekplaced = gridSize*7,
+          legendElementWidth = gridSize*2,
+          buckets = 9,
+          colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], //
+          //colors = palette('tol-sq', 10), 
+          //colors = palette('cb-Spectral', 9), 
+          //cb-YlGnBu
+          //colorbrewer.YlGnBu[9]
+          //days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+          days = ["A","B","C","D","E","F","G","H","I","J","K","L"],
+         //times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+
+          times = ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","A11","A12","A13","A14","A15","A16","A17","A18","A19","A20","A21","A22","A23","A24","A25","A26","A27","A28","A29","A30","A31"],
+          weeks = [" ","Week1","Week2","Week3","Week4"];
+      var datasets = [1, 2];
+      var dataarray = [data1,data2];
+
+      var div = d3.select("#chart").append("div") 
+                  .attr("class", "tooltip")      
+                  .style("opacity", 0);
+
+      var svg = d3.select("#chart").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+      var dayLabels = svg.selectAll(".dayLabel")
+          .data(days)
+          .enter().append("text")
+            .text(function (d) { return d; })
+            .attr("x", 0)
+            .attr("y", function (d, i) { return i * gridSize; })
+            .style("text-anchor", "end")
+            .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+            .attr("class","dayLabel mono axis");
+//            .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+
+      var weekLabels = svg.selectAll(".weekLabel") 
+          .data(weeks)
+          .enter().append("text")
+            .text(function(d) { return d; })
+            .attr("x", function(d, i) { return i * weekplaced - (4*gridSize); })
+            .attr("y", -15)
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(" + gridSize / 2 + ", -6)")  
+            .attr("class","dayLabel mono axis");; 
+
+      var timeLabels = svg.selectAll(".timeLabel")   
+          .data(times)
+          .enter().append("text")
+            .text(function(d) { return d; })
+            .attr("x", function(d, i) { return i * gridSize; })
+            .attr("y", 0)
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+            .attr("class","dayLabel mono axis");
+     //       .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+
+
+      //var heatmapChart = function(tsvFile) {
+        // d3.tsv(tsvFile,
+        // function(d) {
+        //   // return {
+        //   //   day: +d.day,
+        //   //   hour: +d.hour,
+        //   //   value: +d.value
+        //   // };
+        // },
+        //var heatmapChart = function(error, data) {
+  var heatmapChart = function(dlink,datalink) {
+
+          //var data = data2;
+
+          var data = datalink[dlink];
+
+          var colorScale = d3.scale.quantile()
+              .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+              .range(colors);
+
+          var cards = svg.selectAll(".hour")
+              .data(data, function(d) {return d.xhier+":"+d.ysched;});
+
+          // if(cards.select("title").empty()){
+
+          //   cards.append("title");
+
+          //   }
+
+          cards.enter().append("rect")
+              .attr("x", function(d) { return (d.ysched - 1) * gridSize; })
+              .attr("y", function(d) { return (d.xhier - 1) * gridSize; })
+              .attr("rx", 4)
+              .attr("ry", 4)
+              .attr("class", "hour bordered")
+              .attr("width", gridSize)
+              .attr("height", gridSize)
+              .style("fill", colors[0])
+              .on("mouseover", function(d) {    
+                 div.transition()    
+                    .duration(200)    
+                    .style("opacity", .9)
+                    .attr("class","tooltip");    
+                 div.html("xhier : "+d.xhier + "<br/>Hour : "  + d.ysched + "<br/> Value : " + d.value)  
+                    .style("left", (d3.event.pageX) + "px")   
+                    .style("top", (d3.event.pageY - 28) + "px");  
+                })          
+              .on("mouseout", function(d) {   
+                 div.transition()    
+                    .duration(500)    
+                    .style("opacity", 0)
+                    ; 
+                })
+                .on("click", function(d) {    
+                 div.transition()    
+                    .duration(200)    
+                    .style("opacity", .9)
+                    .attr("class","clicktip");    
+                 div.html("<div class='toolform'>CLICKED!</div>")  
+                    .style("left", (d3.event.pageX) + "px")   
+                    .style("top", (d3.event.pageY - 28) + "px");  
+                })
+
+
+          cards.transition().duration(1000)
+              .style("fill", function(d) { return colorScale(d.value); });
+
+         // cards.select("title").text(function(d) { return d.value; });
+          
+          cards.exit().remove();
+
+          var legend = svg.selectAll(".legend")
+              .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+
+          legend.enter().append("g")
+              .attr("class", "legend");
+
+          legend.append("rect")
+            .attr("x", function(d, i) { return legendElementWidth * i; })
+            .attr("y", height)
+            .attr("width", legendElementWidth)
+            .attr("height", gridSize / 2)
+            .style("fill", function(d, i) { return colors[i]; });
+
+          legend.append("text")
+            .attr("class", "mono")
+            .text(function(d) { return "≥ " + Math.round(d); })
+            .attr("x", function(d, i) { return legendElementWidth * i; })
+            .attr("y", height + gridSize);
+
+          legend.exit().remove();
+//});  
+     };
+
+      //heatmapChart(datasets[0]);
+
+      heatmapChart(0,dataarray);
+      
+      var datasetpicker = d3.select("#dataset-picker").selectAll(".dataset-button")
+        .data(datasets);
+
+      datasetpicker.enter()
+        .append("input")
+        .attr("value", function(d){ return "Dataset " + d })
+        .attr("type", "button")
+        .attr("class", "dataset-button")
+        .on("click", function(d) {
+
+          heatmapChart(d-1,dataarray);
+        });
+
+
+
+};
+
+
+        
+window.onresize = function() { displaychart(); };
+
+</script>
+
+
+
+
+
+	{% endblock %}
+
+     				<!--Parent chart js override-->
+
+
+
+     				<!--Parent theme js override-->

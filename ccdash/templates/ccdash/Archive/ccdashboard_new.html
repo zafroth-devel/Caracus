@@ -1,0 +1,104 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Heatmap{% endblock %} 
+{% block custcss %} 
+<style>
+ .panel--dash--correction {
+  padding-bottom: 0cm;
+}  
+
+.content--group--correction {
+    margin-bottom:  0;
+} 
+
+</style>
+
+{% endblock %} {% block main_content %}
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="panel panel-flat" id="dash_panel">
+            <div class="panel-heading">
+                <h5 class="panel-title">Level Scores</h5>
+            </div>
+            <div id="render_dash">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script type="text/javascript" src="{% static 'assets/js/charts/plotly/plotly-latest.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/sliders/ion_rangeslider.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment_locales.min.js' %}"></script>
+
+<!--script type="text/javascript" src="{% static '/assets/js/pages/extra_sliders_ion.js' %}"></script-->
+<script type="text/javascript">
+
+
+
+var colorscaleValue = [
+            [0, '#3D9970'],
+            [1, '#001f3f']
+        ];
+
+        var data = [{
+            {% autoescape off %}
+            x: {{ xValues }},
+            y: {{ yValues }},
+            z: {{ zValues }},
+            {% endautoescape %}
+            type: 'heatmap',
+            colorscale: colorscaleValue,
+            showscale: true
+        }];
+    
+        var layout = {
+            xaxis: {
+                ticks: '',
+                side: 'top'
+            },
+            yaxis: {
+                ticks: '',
+                ticksuffix: ' ',
+                "categoryorder": "array",
+                "categoryarray": yValues
+            }
+        };
+
+
+
+
+var d3 = Plotly.d3;
+var WIDTH_IN_PERCENT_OF_PARENT = 80,
+    HEIGHT_IN_PERCENT_OF_PARENT = 50;
+var gd3 = d3.select("div[id='render_dash']")
+    .style({
+        width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+    });
+var dash_chart = gd3.node();
+
+$(document).ready(function() { 
+
+Plotly.newPlot(dash_chart, data, layout, { displayModeBar: false,showLink: false });
+
+window.addEventListener('resize', function() { Plotly.Plots.resize('dash_chart'); });
+
+});
+
+
+
+</script>
+{% endblock %}

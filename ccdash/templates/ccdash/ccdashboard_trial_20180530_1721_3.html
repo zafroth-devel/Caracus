@@ -1,0 +1,80 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Dashboard{% endblock %} 
+{% block custcss %} 
+
+
+{% endblock %} {% block main_content %}
+
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-flat" id="bob1">
+            <div class="container-fluid">
+                <div class="row">
+
+                        <div  class="col-lg-6" id="chart_1_responsive">
+
+                            <div id="chart_1"></div>
+ 
+                       </div>
+
+                        <div  class="col-lg-6" id="chart_2_responsive">
+
+                            <div id="chart_2"></div>
+ 
+                       </div>
+
+                </div>
+
+
+                <div class="row">
+
+                        <div  class="col-lg-6" id="chart_3_responsive">
+
+                            <div id="chart_3"></div>
+ 
+                       </div>
+
+                        <div  class="col-lg-6" id="chart_4_responsive">
+
+                            <div id="chart_4"></div>
+ 
+                       </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+<!--Parent core js override-->
+{% block chartcode%}
+<script src="{% static '/assets/js/base/vega/vega.min.js' %}"></script>
+<script src="{% static '/assets/js/base/vegadash.js' %}"></script>
+
+ <script type="text/javascript">
+
+vegadash.adduris({"element":"#chart_1","uri":"{% url 'vconfig' req_id='config' data_id='levels' %}",});
+vegadash.adduris({"element":"#chart_2","uri":"{% url 'vconfig' req_id='config' data_id='levels' %}",});
+vegadash.adduris({"element":"#chart_3","uri":"{% url 'vconfig' req_id='config' data_id='levels' %}",});
+vegadash.adduris({"element":"#chart_4","uri":"{% url 'vconfig' req_id='config' data_id='levels' %}",});
+
+//console.log(vegadash.geturis());
+
+vegadash.vegarefresh();
+
+
+
+  </script>
+
+
+
+
+{% endblock %}

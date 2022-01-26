@@ -1,0 +1,2 @@
+reports = {1:{'tenants':['all'],'name':'changes 1','app':'ccreporting','package':'report_changes_0001','report':'changereport'},
+           2:{'tenants':['all'],'name':'hierarchy 1','app':'ccreporting','package':'report_hierarchy_0001','report':'hierarchyreport'},}

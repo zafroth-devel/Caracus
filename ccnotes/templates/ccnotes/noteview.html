@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Notes{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">View Notes Project - {{ project_id }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <table id="myTable" class="table datatable-basic table-bordered table-striped table-hover alpha-slate">
+        <thead>
+            <tr class="bg-slate">
+                <th width="5%">Id</th>
+                <th width="70%">Note</th>
+                <th width="12%">Date Created</th>
+                <!--th width = "3%">Select</th-->
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in project_notes %}
+            <tr>
+                <th width="5%">{{ note.id }}</td>
+                    <th width="73%">{{ note.project_note }}</td>
+                        <th width="12%">{{ note.created_date }}</td>
+                            <!--th width = "3%" align="center" vertical-align="middle"><div class="checkbox"><input type="checkbox"></div></th-->
+            </tr>
+            {% endfor %}
+        </tbody>
+</div>
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs%}
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/core/app.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/datatables_advanced.js' %}"></script>
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

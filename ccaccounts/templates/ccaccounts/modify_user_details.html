@@ -1,0 +1,235 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Add new user{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Modify Existing User</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form name="modform">
+            <div class="row">
+                <div class="form-group">
+                    <label for="id_firstname">Username:</label>
+                    <select name="username" class="form-control" placeholder="Username" id="id_username">
+                        {% for data in userdata %} {% autoescape off %} {{ data.users }} {% endautoescape %} {% endfor %}
+                        <!--option value="matthew">matthew</option>
+                        <option value="george">george</option>
+                        <option value="simon">simon</option>
+                        <option value="michael">michael</option-->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_lastname">Firstname:</label>
+                    <input type="text" name="first_name" autofocus class="form-control" placeholder="First Name..." autocomplete="yes" maxlength="150" minlength="4" id="id_firstname" disabled="disabled" />
+                </div>
+                <div class="form-group">
+                    <label for="id_lastname">Lastname:</label>
+                    <input type="text" name="last_name" autofocus class="form-control" placeholder="Last Name..." autocomplete="yes" maxlength="150" minlength="4" id="id_lastname" disabled="disabled" />
+                </div>
+                <div class="form-group">
+                    <label for="id_lastname">Email:</label>
+                    <input type="text" name="email" autofocus class="form-control" placeholder="Email" autocomplete="yes" maxlength="150" minlength="4" required id="id_email" disabled="disabled" />
+                </div>
+                <div class="form-group">
+                    <label for="id_department">Select Business Unit:</label>
+                    <select name="department" class="form-control" placeholder="Business Unit" id="id_department" disabled="disabled">
+                        {% for bu in business_unit %} {% autoescape off %} {{ bu.department }} {% endautoescape %} {% endfor %}
+                    </select>
+                </div>
+
+
+                <div id='id_reactivate_div'></div>
+
+            </div>
+            <div class="text-right row">
+                <a class="btn btn-link" name="cancelbtn" href="{% url 'viewproject' %}">Cancel</a>
+                <button type="button" class="btn bg-purple-400 name="moduser" id="id_submitbutton" disabled="disabled">Modify Details</button>
+            </div>
+        </form>
+    </div>
+    {% endblock %} {% block chartcode%}
+
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/switch.min.js' %}"></script>
+<script type="text/javascript">
+
+
+var users_active = {
+    {% for active in active_users %} 
+    {% spaceless %}
+    {{ active.username.strip }}: false,  
+    {% endspaceless %}
+    {% endfor %}
+  // etc.
+};
+                // <div class="form-group">
+                //     <div class="checkbox checkbox-switch" type=''>
+                //         <label>
+                //             <input type="checkbox" data-on-color="success" data-off-color="danger" data-on-text="Active" data-off-text="Inactive" class="switch" id="id_active_inactive">
+                //         </label>
+                //     </div>
+                // </div>
+
+
+
+
+
+$('#id_username').change(function() {
+$("#id_firstname").prop("disabled", false);
+$("#id_lastname").prop("disabled", false);
+$("#id_email").prop("disabled", false);
+$("#id_department").prop("disabled", false);
+$("#id_submitbutton").prop("disabled", false);
+contactpost($("#id_username").val(),'get_data')
+});
+
+$("#id_submitbutton").on("click", function() {
+
+contactpost($("#id_username").val(),'action_post')
+});
+
+
+function contactpost(user,action){
+var csrftoken = Cookies.get('csrftoken');
+
+
+    if(action=='get_data'){
+
+        var data_value = {'target': JSON.stringify('get_user_data'),
+                          'user':JSON.stringify(user)} 
+    }else{
+
+        if($('#id_active_inactive').length == 0){
+        var data_value = {'target': JSON.stringify('action_data'),
+                          'user':   JSON.stringify(user),
+                          'firstname': JSON.stringify($("#id_firstname").val()),
+                          'lastname': JSON.stringify($("#id_lastname").val()),
+                          'email': JSON.stringify($("#id_email").val()),
+                          'department': JSON.stringify($("#id_department").val())} 
+                  } else{
+        var data_value = {'target': JSON.stringify('action_data'),
+                          'user':   JSON.stringify(user),
+                          'firstname': JSON.stringify($("#id_firstname").val()),
+                          'lastname': JSON.stringify($("#id_lastname").val()),
+                          'email': JSON.stringify($("#id_email").val()),
+                          'department': JSON.stringify($("#id_department").val()),
+                          'active_status':JSON.stringify($('#id_active_inactive').bootstrapSwitch('state')) } 
+
+                          
+
+
+
+
+
+
+
+
+
+                      }
+
+    }
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+  $.ajax({
+            type: "POST",
+            url: "{% url 'modify_existing_user' %}",
+            data: data_value,
+    
+            success: function(data) {
+    
+            if(data['result']=='success'){
+
+
+            $("#id_firstname").val(data['firstname']);
+            $("#id_lastname").val(data['lastname']);
+            $("#id_email").val(data['email']);
+            $("#id_department").val(data['department']);
+
+
+            if(data['active']==false){
+
+            html_add = `<div class="form-group">
+                            <div class="checkbox checkbox-switch" type=''>
+                                <label>
+                                    <input type="checkbox" data-on-color="success" data-off-color="danger" data-on-text="Active" data-off-text="Inactive" class="switch" id="id_active_inactive">
+                                </label>
+                            </div>
+                         </div>`;
+
+            $('#id_reactivate_div').html(html_add);
+            $(".switch").bootstrapSwitch();
+
+            } else {
+
+                $('#id_reactivate_div').html('');
+
+            }
+
+            
+
+
+        }else if(data['result']=='complete'){
+
+                                    new PNotify({
+                                    title: 'Complete',
+                                    text: data['message'],
+                                    type: 'success',
+                                    icon: 'glyphicon glyphicon-exclamation-sign',
+                                    delay: 5000
+                                    });
+
+        }else{
+
+                                    new PNotify({
+                                    title: 'Error',
+                                    text: data['message'],
+                                    type: 'error',
+                                    icon: 'glyphicon glyphicon-exclamation-sign',
+                                    delay: 10000
+                                    });
+
+        }
+
+                
+            }
+    
+        });
+
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

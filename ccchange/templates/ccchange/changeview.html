@@ -1,0 +1,526 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}View Change{% endblock %} {% block main_content%} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static 'assets/css/gantt/frappe_theme.css' %}" media="screen"-->
+<link href="{% static 'assets/css/gantt/style.css' %}" rel="stylesheet" type="text/css"> {% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">View Change Project - {{ project_name }} - {{ project_id }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="gantt"></div>
+
+    <div id="modal_change_item" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-purple-400">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Modify Change Item</h5>
+                </div>
+                <form method="POST" id="change-mod-frm-post" name="changemodify">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>Project Name:</span>
+                                </div>
+                                <div class="col-sm-9">
+                                    <label>{{ project_name }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>Project Id: </span>
+                                </div>
+                                <div class="col-sm-9">
+                                    <label>{{ project_id }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>Change Nickname: </span>
+                                </div>
+                                <div class="col-sm-9">
+                                    <label name="mod-change-nickname-lbl-nme"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>Change Id: </span>
+                                </div>
+                                <div class="col-sm-9">
+                                    <label name="mod-change-id-lbl-nme"></label>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="styled" name="confirm-change-ckbx" id="mod-change-cb-confirm"> Confirm Change
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="styled" name="delete-change-ckbx" id="mod-change-del-confirm"> Delete Change
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="styled" name="full-update-ckbx" id="mod-change-full-edit"> Modify Change Questions
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <p>Modify change dates</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input type="text" name="datestart" class="form-control pickadate" value="None" id="datestart" required placeholder="Start Date" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" name="dateend" class="form-control pickadate" value="None" id="dateend" required placeholder="End Date" />
+                                </div>
+                                <!--div class="col-sm-4">
+                                    <button type="submit" class="btn btn-primary position-right" id='mod-change-dates' name="change_mod_mod_dates_btn">Modify Dates</button>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <p>Modify hierarchy</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="abledisable">
+                                   <div class="panel panel-white" id="hier_panel_all">
+                                    <div id="treemodalid" class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+                                        <!-- Add hierarchy code here -->
+                                        {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                                        <!--*********************** -->
+                                        <input type="hidden" id="hierarchyid" name="hierarchy" value="" />
+                                    </div>
+                                </div>
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="modify-change-hid-name" id="modify-change-hid" value="{{ project_id }}">
+                        <input type="hidden" name="modify-change-cid-name" id="modify-change-cid" value="">
+                        <input type="hidden" name="modify-dates-changed-name" id="modify-dates-changed" value="">
+                        <div class="modal-footer">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn bg-purple-400 position-right" id='mod-change-dates' name="change_mod_edit_btn">Submit</button>
+                            </div>
+                        </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Perhaps just send this to the change page -->
+        <div id="modal_add_item" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-purple-400">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Add new change item to schedule - (Requires a page refresh)</h5>
+                    </div>
+                    <form>
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <h6 class="text-semibold">Change attributes - {{ project_name }} - {{ project_id }}</h6>
+                            <p>Modifying dates, change questions and hierarchy attributes requires a more comprehensive form</p>
+                            <p>Click on the new change button to add a new change</p>
+                            <hr>
+                        </div>
+                        <input type="hidden" name="modify-change-hid-name" id="modify-change-hid" value="{{ project_id }}">
+                        <input type="hidden" name="modify-change-cid-name" id="modify-change-cid" value="">
+                        <div class="modal-footer">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                                <a href="{% url 'addnewimpact' change_target="change" project_id=project_id %}" class="btn bg-purple-400 position-right">New Change</a>
+                                <!--button type="button" class="btn btn-primary position-right" id='mod-change-dates' data-dismiss="modal">New Change</button-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+ 
+
+    {% endblock %}
+    <!--Parent core js override-->
+    {% block customjs%}
+    <script type="text/javascript" src="{% static 'assets/js/gantt/jquery.fn.gantt.js' %}"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.time.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/notifications/noty.min.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'assets/js/pages/form_checkboxes_radios.js' %}"></script-->
+    <script type="text/javascript">
+
+     var hrtree = $("#treemodalid").fancytree({
+        checkbox: true,
+        selectMode: 3,
+        //activate: function(event, data) {
+        //  $("#echoActive1").text(data.node.title);
+        //},
+        init: function(event, data) {
+            $('.has-tooltip .fancytree-title').tooltip();
+        },
+        select: function(event, data) {
+            // Display list of selected nodes
+            var s = data.tree.getSelectedNodes();
+
+            var t = $.map(s, function(node) {
+                return node.key;
+
+            });
+
+            $('#hierarchyid').val(JSON.stringify(t));
+
+        },
+
+    });
+    var picker_date_start = $('#datestart').pickadate({
+        // Escape any “rule” characters with an exclamation mark (!). --Comment
+        format: 'mmmm d, yyyy',
+        selectMonths: true,
+        onStart: function() {
+
+            this.set('clear')
+
+        },
+        onSet: function() {
+
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+        if (datestart > dateend) {
+            this.set('select', [dateend.getFullYear(), dateend.getMonth(), dateend.getDate()])
+        }
+        
+        $('#modify-dates-changed').val("CHANGED");
+        },
+
+    });
+
+    var picker_date_end = $('#dateend').pickadate({
+        // Escape any “rule” characters with an exclamation mark (!). --Comment
+        format: 'mmmm d, yyyy',
+        selectMonths: true,
+        onStart: function() {
+
+            this.set('clear')
+
+        },
+        onSet: function() {
+
+
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value))
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value))
+
+        if (datestart > dateend) {
+            this.set('select', [datestart.getFullYear(), datestart.getMonth(), datestart.getDate()])
+        }
+
+        $('#modify-dates-changed').val("CHANGED");
+
+
+        },
+
+    });
+
+
+
+    var picker_start = picker_date_start.pickadate('picker');
+    var picker_end = picker_date_end.pickadate('picker');
+    var selecttree = hrtree.fancytree("getTree");
+
+
+    //Load change managed selected nodes
+
+{% autoescape off %} 
+
+                var selected_dict = {{ tree_select.sublist }};
+
+{% endautoescape %}
+
+
+    $(".gantt").gantt({
+        source: [
+
+
+
+            {% for item in gantt_items %}
+             {
+                name: "{{ item.nickname }}",
+                desc: "{{ item.confirmed }}",
+                id: "{{ item.id }}",
+                values: [{
+                    from: "/Date({{ item.fromdate }})/",
+                    to: "/Date({{ item.todate }})/",
+                    label: "{{ item.label }}",
+                    customClass: "{{ item.cclass }}"
+                }]
+            },
+            {% endfor %}
+
+
+        ],
+        navigate: "scroll",
+        scale: "weeks",
+        maxScale: "months",
+        minScale: "hours",
+        itemsPerPage: 30,
+        useCookie: true,
+        onItemClick: function(data) {
+
+            var date_from = new Date(data['values'][0]['from'].replace('/Date(', '').replace(')/', ''));
+            var date_to = new Date(data['values'][0]['to'].replace('/Date(', '').replace(')/', ''));
+
+            picker_end.set('select', [date_to.getFullYear(), date_to.getMonth(), date_to.getDate()]);
+            picker_start.set('select', [date_from.getFullYear(), date_from.getMonth(), date_from.getDate()]);
+
+            console.log(data['id'])
+
+    
+
+
+            $('#modal_change_item').on('show.bs.modal', { inparg1: data['id'], inparg2: data['name'] }, function(event) {
+                var addpid = document.getElementById("modify-change-cid");
+                var modal = $(this);
+                //modal.find('label[name="change-id-hid"]').text(event.data.inparg);
+                modal.find('label[name="mod-change-nickname-lbl-nme"]').text(event.data.inparg2);
+                modal.find('label[name="mod-change-id-lbl-nme"]').text(event.data.inparg1);
+                addpid.value = event.data.inparg1;
+
+
+                selecttree.visit(function(node){
+                node.setSelected(false);
+                });
+
+
+
+                    console.log(selected_dict[event.data.inparg1.toString()]);
+
+                    var selectarray = selected_dict[event.data.inparg1.toString()];
+
+                    var arrayLength = selectarray.length;
+                    for (var i = 0; i < arrayLength; i++) {
+
+                        var node = selecttree.getNodeByKey(selectarray[i]);
+                        node.setSelected(true);
+
+                    }
+
+                   //var node = selecttree.getNodeByKey('60416227');
+                   //node.setSelected(true);
+
+
+            });
+
+
+
+            $('#modal_change_item').modal('show');
+
+
+
+        },
+        onAddClick: function(dt, rowId) {
+
+            console.log(rowId);
+            console.log('Blubba');
+            //console.log(dt);
+
+
+            $('#modal_add_item').modal('show');
+
+        },
+        onRender: function() {
+            if (window.console && typeof console.log === "function") {
+                var today = new Date();
+                console.log("chart rendered");
+                //console.log(today)
+            }
+        }
+
+
+
+
+    });
+
+
+
+ var block_panel = $('#hier_panel_all');
+
+$('#mod-change-del-confirm').change(function() {
+        if(this.checked) {
+
+            $('#mod-change-cb-confirm').prop('disabled', true);
+            $('#mod-change-cb-confirm').attr('checked', false);
+
+            $('#mod-change-full-edit').prop('disabled', true);
+            $('#mod-change-full-edit').attr('checked', false);
+
+            $('#datestart').prop('disabled',true);
+            $('#dateend').prop('disabled',true);
+
+ 
+
+
+
+     
+        $(block_panel).block(
+        {
+            message: '<i class="icon-blocked"></i>',
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.8,
+                cursor: 'wait'
+            },
+            css: {
+                border: 0,
+                padding: 0,
+                backgroundColor: 'none'
+            }
+        });
+
+
+
+
+
+
+            
+        }else{
+
+           $('#mod-change-cb-confirm').prop('disabled', false);
+           $('#mod-change-full-edit').prop('disabled', false);
+
+           $('#datestart').prop('disabled',false);
+           $('#dateend').prop('disabled',false);
+
+           $(block_panel).unblock();
+        }    
+    });
+
+
+
+$('#mod-change-full-edit').change(function() {
+        if(this.checked) {
+
+            $('#mod-change-cb-confirm').prop('disabled', true);
+            $('#mod-change-cb-confirm').attr('checked', false);
+
+            $('#mod-change-del-confirm').prop('disabled', true);
+            $('#mod-change-del-confirm').attr('checked', false);
+
+            $('#datestart').prop('disabled',true);
+            $('#dateend').prop('disabled',true);
+
+
+
+     
+        $(block_panel).block(
+        {
+            message: '<i class="icon-blocked"></i>',
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.8,
+                cursor: 'wait'
+            },
+            css: {
+                border: 0,
+                padding: 0,
+                backgroundColor: 'none'
+            }
+        });
+
+
+            
+        }else{
+
+           $('#mod-change-cb-confirm').prop('disabled', false);
+           $('#mod-change-del-confirm').prop('disabled', false);
+
+           $('#datestart').prop('disabled',false);
+           $('#dateend').prop('disabled',false);
+
+           $(block_panel).unblock();
+        }    
+    });
+
+
+
+
+$('#mod-change-dates').click(function () {
+    if($('#mod-change-del-confirm').is(':checked')) {
+
+        var self = $(this);
+        noty({
+            width: 50,
+            text: 'This will delete the impact permanently! Do you want to continue?',
+            type: 'confirm',
+            dismissQueue: true,
+            timeout: 4000,
+            layout: 'center',
+            buttons: [
+                {
+                    addClass: 'btn btn-primary btn-xs',
+                    text: 'Ok',
+                    onClick: function ($noty) { //this = button element, $noty = $noty element
+                        $noty.close();
+
+                        $("#change-mod-frm-post").submit();
+
+                    }
+                },
+                {
+                    addClass: 'btn btn-danger btn-xs',
+                    text: 'Cancel',
+                    onClick: function ($noty) {
+                        $noty.close();
+
+
+                $('#mod-change-del-confirm').attr('checked', false);
+
+                $('#mod-change-cb-confirm').prop('disabled', false);
+                $('#mod-change-full-edit').prop('disabled', false);
+
+                $('#datestart').prop('disabled',false);
+                $('#dateend').prop('disabled',false);
+
+                $(block_panel).unblock();
+
+                    }
+                }
+            ]
+        });
+       return false;
+   }
+    });
+
+
+
+    </script>
+    {% endblock %}
+    <!--Parent chart js override-->
+    <!--Parent theme js override-->

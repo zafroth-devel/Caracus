@@ -1,0 +1,578 @@
+{% load static %}
+{% load rules %}
+{% has_perm 'ccaccounts.administrator' user as administrator %}
+{% has_perm 'ccaccounts.standard_user' user as standard_user %}
+{% has_perm 'ccaccounts.user_reset' user as user_reset %}
+{% has_perm 'ccaccounts.report_viewer' user as report_viewer %}
+{% has_perm 'ccaccounts.rule_manager' user as rule_manager %}
+{% has_perm 'ccaccounts.hierarchy_manager' user as hierarchy_manager %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}
+        <!--Title defined in child-->{% endblock %}</title>
+    {% block cssload %}
+    <!-- Global stylesheets -->
+    <link href="{% static 'assets/css/icons/icomoon/styles.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/core.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/colors.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/custom/flexc.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'dist/switchery.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/ccmargin.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/components.css' %}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+
+<style>
+
+#orgchart {
+    /*width: 600px;*/
+    height: 600px;
+    /*border: 1px solid lightgray;*/
+}
+
+
+
+#overlay {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255,255,255,255);
+  z-index: 2;
+  cursor: pointer;
+}
+
+</style>
+
+    <!-- /global stylesheets Fluff-->
+    {% endblock %} 
+
+{% block custcss %} 
+
+    
+    
+{% endblock %}
+
+</head>
+
+<body>
+    <!-- Main navbar -->
+    <div class="navbar navbar-default header-highlight">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'viewproject' %}"><img src="{% static 'assets/images/hinyango_logo.png' %}" alt=""></a>
+            <ul class="nav navbar-nav visible-xs-block">
+                <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-more"></i></a></li>
+                <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+            </ul>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-mobile">
+            <ul class="nav navbar-nav">
+                <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class=" icon-bubble-lines3"></i>
+                        <span class="visible-xs-inline-block position-right">Alerts</span>
+                        <div class="badge bg-warning-400" id="messagecount"></div>
+                    </a>
+                    <div class="dropdown-menu dropdown-content width-350">
+                        <div id="messagelist"></div>
+                        
+                        <div class="dropdown-content-footer">
+                            <a href="{% url 'message_centre' %}" data-popup="tooltip" title="Message Centre"><i class="icon-menu display-block"></i></a>
+                        </div>
+                    </div>
+                </li>
+                {% if standard_user %}
+                <li><a href="{% url 'addnewproject' change_target='project' %}"><i class="icon-plus3"></i></a></li>
+                {% endif %}
+            </ul>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'logout' %}"><i class="icon-switch"></i> Logout</a></li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /main navbar -->
+    <!-- Page container -->
+    <div class="page-container">
+        <!-- Page content -->
+        <div class="page-content">
+            <!-- Main sidebar -->
+            <div class="sidebar sidebar-main">
+                <div class="sidebar-content">
+                    <!-- User menu -->
+                    <!-- Change the icon to the change compass icon assets/images/placeholder.jpg -->
+                    <!-- This menu side bar is huge -->
+                    <div class="sidebar-user">
+                        <div class="category-content">
+                            <div class="media">
+                                <a href="#" class="media-left"><img src="{{ iconurl }}" alt=""></a>
+
+                                <div class="media-body">
+                                    <!--We will have the user details on the site through all pages-->
+                                    <span class="media-heading text-semibold">{{ user.first_name|capfirst}} {{ user.last_name|capfirst}}</span>
+                                    <div class="text-size-mini text-muted">
+                                        <i class="icon-pin text-size-small"></i> &nbsp;{{ uregtzone }}
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="media-right media-middle">
+                                    <ul class="icons-list">
+                                        <li>
+                                            <a href="#"><i class="icon-cog3"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /user menu -->
+                    <!-- This is the side bar -->
+                    <div class="sidebar-category sidebar-category-visible">
+                        <div class="category-content no-padding">
+                            <ul class="navigation navigation-main navigation-accordion">
+                                <!-- Main Navigation-->
+                                <li class="navigation-header"><span>Navigate</span> <i class="icon-menu" title="Navigate"></i></li>
+                                <!--Template Start Menu-->
+
+
+                                {% block dashboard %}
+
+                                <li>
+                                    <a href="#"><i class="icon-home4"></i> <span>Home</span></a>
+
+                                    <ul>
+                                        {% if standard_user or report_viewer%}
+                                        <li><a href="{% url 'dash' %}"><i class="icon-chart"></i> <span>Dashboard</span></a></li>
+                                        {% endif %}
+
+
+                                        {% if standard_user or report_viewer%}
+                                        <li><a href="{% url 'vegaheatmap' %}"><i class="icon-grid5"></i> <span>Heatmap</span></a></li>
+                                        {% endif %}
+
+                                        {% if standard_user or report_viewer%}
+                                        <li><a href="{% url 'consolidated' %}"><i class="icon-calendar2"></i> <span>Timeline</span></a></li>
+                                        {% endif %}
+
+                                        {% if standard_user or report_viewer%}
+                                        <li><a href="{% url 'orgchart' %}"><i class="icon-tree6"></i> <span>Org Chart</span></a></li>
+                                        {% endif %}
+
+                                    </ul>
+                
+                                {% endblock %}
+
+                                </li>
+                                <!-- This will contain main menu defined in child pages-->
+                                {% block manage_projects %}
+                                {% if standard_user %}
+
+                                <li><a href="{% url 'addnewproject' change_target='project' %}"><i class="icon-file-plus"></i><span>Add New Project</span></a></li>
+                                        
+    
+   
+                                {% endif %}
+                                {% endblock %} 
+
+                                {% block projectview %}
+                                
+                                {% if standard_user %}
+                                <li><a href="{% url 'viewproject' %}"><i class="icon-file-eye"></i> <span>Project View</span></a></li>
+                                {% endif %}
+
+                                {% endblock %} 
+
+
+
+                                {% block reports %}
+                                {% if standard_user or report_viewer%}
+                                <li>
+                                    <a href="#"><i class="icon-copy"></i> <span>Reporting</span></a>
+                                    <ul>
+                                        <li><a href="{% url 'reporting' %}">Request Report</a></li>
+                                        <li><a href="{% url 'rmanager' %}">Manage Queue</a></li>
+                                        <li><a href="{% url 'rdownloads' %}">Download</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% endblock %} {% block settings %}
+                                <li>
+                                    {% if hierarchy_manager or rule_manager or administrator %}
+                                    <a href="#"><i class="icon-cog3"></i> <span>Settings</span></a>
+                                    {% endif %}
+                                    <ul>
+                                        {% if hierarchy_manager %}
+                                        <li><a href="{% url 'hmview' %}">Hierarchy</a></li>
+                                        {% endif %}
+                                        {% if rule_manager %}
+                                        <li><a href="{% url 'qaiew' %}">Change Questions</a></li>
+                                        {% endif %}
+                                        {% if administrator %}
+                                        <li><a href="{% url 'sgview' %}">Scheduling</a></li>
+                                        <li><a href="{% url 'cyicon' %}">Icon Upload</a></li>
+
+                                        <!--li><a href="{% url 'icloadview' %}">Company Icon</a></li-->
+                                        {% endif %}
+
+                                    </ul>
+                                </li>
+                                {% endblock %}{% block usermanagement %}
+                                {% if administrator or user_reset or standard_user %}
+                                
+                                <li>
+                                    <a href="#"><i class="icon-users"></i> <span>Administration</span></a>
+                                    {% endif %}
+                                    <ul>
+                                        {% if administrator %}
+                                        <li><a href="{% url 'add_hinyango_user' %}">Add Users</a></li>
+                                        <li><a href="{% url 'modify_existing_user' %}">Modify User Details</a></li>
+                                        <li><a href="{% url 'delete_user' %}">Delete Users</a></li>
+                                        <li><a href="{% url 'pmview' %}">User Permissions</a></li>
+                                        {% endif %}
+                                        
+                                        {% if administrator or user_reset %}
+
+                                        <li><a href="{% url 'reset_password' %}">Password Reset</a></li>
+                                        {% endif %}
+
+                                        {% if administrator or standard_user %}
+                                        <li><a href="{% url 'cpview' %}">Change My Password</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                
+                                {% endblock %}
+                                <!--Template End Menu-->
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /main navigation -->
+                </div>
+            </div>
+            <!-- /main sidebar -->
+            <!-- Main content -->
+            <div class="content-wrapper" id="main-content-id-wrapper">
+                <!-- CONTENT SECTION -->
+                <div class="content" id="main-content-id">
+                    {% block main_content%} {% endblock %}
+                </div>
+                <!-- /content area -->
+
+            </div>
+            <!-- /main content -->
+        </div>
+        <!-- /page content -->
+    </div>
+
+<div id="modal_read_message" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+                <div class="modal-header bg-purple-400">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Read Message</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <span>From: </span>
+                        </div>
+                        <div class="col-sm-9">
+                            <div id='message-from'></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <span>Subject: </span>
+                        </div>
+                        <div class="col-sm-9">
+                            <div id='message-subject'></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <hr>
+                        <div class="col-sm-12">
+                            <div id='message-contents'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Clear</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+    <!-- /page container -->
+    {% block corejs %}
+    <!-- Core JS files -->
+    <script type="text/javascript" src="{% static 'assets/js/core/libraries/jquery.min.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'assets/js/base/jquery3_1.js' %}"></script-->
+    {% include 'session_security/all.html' %}
+    <script type="text/javascript" src="{% static 'assets/js/core/libraries/bootstrap.min.js' %}"></script>
+    
+
+
+    <!--script type="text/javascript" src="{% static 'assets/js/base/popper.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/base/bootstrap.min.js' %}"></script-->
+
+   
+    <script type="text/javascript" src="{% static 'assets/js/plugins/notifications/pnotify.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dist/switchery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'assets/js/plugins/uploaders/dropzone.min.js' %}"></script-->
+    <script type="text/javascript" src="{% static 'assets/js/core/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/loaders/blockui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/ui/moment/moment.min.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'assets/js/core/cookie.js' %}"></script-->
+    <!-- /core JS files -->
+    {% endblock %} {% block chartjs %}
+    <script type="text/javascript" src="{% static 'assets/js/core/libraries/jquery_ui/core.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/core/libraries/jquery_ui/effects.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/core/libraries/jquery_ui/interactions.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/plugins/trees/fancytree_all.min.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'assets/js/pages/extra_trees.js' %}"></script-->
+    {% endblock %} {% block themejs %}
+    <!-- Theme JS files-->
+    <script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/core/cookie.js' %}"></script>
+
+
+    <script type="text/javascript">
+    //Without this the page pops up annoying requests to the user to save the page
+    window.onbeforeunload = null;
+
+     var csrftoken = Cookies.get('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+    //In app message polling
+    function pollMessageBroker(inpT = 1) {
+
+        $.ajax({
+                type: "POST",
+                url: "{% url 'getalerts' %}",
+                data: {'action':'get unread messages','dummy':1},
+                success: function(data) {
+
+                    var messages = JSON.parse(data['messages']); //.replace('[','').replace(']','')); 
+                    var datacount = 0;
+                    var item = 0;
+                    var ihtml = '';
+                    if (data['count']) {
+                        datacount = String(data['count']);
+                        if(data['count']<5){iter = data['count']}else{iter=5}
+                        for (item = 0; item < iter; ++item) {
+                           var daymessage = '';
+                           if (messages[item]['days'] == 0){
+                            daymessage = 'Today';
+
+                           }else{
+
+                            daymessage = '+'+String(messages[item]['days'])+'days';
+                           }
+
+                            ihtml += `
+                            <ul class="media-list dropdown-content-body">
+                            <li class="media">
+                            <div class="media-left">
+                            <img src="{% static 'assets/images/placeholder.png' %}" class="img-circle img-sm" alt="">
+                            <span class="badge bg-danger-400 media-badge">` + daymessage + `</span>
+                            </div>
+                            <div class="media-body">
+                            <a href="#" class="media-heading" onclick="mfunction(`+messages[item]['id']+`)">
+                            <span class="text-semibold">` + messages[item]['sender'] + `</span>
+                            
+                            <div><input type="hidden" name="msgbody" id="MSGSR-`+messages[item]['id']+`" value="`+messages[item]['sender']+`"></div>
+                            <div><input type="hidden" name="msgbody" id="MSGSB-`+messages[item]['id']+`" value="`+messages[item]['subject']+`"></div>
+                            <div><input type="hidden" name="msgbody" id="MSGID-`+messages[item]['id']+`" value='`+messages[item]['content']+`'></div>
+                            <span class="media-annotation pull-right"></span>
+                            </a>
+                            <span class="text-muted">`+ messages[item]['subject'] +`</span>
+                            </div>
+                            </li>
+                            </ul>`;
+                        console.log(messages[item]['sender'])
+
+                        }
+
+
+                    $('#messagecount').html(String(datacount));
+                   } else {
+                        var datacount = 0;
+                        var ihtml = '';
+                        $('#messagecount').html('');
+      
+                    }
+
+                    $('#messagelist').html(ihtml);
+                    
+
+
+
+
+            },
+            complete: function() {
+
+                setTimeout(pollMessageBroker, 1800000);
+                //setTimeout(pollMessageBroker, 5000);
+            }
+        });
+
+    }
+
+function getReadMessages(messageid) {
+
+
+        $.ajax({
+                type: "POST",
+                url: "{% url 'getalerts' %}",
+                data: {'action':'mark message read','messageid':messageid},
+                success: function(data) {
+                    //console.log(data);
+                
+            },
+            complete: function() {
+                //console.log('Done');
+                pollMessageBroker(2); 
+            }
+        });
+
+
+
+    }
+    //Initiatlise in app message polling
+    var msgtime = false;
+
+    function callOnce() {
+        if (!msgtime) {
+            msgtime = true;
+            pollMessageBroker();
+        }
+    }
+
+    callOnce();
+
+    function mfunction(idin){
+
+$('#message-from').html('');
+$('#message-subject').html('');
+$('#message-contents').html('');
+
+$('#message-from').html($('#MSGSR-'+idin.toString()).val());
+$('#message-subject').html($('#MSGSB-'+idin.toString()).val());
+$('#message-contents').html($('#MSGID-'+idin.toString()).val());
+
+        
+console.log(idin);
+getReadMessages(idin);
+
+$('#modal_read_message').modal();
+
+
+    }
+
+
+
+
+                    {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            function makenotification() {
+        
+                                    new PNotify({
+                                    title: 'Success',
+                                    text: '{{ message }}',
+                                    type: 'success',
+                                    icon: 'glyphicon glyphicon-thumbs-up'
+                                    });
+                            };
+
+                        {% elif message.tags == 'info' %}
+
+                            function makenotification() {
+        
+                                    new PNotify({
+                                    title: 'Warning',
+                                    text: '{{ message }}',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-warning-sign',
+                                    delay: 15000
+                                    });
+    
+                            };
+                        {% elif message.tags == 'warning' %}
+
+                            function makenotification() {
+        
+                                    new PNotify({
+                                    title: 'Warning',
+                                    text: '{{ message }}',
+                                    type: 'info',
+                                    icon: 'glyphicon glyphicon-warning-sign',
+                                    delay: 15000
+                                    });
+    
+                            };
+
+                        {% else %}
+                            function makenotification() {
+        
+                                    new PNotify({
+                                    title: 'Error',
+                                    text: '{{ message }}',
+                                    type: 'error',
+                                    icon: 'glyphicon glyphicon-exclamation-sign',
+                                    delay: 20000
+                                    });
+                        
+                            };
+                    
+                        {% endif %}
+                    {% endfor %}
+                    window.onload = makenotification;
+                    {% endif %}
+
+
+    </script>
+    <!--script src="https://d3js.org/d3.v3.min.js"></script>
+
+
+    <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script-->
+    <!-- /theme JS files -->
+    {% endblock %} {% block customjs%} {% endblock %} {% block chartcode%} {% endblock %}
+</body>
+
+</html>

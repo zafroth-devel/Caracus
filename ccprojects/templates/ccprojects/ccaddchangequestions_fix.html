@@ -1,0 +1,728 @@
+{% extends "base.html" %} 
+
+{% load staticfiles %} 
+
+{% load dict_get %}
+
+{% block title %}View Change{% endblock %} 
+
+{% block main_content%} 
+
+{% block custcss %}
+
+ {% endblock %}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Add Impact Details for {{ project_name }}</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+
+
+        
+
+        <form method="POST" class="form-basic" name="changeimpactformname" id="changeimpactformid">
+        {% csrf_token %}
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label><span>Impact Type</span></label>
+                    <div class="multi-select-full">
+                        <select class="multiselect-select-all-filtering" name="impacttype" id="id_impacttype">
+                            {% autoescape off %} {% for type in impacttype %} {{ type.select_option }} {% endfor %} {% endautoescape %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    {% for field in form %} {% if field.id_for_label|slice:"3:8" == "chan_" %}
+                    <div class="form-group">
+                        {% autoescape off %}
+                        {{ field.label }} 
+                        {% endautoescape %}
+                        {{ field }}
+                    </div>
+                    {% endif %} {% endfor %}
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label><span id="touchspin-label-id"></span></label>
+                            <input type="text" value="5" class="touchspin-vertical" name="id_amppest"> 
+                            <input type="hidden" name="ammp-estimate" id="ammp-estimate-id">        
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <div id="hierarchy_error_msg_id"></div>
+                        <input type="hidden" id="hierarchy_error_msg_hid" name="hierarchy_error_msg" value="false" />
+                    </div>
+                    <div class="col-md-4">
+                        <div id="nickname_error_msg_id"></div>
+                        <input type="hidden" id="nickname_error_msg_hid" name="nickname_error_msg" value="false" />
+                    </div>
+                    <div class="col-md-3">
+                        <div id="istartdate_error_msg_id"></div>
+                        <input type="hidden" id="istartdate_error_msg_hid" name="istartdate_error_msg" value="false" />
+                    </div>
+                    <div class="col-md-3">
+                        <div id="ienddate_error_msg_id"></div>
+                        <input type="hidden" id="ienddate_error_msg_hid" name="ienddate_error_msg" value="false" />
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label for="nodeselect"><span>Business Hierarchy:</span></label>
+                        <button type="button" class="btn bg-purple-400 btn-labeled" data-toggle="modal" data-target="#treemodal" id="nodeselect">
+                        <b><i class="icon-tree6"></i></b> Select Nodes
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.impactnname.label_tag }} {{ form.impactnname }}
+                        <input type="hidden" name="browser-timezone-name" id="browser-timezone-id">
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.impactstart.label_tag }} {{ form.impactstart }}
+                        <input type="hidden" name="impact-start-name" id="impact-start-id">
+
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.impactend.label_tag }} {{ form.impactend }}
+                        <input type="hidden" name="impact-end-name" id="impact-end-id">
+                    </div>
+                </div>
+            </div>
+
+        <div class="form-group">
+            <div class="row">
+                    <div class="col-md-12">
+                    </div>
+            </div>
+        </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label><span id="touchspin-label-id-resources"></span></label>
+                            <input type="text" value="1" class="touchspin-vertical" name="id_resources" disabled> 
+                            <input type="hidden" name="resources-estimate" id="resources-estimate-id">        
+                    </div>
+                </div>
+            </div>
+
+
+
+<div class="form-group">
+
+            <div class="row">
+
+                    <div class="col-md-12">
+                        <label><span>Notes:</span></label>
+                        {{ form.impactnote }}
+                    </div>
+   
+            </div>
+
+</div>
+
+        <div class="form-group">
+            <div class="row">
+                    <div class="col-md-12">
+                    </div>
+            </div>
+        </div>
+
+<div class="form-group">
+            <div class="row">
+
+
+                    <div class="pull-right">
+                    <div class="col-md-4">
+
+                        {% if request.path|splits:3 == 'alt' %}
+    <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewimpacts' project_id=pid %}'">Cancel</button>
+                        {% else %}
+    <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewproject' %}'">Cancel</button>
+                        {% endif %}
+                        
+                  
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn bg-purple-400" name="editprojectbtn" id="submit_btn_id"> Add Change <i class="icon-arrow-right14 position-right"></i></button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="hierarchyid" name="hierarchy" value="" />
+        </form>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<div id="last_five_impact_table">
+</div>
+
+
+<!--MODAL SECTION-->
+
+<div id="treemodal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple-400">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">Assign change or impact using treeview</h5>
+            </div>
+            <!--form action="POST"-->
+            <div class="modal-body">
+                <h6 class="text-semibold">Tree view</h6>
+                <p>Select business unit to attach change or impact</p>
+                <hr>
+                <!-- Diagram view output -->
+                <div class="panel-body">
+                    <div id="treemodalid" class="tree-checkbox-hierarchical well border-left-danger border-left-lg">
+                        <!-- Add hierarchy code here -->
+                        {% autoescape off %} {% for items in treeview %} {{ items }} {% endfor %} {% endautoescape %}
+                        <!--*********************** -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <button type="button" id="hierarchy-confirm" class="btn bg-purple-400" data-dismiss="modal">Confirm Change</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+<!--Parent core js override-->
+{% block customjs %}
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/pickers/pickadate/picker.time.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/form_inputs.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/pages/form_layouts.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/tables/datatables/extensions/row_reorder.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
+<link href="{% static 'assets/js/base/editor/dist/summernote.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'assets/js/base/editor/dist/summernote.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/plugins/forms/inputs/touchspin.min.js' %}"></script>
+
+<script type="text/javascript">
+
+// AMPP Setup
+var tsid = $("input[name='id_amppest']");
+
+$('#touchspin-label-id').html('AMPP');
+
+$("#ammp-estimate-id").val(tsid.val());
+
+tsid.TouchSpin({
+    min:1,
+    max:1000000000,
+        verticalbuttons: true,
+        verticalupclass: 'icon-arrow-up22',
+        verticaldownclass: 'icon-arrow-down22'
+    })
+
+
+tsid.on("touchspin.on.stopspin",function(){
+
+        var estvl = $("input[name='id_amppest']").val();
+
+        $("#ammp-estimate-id").val(estvl);
+
+    });
+
+tsid.on("change",function(){
+
+        var estval = $("input[name='id_amppest']").val();
+
+        $("#ammp-estimate-id").val(estval);
+
+    });
+
+// Resources Setup
+  
+var reccounts = [{% autoescape off %} {% for items in tsresourcesmax %} {{ items }}, {% endfor %}{% endautoescape %}]
+
+// Convert Rec Counts
+recdict = {}
+reccounts.forEach(function(element) {
+  recdict[element['name']] = element['resources']
+});
+
+var tsrecid = $("input[name='id_resources']");
+
+$('#touchspin-label-id-resources').html('Resources Required');
+
+$("#resources-estimate-id").val(tsrecid.val());
+
+tsrecid.TouchSpin({
+    min:1,
+    max: 50,
+        verticalbuttons: true,
+        verticalupclass: 'icon-arrow-up22',
+        verticaldownclass: 'icon-arrow-down22'
+    });
+
+tsrecid.on("touchspin.on.stopspin",function(){
+
+        var estvlrec = $("input[name='id_resources']").val();
+
+        $("#resources-estimate-id").val(estvlrec);
+
+    });
+
+//$("input[name='id_resources']").trigger("touchspin.updatesettings", {max: 1200});
+
+tsrecid.on("change",function(){
+
+        var estvalrec = $("input[name='id_resources']").val();
+
+        $("#resources-estimate-id").val(estvalrec);
+
+    });
+
+
+recselected = [{{ recselected }}];
+
+if(recselected.length>0){
+
+   $("input[name='id_resources']").val(recselected[0]); 
+}
+
+
+$('#id_impacttype').multiselect({
+    includeSelectAllOption: true,
+    enableFiltering: true,
+    templates: {
+        filter: '<li class="multiselect-item multiselect-filter"><i class="icon-search4"></i> <input class="form-control" type="text"></li>'
+    },
+    onSelectAll: function() {
+        $.uniform.update();
+    }
+});
+
+
+var check_impacts = '{{ check_impacts }}';
+
+if (check_impacts) {
+    var innerhtml = `<div class="panel-group accordion-sortable content-group-lg" id="accordion-controls">
+                        <div class="panel panel-white">
+                            <div class="panel-heading">
+                                <h6 class="panel-title">
+                                            <a data-toggle="collapse" id="accordian_change_impacts_id" data-parent="#accordion-controls" href="#accordion-controls-group1">Last 5 Entered Impacts</a>
+                                        </h6>
+                                <div class="heading-elements">
+                                    <ul class="icons-list">
+                                        <li><a data-action="close"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="accordion-controls-group1" class="panel-collapse collapse">
+                                <div class="panel-body">
+
+                         
+                                    <div class='row'>
+                                        <div class="table-responsive">
+                                            <table class="table datatable-row-basic" id="impacttable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Project Name</th>
+                                                        <th>Impact Nickname</th>
+                                                        <th>Start Date</th>
+                                                        <th>End Date</th>
+                                                        <th>Change Confirmed</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <!--
+                                
+                                
+                                                    Add new table rows here
+                                
+                                
+                                                 -->
+ 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+    $('#last_five_impact_table').html(innerhtml);
+
+    var itable = $('#impacttable').DataTable({
+
+        rowReorder: false,
+        paging: false,
+        info: false,
+        searching: false
+
+    });
+
+    $('#accordian_change_impacts_id').on('click', function() {
+        itable.clear().draw();
+        // Add questions to accordian
+        {% autoescape off %} 
+        {% for items in l5_impact_code %} 
+            {{ items.l5_impact_code }} 
+        {% endfor %} 
+        {% endautoescape %}
+
+
+
+    });
+
+}
+
+{% autoescape off %}
+
+var selectedarray = {{ tree_selected }};
+
+{% endautoescape %}
+
+
+var hrtree = $("#treemodalid").fancytree({
+    checkbox: true,
+    selectMode: 3,
+    //activate: function(event, data) {
+    //  $("#echoActive1").text(data.node.title);
+    //},
+    init: function(event, data) {
+        $('.has-tooltip .fancytree-title').tooltip();
+        $('#hierarchyid').val(JSON.stringify([]));
+    },
+    select: function(event, data) {
+        // Display list of selected nodes
+        var s = data.tree.getSelectedNodes();
+
+        //console.log(s[0]['key']);
+
+        var t = $.map(s, function(node) {
+            return node.key;
+        });
+
+
+        $('#hierarchyid').val(JSON.stringify(t));
+
+        reccount = 0
+        if(t.length>0){
+            t.forEach(function(element) {
+                reccount = reccount + recdict[element]
+            });
+            if(reccount==0){
+                reccount=1;
+            }
+            $('#touchspin-label-id-resources').html('Resources Required (max: '+reccount+')');
+            $("input[name='id_resources']").trigger("touchspin.updatesettings", {max: reccount});
+            $("input[name='id_resources']").prop('disabled', false);
+        }else{
+            $('#touchspin-label-id-resources').html('Resources Required');
+            $("input[name='id_resources']").trigger("touchspin.updatesettings", {max: 50});
+            $("input[name='id_resources']").prop('disabled', true);
+        }
+
+    },
+
+});
+
+var selecttree = hrtree.fancytree("getTree");
+
+selecttree.visit(function(node) {
+    node.setSelected(false);
+});
+
+var arrayLength = selectedarray.length;
+for (var i = 0; i < arrayLength; i++) {
+    var node = selecttree.getNodeByKey(selectedarray[i]);
+    node.setSelected(true);
+}
+
+
+var impact_date_start = '{{ impactstart }}';
+var impact_date_end = '{{ impactend }}';
+
+var impact_nick_name = '{{ impactnname }}';
+
+var impact_change_note = '{{ impactnote }}';
+
+var impact_ampp = '{{ impactampp }}';
+
+if (impact_ampp) {
+
+    $("input[name='id_amppest']").val(impact_ampp);
+    $("#ammp-estimate-id").val(impact_ampp);
+}
+
+
+if (impact_nick_name) {
+
+    $('#nickname').val(impact_nick_name);
+
+}
+
+if (impact_change_note) {
+
+    $('#id_impactnote').append(impact_change_note);
+
+}
+
+var $datestart = $('#datestart').pickadate({
+    // Escape any “rule” characters with an exclamation mark (!). --Comment
+    format: 'mmmm d, yyyy',
+    selectMonths: true,
+    onStart: function() {
+
+
+        if (impact_date_start) {
+
+            var date = new Date(impact_date_start);
+            this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()])
+            $('#istartdate_error_msg_hid').val('true');
+            $('#istartdate_error_msg_id').html('');
+
+        } else {
+
+            this.set('clear');
+        }
+    },
+    onSet: function() {
+
+        if(isNaN(Date.parse(document.getElementById("datestart").value))==false &&
+            isNaN(Date.parse(document.getElementById("dateend").value))==false){
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value));
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value));
+
+        console.log(datestart.getTime());
+
+       $('#impact-end-id').val(dateend.getTime());
+       $('#impact-start-id').val(datestart.getTime());
+
+       $('#browser-timezone-id').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+        // Parse dates and compare
+        if (datestart > dateend) {
+            this.set('select', [dateend.getFullYear(), dateend.getMonth(), dateend.getDate()]);
+            $('#istartdate_error_msg_hid').val('true');
+            $('#istartdate_error_msg_id').html('');
+
+        }
+        //var dte_start = Date.parse(datestart)
+        //var dte_end = Date.parse(dateend)
+    }
+
+    }
+
+
+});
+
+var datestart_picker = $datestart.pickadate('picker')
+
+datestart_picker.on({
+  set: function(evt) {
+    $('#istartdate_error_msg_hid').val('true');
+    $('#istartdate_error_msg_id').html('');
+  }
+})
+
+var $dateend = $('#dateend').pickadate({
+    // Escape any “rule” characters with an exclamation mark (!). --Comment
+    format: 'mmmm d, yyyy',
+    selectMonths: true,
+    onStart: function() {
+        if (impact_date_end) {
+
+            var date = new Date(impact_date_end);
+            this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()]);
+            $('#ienddate_error_msg_hid').val('true');
+            $('#ienddate_error_msg_id').html('');
+
+        } else {
+            this.set('clear');
+        }
+
+    },
+    onSet: function() {
+        if(isNaN(Date.parse(document.getElementById("dateend").value))==false &&
+             isNaN(Date.parse(document.getElementById("datestart").value))==false){
+        var datestart = new Date(Date.parse(document.getElementById("datestart").value));
+        var dateend = new Date(Date.parse(document.getElementById("dateend").value));
+
+       $('#impact-end-id').val(dateend.getTime());
+       $('#impact-start-id').val(datestart.getTime());
+       $('#browser-timezone-id').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+        if (datestart > dateend) {
+            this.set('select', [datestart.getFullYear(), datestart.getMonth(), datestart.getDate()]);
+            $('#ienddate_error_msg_hid').val('true');
+            $('#ienddate_error_msg_id').html('');
+        }
+
+
+    }
+}
+
+});
+
+var dateend_picker = $dateend.pickadate('picker')
+
+dateend_picker.on({
+  set: function(evt) {
+    $('#ienddate_error_msg_hid').val('true');
+    $('#ienddate_error_msg_id').html('');
+  }
+});
+
+$('nickname_error_msg_id').html('');
+
+$('#nickname').on( "keyup", function(evt){
+    //******************************HERE WE ARE **********************************//
+    {% autoescape off %}
+        var taken = {{ nicknames }};
+    {% endautoescape %}
+
+    var current_nickname = '{{ impactnname }}';
+
+    if(current_nickname!==''){
+        var index = taken.indexOf(current_nickname);
+        taken.splice(index, 1);
+    }
+
+    var testing = $('#nickname').val();
+
+        if (taken.indexOf(testing) >= 0){
+            $('#nickname_error_msg_id').html('<label style="color:red;">Nickname Taken</label>');
+            $('#nickname_error_msg_hid').val('true'); 
+        }else{
+            $('#nickname_error_msg_id').html('');
+            $('#nickname_error_msg_hid').val('false');  
+
+        }
+
+});
+
+$('#hierarchy-confirm').on('click',function(evt){
+
+    var hierarchy = $('#hierarchyid').val();
+    if(hierarchy!=='[]'){
+        $('#hierarchy_error_msg_id').html('');
+    }
+
+});
+
+$('#submit_btn_id').on('click',function(evt){
+
+    var enddateset = $('#ienddate_error_msg_hid').val();
+    var startdateset = $('#istartdate_error_msg_hid').val();
+    var testing = $('#nickname').val();
+    var nn_ntaken = $('#nickname_error_msg_hid').val(); 
+    var hierarchy = $('#hierarchyid').val();
+
+
+    if(enddateset=='false'){
+        $('#ienddate_error_msg_id').html('<label style="color:red;">End date not set</label>');
+    }else{
+        $('#ienddate_error_msg_id').html('');
+    }
+    if(startdateset=='false'){
+        $('#istartdate_error_msg_id').html('<label style="color:red;">Start date not set</label>');
+    }else{
+        $('#istartdate_error_msg_id').html('');
+    }
+    if(hierarchy=='[]'){
+        $('#hierarchy_error_msg_id').html('<label style="color:red;">Choose a BU</label>');
+    }else{
+        $('#hierarchy_error_msg_id').html('');
+    }
+    if(testing==''){
+        $('#nickname_error_msg_id').html('<label style="color:red;">Choose a nickname</label>');
+    }else{
+        $('#nickname_error_msg_id').html('');
+    }
+
+    if(enddateset=='true' && startdateset=='true' && hierarchy!='[]' && testing!='' && nn_ntaken=='false'){
+        $('#changeimpactformid').submit();
+    }
+});
+
+
+
+</script>
+<script>
+$(function() {
+
+    $('.add_hsnote').summernote({
+        airMode: true,
+        placeholder: 'Enter details here. Highlight entered text for editor toolbar. Formatted text can be copied from MS Word.',
+        disableDragAndDrop: true,
+        popover: {
+            air: [
+                ['Font', ['fontname', 'fontsize', 'color', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['Para', ['style', 'ol', 'ul', 'paragraph', 'height']],
+                ['Insert', ['link', 'table', 'hr']],
+                ['Misc', ['fullscreen', 'undo', 'redo', 'help']]
+            ]
+        }
+    });
+
+
+  
+
+
+});
+</script>
+{% endblock %}
+<!--Parent chart js override-->
+<!--Parent theme js override-->

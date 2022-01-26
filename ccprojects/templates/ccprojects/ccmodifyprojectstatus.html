@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Reporting{% endblock %} {% block custcss %}
+<!--link rel="stylesheet" type="text/css" href="{% static '<<PATH TO ASSET>>' %}" />
+<style> </style-->
+{% endblock %} {% block main_content%}
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title">Modify Project Status</h6>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li>
+                    <a data-action="collapse" data-popup="tooltip" title="Collapse"></a>
+                </li>
+                <li>
+                    <a data-action="reload" data-popup="tooltip" title="Reload"></a>
+                </li>
+                <li>
+                    <a data-action="close" data-popup="tooltip" title="Close"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+
+<div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Id: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label>{{ project.id }}</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Name: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label>{{ project.name }}</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Project Description: </span>
+                            </div>
+                            <div class="col-sm-9">
+                                <label>
+                                    {% autoescape off %}
+                                {{ project.description }}
+                                 {% endautoescape %}
+                            </label>
+                            </div>
+                        </div>
+
+
+</div>
+        <div class="row">
+            <form method="POST" name="hierarchyform">
+                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group">
+                                        {{ form.projectstatus.label_tag }} {{ form.projectstatus }}
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+<input type="hidden" name="projectid" id="projectstatus-hidden-id" value="{{ project.id }}">
+                    <div class="text-right">
+                        <div class="form-group">
+                        <button type="button" class="btn btn-link" name="canceleditbtn" onclick="window.location='{% url 'viewproject' %}'">Cancel</button>
+                        <button type="submit" class="btn bg-purple-400" >Confirm</button>
+                        </div>
+                    </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block chartcode%}
+
+
+
+
+{% endblock %}
