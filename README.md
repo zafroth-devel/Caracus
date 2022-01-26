@@ -1,4 +1,4 @@
-# Hinyango
+# Caracus
 
 Change management system (Older commercial product version) : Uses Django Postgres and Arangodb
 
